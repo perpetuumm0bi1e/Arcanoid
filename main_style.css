@@ -1,0 +1,80 @@
+:root {
+    --color-1: #c2c2c2;
+    --color-2: #804cdb;
+}
+
+body {
+    background: rgb(24, 24, 24);
+    font-family: "Space Mono", monospace;
+}
+
+header {
+    text-align: center;
+}
+
+footer {
+    text-align: center;
+    height: 70px;
+    background-color: var(--color-2);
+}
+
+#logo {
+    position: relative;
+    color: #804cdb;
+    text-shadow: 0 0 1px var(--color-2), 0 0 1px var(--color-2), 0 0 1px var(--color-2);
+    font-size: 40px;
+    top: 10px;
+}
+
+#logo:hover {
+    text-shadow: 0 0 1px var(--color-2), 0 0 1px var(--color-2), 0 0 2px var(--color-2);
+    letter-spacing: 3px;
+}
+
+.container {
+    padding: 200px;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#card {
+    position: relative;
+    background-color: rgb(24, 24, 24);
+    border-radius: 25px;
+    box-shadow: 0 0 2px var(--color-2), 0 0 5px var(--color-2), 0 0 15px var(--color-2);
+    height: 150px;
+    width: 350px;
+    margin: 40px;
+}
+
+#card:hover {
+    border: 2px solid var(--color-2);
+}
+
+#card:active {
+    background-color: #804cdb;
+}
+
+.card_content {
+    text-align: center;
+    position: relative;
+    font-size: 25px;
+    font-weight: 400;
+    color: #804cdb;
+    top: 23px;
+}
+
+#coopyright {
+    color: rgb(24, 24, 24);
+    position: relative;
+    font-size: 15px;
+    top: 22.5px;
+}
+
+a {
+    text-decoration: none;
+}

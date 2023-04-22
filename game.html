@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>&lt; arcanoid &gt;</title>
+  </head>
+
+  <body>
+    <main>
+      <div class="header 1top-appearance-animation" id="header">
+        <a id="logo" href="./index.html"> &lt; arcanoid &gt;</a>
+      </div>
+      <div class="container" id="game-container">
+        <div class="game-info-container"></div>
+        <div class="canvas" id="canvas-container">
+          <!-- здесь будет создано поле через скрипт -->
+        </div>
+        <div class="control">
+          <form class="choice-group">
+            <div class="choice-item">
+              <input type="radio" id="keyboard" name="choice" />
+              <label class="main-text choice-text" for="keyboard"
+                >Клавиатура</label
+              >
+            </div>
+            <div class="choice-item">
+              <input type="radio" id="mouse" name="choice" checked />
+              <label class="choice-text" for="mouse">Мышь</label>
+            </div>
+            <div class="choice-item">
+              <input type="radio" id="touchscreen" name="choice" />
+              <label class="choice-text" for="touchscreen">Тачскрин</label>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="footer">
+        <p class="main-text copyright">©perpetuumm0bi1e<br />2022</p>
+      </div>
+    </main>
+  </body>
+  <script type="text/javascript" src="./script.js"></script>
+</html>

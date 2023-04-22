@@ -1,17 +1,13 @@
-if (location.pathname.includes('index')) {
-    let playButton = document.getElementById('box-3');
-
-    playButton.onclick = function() {
-        window.location.href = './arcanoid.html';
-    }
-} else if (location.pathname.includes('arcanoid')) {
-
-    const canvas = document.getElementById('game'),
-        context = canvas.getContext('2d'),
+function executeGame(){
+    let field = document.getElementById('game'),
+        context = field.getContext('2d'),
         choice = document.getElementById('choice'),
         radio_keyboard = document.querySelector('#keyboard'),
         radio_mouse = document.querySelector('#mouse'),
-        body = document.querySelector('.body');
+        radio_touchscreen = document.querySelector('#touchscreen');
+
+    console.log('ширина поля:' + field.offsetWidth);
+    console.log('высота поля:' + field.offsetHeight);
 
     const level1 = [
         [],
@@ -30,23 +26,28 @@ if (location.pathname.includes('index')) {
     ];
 
     const colorMap = {
-        'R': '#636D79',
-        'O': '#636D79',
-        'G': '#636D79',
-        'Y': '#FEFC03'
+        'R': '#5955B3',
+        'O': '#5955B3',
+        'G': '#5955B3',
+        'Y': '#5955B3'
     };
 
-    const brickGap = 5;
-    const brickWidth = 20;
-    const brickHeight = 41.5;
-    const wallSize = 10;
-    const bricks = [];
+    // параметры 
+    let wallSize = 10,
+        brickGap = 5,
+        brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
+        brickWidth = brickHeight / 2,
+        paddleWidth = (field.offsetHeight - 2 * wallSize) / 5,
+        paddleHeight = paddleWidth * 0.1,
+        bricks = [];
 
+        console.log('paddleWidth: ' + paddleWidth);
+        console.log('paddleHeight: ' + paddleHeight);
     for (let row = 0; row < level1.length; row++) {
         for (let col = 0; col < level1[row].length; col++) {
             const colorCode = level1[row][col];
             bricks.push({
-                x: wallSize + (brickWidth + brickGap) * row + 100,
+                x: wallSize + (brickWidth + brickGap) * row + field.offsetWidth * 0.05,
                 y: wallSize + (brickHeight + brickGap) * col,
                 color: colorMap[colorCode],
                 width: brickWidth,
@@ -55,23 +56,25 @@ if (location.pathname.includes('index')) {
         }
     }
     const paddle = {
-        x: 900,
-        y: canvas.height / 2 - 150 / 2,
-        width: 20,
-        height: 120,
-        dx: 0,
-        dy: 0
+        x: field.offsetWidth * 0.9,
+        y: field.offsetHeight / 2 - paddleWidth / 2,
+        width: paddleHeight,
+        height: paddleWidth,
+        dx: 0, // направление по x
+        dy: 0 // направление по y
     };
+    
     const ball = {
-        x: 700,
+        x: field.offsetWidth * 0.6,
         y: 200,
         width: 11,
         height: 11,
-        speed: 20,
+        speed: 5,
         dx: 0,
         dy: 0
     };
 
+    // проверка на касание объектов
     function collides(obj1, obj2) {
         return obj1.x < obj2.x + obj2.width &&
             obj1.x + obj1.width > obj2.x &&
@@ -79,17 +82,24 @@ if (location.pathname.includes('index')) {
             obj1.y + obj1.height > obj2.y;
     }
 
+    // главный цикл игры
     function loop() {
+        //очистка поля и новая отрисовка
         requestAnimationFrame(loop);
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        paddle.y += paddle.dy;
+        context.clearRect(0, 0, field.offsetWidth, field.offsetHeight); 
+
+        paddle.y += paddle.dy; // движение платформы с заданной скоростью
+
+        // контроль за нахождением в границах поля
         if (paddle.y < wallSize) {
             paddle.y = wallSize
-        } else if (paddle.y > canvas.height - wallSize - paddle.height) {
-            paddle.y = canvas.height - wallSize - paddle.height;
+        } else if (paddle.y > field.offsetHeight - wallSize - paddle.height) {
+            paddle.y = field.offsetHeight - wallSize - paddle.height;
         }
+
         ball.x += ball.dx;
         ball.y += ball.dy;
+
         if (ball.x < wallSize + ball.width) {
             ball.x = wallSize + ball.width;
             ball.dx *= -1;
@@ -97,11 +107,11 @@ if (location.pathname.includes('index')) {
         if (ball.y < wallSize + ball.height) {
             ball.y = wallSize + ball.height;
             ball.dy *= -1;
-        } else if (ball.y + ball.height > canvas.height - wallSize) {
-            ball.y = canvas.height - wallSize - ball.height;
+        } else if (ball.y + ball.height > field.offsetHeight - wallSize) {
+            ball.y = field.offsetHeight - wallSize - ball.height;
             ball.dy *= -1;
         }
-        if (ball.x + ball.width > canvas.width - wallSize) {
+        if (ball.x + ball.width > field.offsetWidth - wallSize) {
             ball.x = 700;
             ball.y = 200;
             ball.dx = 0;
@@ -113,7 +123,7 @@ if (location.pathname.includes('index')) {
         }
 
         for (let i = 0; i < bricks.length; i++) {
-            const brick = bricks[i];
+            let brick = bricks[i];
             if (collides(ball, brick)) {
                 bricks.splice(i, 1);
                 if (ball.y + ball.height - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
@@ -124,26 +134,64 @@ if (location.pathname.includes('index')) {
                 break;
             }
         }
-        context.fillStyle = '#FEFEFE'; // цвет фона за канвасом
+        // отрисовка стен
+        context.fillStyle = '#FEFEFE'; 
+        context.fillRect(0, 0, field.offsetWidth, wallSize);
+        context.fillRect(0, 0, wallSize, field.offsetHeight);
+        context.fillRect(field.offsetWidth - wallSize, 0, wallSize, field.offsetHeight);
+        context.fillRect(0, field.offsetHeight - wallSize, field.offsetWidth, wallSize);
 
-        context.fillRect(0, 0, canvas.width, wallSize);
-        context.fillRect(0, 0, wallSize, canvas.height);
-        context.fillRect(canvas.width - wallSize, 0, wallSize, canvas.height);
-        context.fillRect(0, canvas.height - wallSize, canvas.width, wallSize);
+        // отрисовка шарика,  если он в движении
         if (ball.dx || ball.dy) {
             context.beginPath();
             context.arc(ball.x, ball.y, ball.height, 0, 360);
-            context.fillStyle = '#DA2E2E';
+            context.fillStyle = '#DA2E2E'; // цвет мяча
             context.fill();
         }
+
+        // отрисовка кирпичей
         bricks.forEach(function(brick) {
             context.fillStyle = brick.color;
             context.fillRect(brick.x, brick.y, brick.width, brick.height);
         });
-        context.fillStyle = '#282828'; // цвет платформы
 
+        // отрисовка кирпичей
+        context.fillStyle = '#282828'; 
         context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
     }
+    
+    let touchscreenStart = false,
+        touchscreenClickCounter = 0,
+        touchPosition;
+
+    // нажатие тачскрина
+    field.addEventListener('touchstart', e => {
+        e.preventDefault();
+      })
+
+    // отжатие тачскрина
+    field.addEventListener('touchend', e => {
+        touchscreenClickCounter++;
+        if (touchscreenClickCounter % 2 == 1 && ball.dx === 0 && ball.dy === 0) {
+            ball.dx = ball.speed;
+            ball.dy = ball.speed;
+        }
+        console.log('Прикосновение закончено')
+    })
+      
+    // ведение по тачскрину
+    field.addEventListener('touchmove', e => {
+        console.log('По мне ведут пальцем')
+        touchPosition = { 
+            x: e.changedTouches[0].clientX - field.getBoundingClientRect().left, 
+            y: e.changedTouches[0].clientY - field.getBoundingClientRect().top 
+        };
+        if (radio_touchscreen.checked) {
+            paddle.y = touchPosition.y - paddleWidth / 2;
+        }
+    })
+      
+    // нажатие клавиши
     document.addEventListener('keydown', function(e) {
         if (radio_keyboard.checked) {
             if (e.which === 87 || e.which === 38) {
@@ -158,38 +206,117 @@ if (location.pathname.includes('index')) {
         }
     });
 
+    // отжатие клавиши
     document.addEventListener('keyup', function(e) {
-        if (radio_keyboard.checked) {
-            if (e.which === 87 || e.which === 83 || e.which === 38 || e.which === 40) {
-                paddle.dy = 0;
-            }
+        if (radio_keyboard.checked && (e.which === 87 || e.which === 83 || e.which === 38 || e.which === 40)) {
+            paddle.dy = 0;
         }
     });
 
-    canvas.onclick = function() {
-        if (radio_mouse.checked) {
-            if (ball.dx === 0 && ball.dy === 0) {
-                ball.dx = ball.speed;
-                ball.dy = ball.speed;
-            }
+    // клик по полю для запуска мяча
+    field.addEventListener('click', function(e) {
+        if (radio_mouse.checked && ball.dx === 0 && ball.dy === 0) {
+            ball.dx = ball.speed;
+            ball.dy = ball.speed;
         }
-        canvas.style.cursor = 'none';
+        field.style.cursor = 'none';
+    });
 
-    };
-
+    // отслеживание движения курсора
     document.addEventListener('mousemove', e => {
         if (radio_mouse.checked) {
-            paddle.y = e.pageY - 75;
+            paddle.y = e.pageY - paddleWidth / 2;
         }
     });
+
     requestAnimationFrame(loop);
 
     choice.addEventListener("change", () => {
-        let id = choice.id;
-        if (id == keyboard) {
-            radio_mouse.checked = false;
-        } else if (id == mouse) {
-            radio_keyboard.checked = false;
+        switch(choice.id){
+            case keyboard:
+                radio_mouse.checked = false;
+                radio_touchscreen.checked = false;
+                break;
+            case mouse:
+                radio_keyboard.checked = false;
+                radio_touchscreen.checked = false;
+                break;
+            case radio_touchscreen:
+                radio_mouse.checked = false;
+                radio_keyboard.checked = false;
+            break;
         }
     });
+} 
+function windowSetting(){
+    if (location.pathname.includes('index') || location.pathname == '/') {
+        let playButton = document.getElementById('box-3'),
+            designButton = document.getElementById('box-2'),
+            settingsButton = document.getElementById('box-4');
+            
+        if(document.body.clientWidth < 920 && document.body.clientWidth > 678){
+            designButton.style.order = '1';
+            playButton.style.order = '3';
+            settingsButton.style.order = '2';
+        } else if(document.body.clientWidth < 678){
+            designButton.style.order = '2';
+            playButton.style.order = '1';
+            settingsButton.style.order = '3';
+        } else {
+            designButton.style.order = '1';
+            playButton.style.order = '2';
+            settingsButton.style.order = '3';
+        }
+    } else if (location.pathname.includes('game')) {
+        let gameContainer = document.getElementById('game-container'),
+            canvasContainer = document.getElementById('canvas-container'),
+            canvasWidth = gameContainer.offsetWidth - 20,
+            canvasHeight = canvasWidth / 1.61;
+        
+        canvasContainer.innerHTML = `<canvas id='game' width='${canvasWidth}' height='${canvasHeight}'></canvas>`;
+        executeGame();
+    }
+}
+window.addEventListener('resize', function(event){
+    windowSetting();
+ });
+
+window.onload = function(){
+    windowSetting();
+
+    function onEntry(element) {
+        element.forEach(change => {
+            if (change.isIntersecting) {
+                change.target.classList.add('appeared');
+            }
+        });
+    }
+
+    let options = { threshold: [0.5] };
+    let observer = new IntersectionObserver(onEntry, options);
+
+    let topAppearedElements = document.querySelectorAll('.top-appearance-animation'),
+        impulseAppearedElements = document.querySelectorAll('.impulse-appearance-animation'),
+        bottomAppearedElements = document.querySelectorAll('.bottom-appearance-animation');
+
+    for (let element of impulseAppearedElements) {
+        observer.observe(element);
+    }
+    for (let element of topAppearedElements) {
+        observer.observe(element);
+    }
+    for (let element of bottomAppearedElements) {
+        observer.observe(element);
+    }
+
+    if (location.pathname.includes('index') || location.pathname == '/') {
+        let playButton = document.getElementById('box-3');
+
+        playButton.onclick = function() {
+            window.location.href = './game.html';
+        }
+
+    } else if (location.pathname.includes('game')) {
+        executeGame();
+    }
 }

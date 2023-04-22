@@ -14,31 +14,51 @@
         <a id="logo" href="./index.html"> &lt; arcanoid &gt;</a>
       </div>
       <div class="container" id="game-container">
-        <div class="game-info-container"></div>
+        <div class="sub-container">
+          <div
+            class="game-info-box box impulse-appearance-animation"
+            id="score-box">
+            <p class="gray-heading" id="score">0</p>
+          </div>
+          <button
+            class="game-info-box box impulse-appearance-animation"
+            id="restart">
+            <img id="restart-img" src="./img/restart.svg" />
+          </button>
+          <div
+            class="game-info-box box impulse-appearance-animation"
+            id="time-box">
+            <p class="gray-heading" id="time"></p>
+          </div>
+        </div>
         <div class="canvas" id="canvas-container">
           <!-- здесь будет создано поле через скрипт -->
         </div>
-        <div class="control">
+        <div class="control impulse-appearance-animation">
           <form class="choice-group">
             <div class="choice-item">
               <input type="radio" id="keyboard" name="choice" />
-              <label class="main-text choice-text" for="keyboard"
+              <label class="main-text medium-text" for="keyboard"
                 >Клавиатура</label
               >
             </div>
             <div class="choice-item">
               <input type="radio" id="mouse" name="choice" checked />
-              <label class="choice-text" for="mouse">Мышь</label>
+              <label class="medium-text" for="mouse">Мышь</label>
             </div>
             <div class="choice-item">
               <input type="radio" id="touchscreen" name="choice" />
-              <label class="choice-text" for="touchscreen">Тачскрин</label>
+              <label class="medium-text" for="touchscreen">Тачскрин</label>
             </div>
           </form>
         </div>
       </div>
       <div class="footer">
-        <p class="main-text copyright">©perpetuumm0bi1e<br />2022</p>
+        <a
+          class="small-text copyright"
+          href="https://github.com/perpetuumm0bi1e"
+          >©perpetuumm0bi1e<br /><br />2022</a
+        >
       </div>
     </main>
   </body>

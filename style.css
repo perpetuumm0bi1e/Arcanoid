@@ -131,13 +131,18 @@ main{
     color: var(--white);
 }
 
-.main-text {
+.small-text {
     color: var(--dark-gray);
     font-weight: 300;
     line-height: 160%;
     font-size: 1rem;
 }
-
+.medium-text{
+    color: var(--dark-gray);
+    font-weight: 500;
+    line-height: 160%;
+    font-size: 1.2rem;
+}
 .subheading {
     color: var(--black);
     line-height: 160%;
@@ -146,6 +151,12 @@ main{
     margin-bottom: -10px;
 }
 
+.gray-heading {
+    color: var(--dark-gray);
+    line-height: 160%;
+    font-weight: 500;
+    font-size: 2.5rem;
+}
 .container {
     display: flex;
     flex-direction: column;
@@ -186,11 +197,14 @@ main{
 #box-1{
     max-width: 100%;
 }
-#box-1:hover {
+#box-1:hover,
+#score-box:hover,
+#time-box:hover {
     box-shadow: 3px 3px var(--black);
 }
 
-#box-3:hover {
+#box-3:hover,
+#restart:hover {
     box-shadow: 3px 3px var(--red);
 }
 
@@ -225,22 +239,23 @@ main{
     width: 100%;
 }
 
-#box-2 {
+#box-2,
+#box-4,
+#time-box,
+#score-box {
     flex-grow: 1;
 }
 
-#box-3 {
+#box-3,
+#restart {
     flex-grow: 2;
-}
-
-#box-4 {
-    flex-grow: 1;
 }
 
 canvas {
     background-color: var(--white);
     border-radius: 30px;
     touch-action: none;
+    cursor: crosshair;
 }
 
 .control {
@@ -269,8 +284,6 @@ canvas {
 	cursor: pointer;
 	padding: 0px 35px;
 	line-height: 34px;
-    font-size: 1.1rem;
-    font-weight: 500;
 	color: var(--dark-gray);
 	border: 2px solid var(--gray);
 	user-select: none;
@@ -290,5 +303,16 @@ canvas {
  
 .choice-group label:hover {
 	color: var(--black);
+}
+#restart-img{
+    width: 50px;
+    height: auto;
+}
+
+.game-info-box{
+    justify-content: center;
+    align-items: center;
+    gap: 0px;
+    padding: 20px;
 }
  

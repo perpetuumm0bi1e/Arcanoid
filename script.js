@@ -1,13 +1,13 @@
+
+
 function executeGame(){
     let field = document.getElementById('game'),
         context = field.getContext('2d'),
         choice = document.getElementById('choice'),
         radio_keyboard = document.querySelector('#keyboard'),
         radio_mouse = document.querySelector('#mouse'),
-        radio_touchscreen = document.querySelector('#touchscreen');
-
-    console.log('ширина поля:' + field.offsetWidth);
-    console.log('высота поля:' + field.offsetHeight);
+        radio_touchscreen = document.querySelector('#touchscreen'),
+        restartButton = document.getElementById('restart');
 
     const level1 = [
         [],
@@ -33,16 +33,44 @@ function executeGame(){
     };
 
     // параметры 
-    let wallSize = 10,
+    let score = 0,
+        wallSize = 10,
         brickGap = 5,
         brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
         brickWidth = brickHeight / 2,
         paddleWidth = (field.offsetHeight - 2 * wallSize) / 5,
         paddleHeight = paddleWidth * 0.1,
-        bricks = [];
+        bricks = [],
+        sec = 0,
+        min = 0,
+        hrs = 0,
+        t;
 
-        console.log('paddleWidth: ' + paddleWidth);
-        console.log('paddleHeight: ' + paddleHeight);
+    function tick(){
+        sec++;
+        if (sec >= 60) {
+            sec = 0;
+            min++;
+            if (min >= 60) {
+                min = 0;
+                hrs++;
+            }
+        }
+    }
+        
+    function add() {
+        tick();
+        document.getElementById('time').innerHTML = (min > 9 ? min : "0" + min) + ":" + (sec > 9 ? sec : "0" + sec);
+        timer();
+    }
+        
+    function timer() {
+        t = setTimeout(add, 1000);
+    }
+    
+    document.getElementById('score').innerHTML = score;
+    field.style.cursor = 'crosshair';
+
     for (let row = 0; row < level1.length; row++) {
         for (let col = 0; col < level1[row].length; col++) {
             const colorCode = level1[row][col];
@@ -66,7 +94,7 @@ function executeGame(){
     
     const ball = {
         x: field.offsetWidth * 0.6,
-        y: 200,
+        y: field.offsetHeight * 0.4,
         width: 11,
         height: 11,
         speed: 5,
@@ -126,6 +154,8 @@ function executeGame(){
             let brick = bricks[i];
             if (collides(ball, brick)) {
                 bricks.splice(i, 1);
+                score++;
+                document.getElementById('score').innerHTML = score;
                 if (ball.y + ball.height - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
                     ball.dy *= -1;
                 } else if (ball.x + ball.width - ball.speed <= brick.x || ball.x >= brick.x + brick.width - ball.speed) {
@@ -159,10 +189,11 @@ function executeGame(){
         context.fillStyle = '#282828'; 
         context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
     }
-    
-    let touchscreenStart = false,
-        touchscreenClickCounter = 0,
-        touchPosition;
+
+    let touchscreenClickCounter = 0,
+        mouseClickCounter = 0,
+        touchPosition,
+        pointerPosition;
 
     // нажатие тачскрина
     field.addEventListener('touchstart', e => {
@@ -176,12 +207,10 @@ function executeGame(){
             ball.dx = ball.speed;
             ball.dy = ball.speed;
         }
-        console.log('Прикосновение закончено')
     })
       
     // ведение по тачскрину
     field.addEventListener('touchmove', e => {
-        console.log('По мне ведут пальцем')
         touchPosition = { 
             x: e.changedTouches[0].clientX - field.getBoundingClientRect().left, 
             y: e.changedTouches[0].clientY - field.getBoundingClientRect().top 
@@ -215,18 +244,36 @@ function executeGame(){
 
     // клик по полю для запуска мяча
     field.addEventListener('click', function(e) {
+        mouseClickCounter++;
+
         if (radio_mouse.checked && ball.dx === 0 && ball.dy === 0) {
+            if(mouseClickCounter == 1){
+                timer();
+            }
+            ball.x = field.offsetWidth * 0.6;
+            ball.y = field.offsetHeight * 0.4;
             ball.dx = ball.speed;
             ball.dy = ball.speed;
+            field.style.cursor = 'none';
         }
-        field.style.cursor = 'none';
     });
 
     // отслеживание движения курсора
     document.addEventListener('mousemove', e => {
+        pointerPosition = { 
+            x: e.pageX- field.getBoundingClientRect().left, 
+            y: e.pageY - field.getBoundingClientRect().top 
+        };
         if (radio_mouse.checked) {
-            paddle.y = e.pageY - paddleWidth / 2;
+            paddle.y = pointerPosition.y - paddleWidth / 2;
         }
+    });
+
+    // Перезапуск
+    restartButton.addEventListener('click', function(e) {
+        clearTimeout(t);
+        document.getElementById('time').innerHTML = "00:00";
+        executeGame();
     });
 
     requestAnimationFrame(loop);

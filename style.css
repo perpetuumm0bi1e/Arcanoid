@@ -24,9 +24,10 @@ a{
 body {
     background: var(--gray);
     font-family: 'Mabrope', sans-serif;
+	height: 100%;
 }
 main{
-    min-height: 55vh;
+    min-height: calc(100vh - 100px);
 }
 .impulse-appearance-animation.appeared{
     animation-name: impulse-appearance;
@@ -50,15 +51,66 @@ main{
     html {
         font-size: 14px;
     }
+    #wave-1,
+    #wave-3 {
+        width: 167px;
+        height: 81px;
+    }
+    
+    #wave-2 {
+        width: 280px;
+        height: 157px;
+    }
+    .wave {
+        margin: 10px auto 20px auto;
+    }
+    .box {
+        padding: 20px 30px;
+        gap: 10px;
+    }
 }
 @media screen and (min-width: 768px) and (max-width: 1024px) {
     html {
         font-size: 13px;
     }
+    #wave-1,
+    #wave-3 {
+        width: 167px;
+        height: 81px;
+    }
+    
+    #wave-2 {
+        width: 280px;
+        height: 157px;
+    }
+    .wave {
+        margin: 10px auto 20px auto;
+    }
+    .box {
+        padding: 20px 30px;
+        gap: 0px;
+    }
 }
 @media screen and (max-width: 767px) {
     html {
         font-size: 12px;
+    }
+    #wave-1,
+    #wave-3 {
+        width: 130px;
+        height: 63px;
+    }
+    
+    #wave-2 {
+        width: 200px;
+        height: 107px;
+    }
+    .wave {
+        margin: 10px auto 20px auto;
+    }
+    .box {
+        padding: 20px 30px;
+        gap: 0px;
     }
 }
 @keyframes impulse-appearance{
@@ -183,8 +235,6 @@ main{
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
-    padding: 30px 40px;
-    gap: 10px;
     background-color: var(--white);
     border: none;
     border-radius: 30px;
@@ -220,20 +270,6 @@ main{
     transform: translate(0px, 0px);
 }
 
-.wave {
-    margin: 20px auto 70px auto;
-}
-
-#wave-1,
-#wave-3 {
-    width: 167px;
-    height: 81px;
-}
-
-#wave-2 {
-    width: 280px;
-    height: 157px;
-}
 
 #box-1 {
     width: 100%;
@@ -313,6 +349,6 @@ canvas {
     justify-content: center;
     align-items: center;
     gap: 0px;
-    padding: 20px;
+    padding: 0px 20px;
 }
  

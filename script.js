@@ -1,17 +1,17 @@
-let playButton = document.getElementById('box-3');
+if (location.pathname.includes('index')) {
+    let playButton = document.getElementById('box-3');
 
-playButton.onclick = function() {
-    window.location.href = './arcanoid.html';
-}
+    playButton.onclick = function() {
+        window.location.href = './arcanoid.html';
+    }
+} else if (location.pathname.includes('arcanoid')) {
 
-if (location.pathname.includes('arcanoid')) {
-
-    const canvas = document.getElementById('game');
-    const context = canvas.getContext('2d');
-    const choice = document.getElementById('choice');
-    radio_keyboard = document.querySelector('#keyboard');
-    radio_mouse = document.querySelector('#mouse');
-    body = document.querySelector('.body');
+    const canvas = document.getElementById('game'),
+        context = canvas.getContext('2d'),
+        choice = document.getElementById('choice'),
+        radio_keyboard = document.querySelector('#keyboard'),
+        radio_mouse = document.querySelector('#mouse'),
+        body = document.querySelector('.body');
 
     const level1 = [
         [],
@@ -30,16 +30,16 @@ if (location.pathname.includes('arcanoid')) {
     ];
 
     const colorMap = {
-        'R': 'purple',
-        'O': 'indigo',
-        'G': 'mediumpurple',
-        'Y': 'darkslateblue'
+        'R': '#636D79',
+        'O': '#636D79',
+        'G': '#636D79',
+        'Y': '#FEFC03'
     };
 
-    const brickGap = 4;
+    const brickGap = 5;
     const brickWidth = 20;
-    const brickHeight = 52;
-    const wallSize = 8;
+    const brickHeight = 41.5;
+    const wallSize = 10;
     const bricks = [];
 
     for (let row = 0; row < level1.length; row++) {
@@ -55,7 +55,7 @@ if (location.pathname.includes('arcanoid')) {
         }
     }
     const paddle = {
-        x: 1050,
+        x: 900,
         y: canvas.height / 2 - 150 / 2,
         width: 20,
         height: 120,
@@ -67,7 +67,7 @@ if (location.pathname.includes('arcanoid')) {
         y: 200,
         width: 11,
         height: 11,
-        speed: 9,
+        speed: 20,
         dx: 0,
         dy: 0
     };
@@ -124,7 +124,7 @@ if (location.pathname.includes('arcanoid')) {
                 break;
             }
         }
-        context.fillStyle = 'snow';
+        context.fillStyle = '#FEFEFE'; // цвет фона за канвасом
 
         context.fillRect(0, 0, canvas.width, wallSize);
         context.fillRect(0, 0, wallSize, canvas.height);
@@ -133,13 +133,15 @@ if (location.pathname.includes('arcanoid')) {
         if (ball.dx || ball.dy) {
             context.beginPath();
             context.arc(ball.x, ball.y, ball.height, 0, 360);
+            context.fillStyle = '#DA2E2E';
             context.fill();
         }
         bricks.forEach(function(brick) {
             context.fillStyle = brick.color;
             context.fillRect(brick.x, brick.y, brick.width, brick.height);
         });
-        context.fillStyle = 'yellowgreen';
+        context.fillStyle = '#282828'; // цвет платформы
+
         context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
     }
     document.addEventListener('keydown', function(e) {
@@ -171,6 +173,8 @@ if (location.pathname.includes('arcanoid')) {
                 ball.dy = ball.speed;
             }
         }
+        canvas.style.cursor = 'none';
+
     };
 
     document.addEventListener('mousemove', e => {

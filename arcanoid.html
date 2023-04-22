@@ -6,29 +6,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
-    <title>
-        arcanoid
-    </title>
+    <title>arcanoid</title>
 </head>
 
-<body class="body">
+<body>
     <div class="container">
         <div class="canvas">
-            <canvas width="1200" height="740" id="game"></canvas>
+            <canvas width="1000" height="620" id="game"></canvas>
         </div>
-        <div class="cont">
-            <form class="control">
-                <div class=control_choice>
-                    <ul>
-                        <li>
-                            <input type="radio" id="keyboard" name="choice">
-                            <label for="dark">Keyboard</label>
-                        </li>
-                        <li>
-                            <input type="radio" id="mouse" name=choice checked>
-                            <label for="dark">Mouse</label>
-                        </li>
-                    </ul>
+        <div class="control">
+            <form class="control_choice">
+                <div class="choice-group">
+                    <input type="radio" id="keyboard" name="choice">
+                    <label class="main-text choice-text" for="dark">Клавиатура</label>
+                </div>
+                <div class="choice-group">
+                    <input type="radio" id="mouse" name="choice" checked>
+                    <label class="choice-text main-text" for="dark">Мышь</label>
                 </div>
             </form>
         </div>

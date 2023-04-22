@@ -25,6 +25,21 @@ function executeGame(){
         ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'],
         ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y']
     ];
+    const level2 = [
+        [],
+        ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'],
+        ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'],
+        ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'],
+        ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
+        ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
+        ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
+        ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+        ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+        ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+        ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'],
+        ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'],
+        ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y']
+    ];
 
     const colorMap = {
         'R': '#5955B3',
@@ -84,24 +99,31 @@ function executeGame(){
     document.getElementById('score').innerHTML = score;
     field.style.cursor = 'crosshair';
 
-    for (let row = 0; row < level1.length; row++) {
-        for (let col = 0; col < level1[row].length; col++) {
-            const colorCode = level1[row][col];
-            (radioHorizontal.checked) ? 
-            bricks.push({
-                x: wallSize + (brickWidth + brickGap) * row + field.offsetWidth * 0.05,
-                y: wallSize + (brickHeight + brickGap) * col,
-                color: colorMap[colorCode],
-                width: brickWidth,
-                height: brickHeight
-            }) : 
-            bricks.push({
-                x: wallSize + (brickWidth + brickGap) * col,
-                y: wallSize + (brickHeight + brickGap) * row + field.offsetHeight * 0.05,
-                color: colorMap[colorCode],
-                width: brickWidth,
-                height: brickHeight
-            });
+    if(radioHorizontal.checked){
+        for (let row = 0; row < level1.length; row++) {
+            for (let col = 0; col < level1[row].length; col++) {
+                const colorCode = level1[row][col];
+                bricks.push({
+                    x: wallSize + (brickWidth + brickGap) * row + field.offsetWidth * 0.05,
+                    y: wallSize + (brickHeight + brickGap) * col,
+                    color: colorMap[colorCode],
+                    width: brickWidth,
+                    height: brickHeight
+                });
+            }
+        }
+    } else {
+        for (let row = 0; row < level2.length; row++) {
+            for (let col = 0; col < level2[row].length; col++) {
+                const colorCode = level2[row][col];
+                bricks.push({
+                    x: wallSize + (brickWidth + brickGap) * col,
+                    y: wallSize + (brickHeight + brickGap) * row + field.offsetHeight * 0.05,
+                    color: colorMap[colorCode],
+                    width: brickWidth,
+                    height: brickHeight
+                });
+            }
         }
     }
     const paddle = {

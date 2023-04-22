@@ -35,7 +35,20 @@
           <!-- здесь будет создано поле через скрипт -->
         </div>
         <div class="control impulse-appearance-animation">
-          <form class="choice-group">
+          <h3 class="subheading">Параметры</h3>
+          <div class="choice-group">
+            <div class="choice-item">
+              <input type="radio" id="horizontal" name="align-choice" />
+              <label class="main-text medium-text" for="horizontal"
+                >Горизонтальный</label
+              >
+            </div>
+            <div class="choice-item">
+              <input type="radio" id="vertical" name="align-choice" />
+              <label class="medium-text" for="vertical">Вертикальный</label>
+            </div>
+          </div>
+          <div class="choice-group">
             <div class="choice-item">
               <input type="radio" id="keyboard" name="choice" />
               <label class="main-text medium-text" for="keyboard"
@@ -43,14 +56,14 @@
               >
             </div>
             <div class="choice-item">
-              <input type="radio" id="mouse" name="choice" checked />
+              <input type="radio" id="mouse" name="choice" />
               <label class="medium-text" for="mouse">Мышь</label>
             </div>
             <div class="choice-item">
               <input type="radio" id="touchscreen" name="choice" />
               <label class="medium-text" for="touchscreen">Тачскрин</label>
             </div>
-          </form>
+          </div>
         </div>
       </div>
       <div class="footer">

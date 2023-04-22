@@ -3,11 +3,12 @@
 function executeGame(){
     let field = document.getElementById('game'),
         context = field.getContext('2d'),
-        choice = document.getElementById('choice'),
-        radio_keyboard = document.querySelector('#keyboard'),
-        radio_mouse = document.querySelector('#mouse'),
-        radio_touchscreen = document.querySelector('#touchscreen'),
-        restartButton = document.getElementById('restart');
+        radioKeyboard = document.querySelector('#keyboard'),
+        radioMouse = document.querySelector('#mouse'),
+        radioTouchscreen = document.querySelector('#touchscreen'),
+        restartButton = document.getElementById('restart'),
+        radioHorizontal = document.querySelector('#horizontal'),
+        radioVertical = document.querySelector('#vertical');
 
     const level1 = [
         [],
@@ -36,15 +37,27 @@ function executeGame(){
     let score = 0,
         wallSize = 10,
         brickGap = 5,
-        brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
-        brickWidth = brickHeight / 2,
-        paddleWidth = (field.offsetHeight - 2 * wallSize) / 5,
-        paddleHeight = paddleWidth * 0.1,
+        brickHeight,
+        brickWidth,
+        paddleWidth,
+        paddleHeight,
         bricks = [],
         sec = 0,
         min = 0,
         hrs = 0,
         t;
+
+    if(radioHorizontal.checked) { 
+        brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length;
+        brickWidth = brickHeight / 2;
+        paddleHeight = (field.offsetHeight - 2 * wallSize) / 5;
+        paddleWidth = paddleWidth * 0.1;
+    } else if(radioVertical.checked){
+        brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length;
+        brickHeight = brickWidth / 2;
+        paddleWidth = (field.offsetWidth - 2 * wallSize) / 5;
+        paddleHeight = paddleWidth * 0.1;
+    }
 
     function tick(){
         sec++;
@@ -74,9 +87,17 @@ function executeGame(){
     for (let row = 0; row < level1.length; row++) {
         for (let col = 0; col < level1[row].length; col++) {
             const colorCode = level1[row][col];
+            (radioHorizontal.checked) ? 
             bricks.push({
                 x: wallSize + (brickWidth + brickGap) * row + field.offsetWidth * 0.05,
                 y: wallSize + (brickHeight + brickGap) * col,
+                color: colorMap[colorCode],
+                width: brickWidth,
+                height: brickHeight
+            }) : 
+            bricks.push({
+                x: wallSize + (brickWidth + brickGap) * col,
+                y: wallSize + (brickHeight + brickGap) * row + field.offsetHeight * 0.05,
                 color: colorMap[colorCode],
                 width: brickWidth,
                 height: brickHeight
@@ -84,19 +105,19 @@ function executeGame(){
         }
     }
     const paddle = {
-        x: field.offsetWidth * 0.9,
-        y: field.offsetHeight / 2 - paddleWidth / 2,
-        width: paddleHeight,
-        height: paddleWidth,
+        x: (radioHorizontal.checked) ? field.offsetWidth * 0.9 : field.offsetWidth / 2 - paddleWidth / 2,
+        y: (radioHorizontal.checked) ? field.offsetHeight / 2 - paddleWidth / 2 : field.offsetHeight * 0.9,
+        width: paddleWidth,
+        height: paddleHeight,
         dx: 0, // направление по x
         dy: 0 // направление по y
     };
     
     const ball = {
-        x: field.offsetWidth * 0.6,
-        y: field.offsetHeight * 0.4,
-        width: 11,
-        height: 11,
+        x: (radioHorizontal.checked) ? field.offsetWidth * 0.6 : field.offsetWidth * 0.4,
+        y: (radioHorizontal.checked) ? field.offsetHeight * 0.4 : field.offsetHeight * 0.6,
+        width: brickWidth / 2,
+        height: brickWidth / 2,
         speed: 5,
         dx: 0,
         dy: 0
@@ -116,52 +137,115 @@ function executeGame(){
         requestAnimationFrame(loop);
         context.clearRect(0, 0, field.offsetWidth, field.offsetHeight); 
 
-        paddle.y += paddle.dy; // движение платформы с заданной скоростью
+        (radioHorizontal.checked) ? paddle.y += paddle.dy : paddle.x += paddle.dx; // движение платформы с заданной скоростью
 
         // контроль за нахождением в границах поля
+        // для горизонтального
         if (paddle.y < wallSize) {
             paddle.y = wallSize
         } else if (paddle.y > field.offsetHeight - wallSize - paddle.height) {
             paddle.y = field.offsetHeight - wallSize - paddle.height;
         }
-
+        
+        // для вертикального
+        if (paddle.x < wallSize) {
+            paddle.x = wallSize
+          }
+          else if (paddle.x + brickWidth > field.offsetWidth - wallSize) {
+            paddle.x = field.offsetWidth - wallSize - brickWidth;
+          }
+        
+        // движение шарика
         ball.x += ball.dx;
         ball.y += ball.dy;
 
-        if (ball.x < wallSize + ball.width) {
-            ball.x = wallSize + ball.width;
-            ball.dx *= -1;
-        }
-        if (ball.y < wallSize + ball.height) {
-            ball.y = wallSize + ball.height;
-            ball.dy *= -1;
-        } else if (ball.y + ball.height > field.offsetHeight - wallSize) {
-            ball.y = field.offsetHeight - wallSize - ball.height;
-            ball.dy *= -1;
-        }
-        if (ball.x + ball.width > field.offsetWidth - wallSize) {
-            ball.x = 700;
-            ball.y = 200;
-            ball.dx = 0;
-            ball.dy = 0;
-        }
-        if (collides(ball, paddle)) {
-            ball.dx *= -1;
-            ball.x = paddle.x - ball.width;
+        // проверка координат шарика
+        // для горизонтального
+        if(radioHorizontal.checked){
+            if (ball.x < wallSize + ball.width) {
+                ball.x = wallSize + ball.width;
+                ball.dx *= -1;
+            }
+            if (ball.y < wallSize + ball.height) {
+                ball.y = wallSize + ball.height;
+                ball.dy *= -1;
+            } else if (ball.y + ball.height > field.offsetHeight - wallSize) {
+                ball.y = field.offsetHeight - wallSize - ball.height;
+                ball.dy *= -1;
+            }
+        } else { // для вертикального
+            if (ball.x < wallSize) {
+                ball.x = wallSize;
+                ball.dx *= -1;
+              }
+              else if (ball.x + ball.width > field.offsetWidth - wallSize) {
+                ball.x = field.offsetWidth - wallSize - ball.width;
+                ball.dx *= -1;
+              }
+              // проверяем верхнюю границу
+              if (ball.y < wallSize) {
+                ball.y = wallSize;
+                ball.dy *= -1;
+              }
         }
 
-        for (let i = 0; i < bricks.length; i++) {
-            let brick = bricks[i];
-            if (collides(ball, brick)) {
+        // перезапуск шарика
+        // для горизонтального
+        if(radioHorizontal.checked){
+            if (ball.x + ball.width > field.offsetWidth - wallSize) {
+                ball.x = field.offsetWidth * 0.6;
+                ball.y = field.offsetHeight * 0.4;
+                ball.dx = 0;
+                ball.dy = 0;
+            }
+        } else { // для вертикального
+            if (ball.y + ball.width > field.offsetHeight - wallSize) {
+                ball.x = field.offsetWidth * 0.4;
+                ball.y = field.offsetHeight * 0.6;
+                ball.dx = 0;
+                ball.dy = 0;
+            }
+        }
+
+        // проверка касания платформы
+        if (radioHorizontal.checked && collides(ball, paddle)) {
+            ball.dx *= -1;
+            ball.x = paddle.x - ball.width;
+        } else if (radioVertical.checked && collides(ball, paddle)){
+            ball.dy *= -1;
+            ball.y = paddle.y - ball.height;
+        }
+
+        // проверка касания кирпича
+        if (radioHorizontal.checked){
+            for (let i = 0; i < bricks.length; i++) {
+                let brick = bricks[i];
+                if (collides(ball, brick)) {
+                    bricks.splice(i, 1);
+                    score++;
+                    document.getElementById('score').innerHTML = score;
+                    if (ball.y + ball.height - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
+                        ball.dy *= -1;
+                    } else if (ball.x + ball.width - ball.speed <= brick.x || ball.x >= brick.x + brick.width - ball.speed) {
+                        ball.dx *= -1;
+                    }
+                    break;
+                }
+            }
+        } else {
+            for (let i = 0; i < bricks.length; i++) {
+                let brick = bricks[i];
+                if (collides(ball, brick)) {
                 bricks.splice(i, 1);
                 score++;
                 document.getElementById('score').innerHTML = score;
                 if (ball.y + ball.height - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
                     ball.dy *= -1;
-                } else if (ball.x + ball.width - ball.speed <= brick.x || ball.x >= brick.x + brick.width - ball.speed) {
+                } else {
                     ball.dx *= -1;
                 }
                 break;
+                }
             }
         }
         // отрисовка стен
@@ -204,7 +288,7 @@ function executeGame(){
     field.addEventListener('touchend', e => {
         touchscreenClickCounter++;
         if (touchscreenClickCounter % 2 == 1 && ball.dx === 0 && ball.dy === 0) {
-            ball.dx = ball.speed;
+            ball.dx = ball.speed / 2;
             ball.dy = ball.speed;
         }
     })
@@ -215,21 +299,35 @@ function executeGame(){
             x: e.changedTouches[0].clientX - field.getBoundingClientRect().left, 
             y: e.changedTouches[0].clientY - field.getBoundingClientRect().top 
         };
-        if (radio_touchscreen.checked) {
-            paddle.y = touchPosition.y - paddleWidth / 2;
+        if (radioTouchscreen.checked) {
+            if(radioHorizontal.checked){
+                paddle.y = touchPosition.y - paddleHeight / 2;
+            } else {
+                paddle.x = touchPosition.x - paddleWidth / 2;
+            }
         }
     })
       
     // нажатие клавиши
     document.addEventListener('keydown', function(e) {
-        if (radio_keyboard.checked) {
+        if (radioKeyboard.checked && radioHorizontal.checked) {
             if (e.which === 87 || e.which === 38) {
-                paddle.dy = -12;
+                paddle.dy = -10;
             } else if (e.which === 83 || e.which === 40) {
-                paddle.dy = 12;
+                paddle.dy = 10;
             }
             if (ball.dx === 0 && ball.dy === 0 && e.which === 32) {
                 ball.dx = ball.speed;
+                ball.dy = ball.speed / 2;
+            }
+        } else if (radioKeyboard.checked && radioVertical.checked) {
+            if (e.which === 65 || e.which === 37) {
+                paddle.dx = -10;
+            } else if (e.which === 68 || e.which === 39) {
+                paddle.dx = 10;
+            }
+            if (ball.dx === 0 && ball.dy === 0 && e.which === 32) {
+                ball.dx = ball.speed / 2;
                 ball.dy = ball.speed;
             }
         }
@@ -237,8 +335,10 @@ function executeGame(){
 
     // отжатие клавиши
     document.addEventListener('keyup', function(e) {
-        if (radio_keyboard.checked && (e.which === 87 || e.which === 83 || e.which === 38 || e.which === 40)) {
+        if (radioKeyboard.checked && radioHorizontal.checked && (e.which === 87 || e.which === 83 || e.which === 38 || e.which === 40)) {
             paddle.dy = 0;
+        } else if (radioKeyboard.checked && radioVertical.checked && (e.which === 65 || e.which === 37 || e.which === 68 || e.which === 39)) {
+            paddle.dx = 0;
         }
     });
 
@@ -246,12 +346,17 @@ function executeGame(){
     field.addEventListener('click', function(e) {
         mouseClickCounter++;
 
-        if (radio_mouse.checked && ball.dx === 0 && ball.dy === 0) {
+        if (radioMouse.checked && ball.dx === 0 && ball.dy === 0) {
             if(mouseClickCounter == 1){
                 timer();
             }
-            ball.x = field.offsetWidth * 0.6;
-            ball.y = field.offsetHeight * 0.4;
+            if(radioHorizontal.checked){
+                ball.x = field.offsetWidth * 0.6;
+                ball.y = field.offsetHeight * 0.4;
+            } else {
+                ball.x = field.offsetWidth * 0.4;
+                ball.y = field.offsetHeight * 0.6;
+            }
             ball.dx = ball.speed;
             ball.dy = ball.speed;
             field.style.cursor = 'none';
@@ -264,8 +369,10 @@ function executeGame(){
             x: e.pageX- field.getBoundingClientRect().left, 
             y: e.pageY - field.getBoundingClientRect().top 
         };
-        if (radio_mouse.checked) {
-            paddle.y = pointerPosition.y - paddleWidth / 2;
+        if (radioMouse.checked && radioHorizontal.checked) {
+            paddle.y = pointerPosition.y - paddleHeight / 2;
+        } else if (radioMouse.checked && radioVertical.checked) {
+            paddle.x = pointerPosition.x - paddleWidth / 2;
         }
     });
 
@@ -274,26 +381,10 @@ function executeGame(){
         clearTimeout(t);
         document.getElementById('time').innerHTML = "00:00";
         executeGame();
-    });
+    })
 
     requestAnimationFrame(loop);
-
-    choice.addEventListener("change", () => {
-        switch(choice.id){
-            case keyboard:
-                radio_mouse.checked = false;
-                radio_touchscreen.checked = false;
-                break;
-            case mouse:
-                radio_keyboard.checked = false;
-                radio_touchscreen.checked = false;
-                break;
-            case radio_touchscreen:
-                radio_mouse.checked = false;
-                radio_keyboard.checked = false;
-            break;
-        }
-    });
+    
 } 
 function windowSetting(){
     if (location.pathname.includes('index') || location.pathname == '/') {
@@ -315,12 +406,25 @@ function windowSetting(){
             settingsButton.style.order = '3';
         }
     } else if (location.pathname.includes('game')) {
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            document.getElementById('vertical').checked = true;
+            document.getElementById('touchscreen').checked = true;
+            if(document.body.clientWidth < 740){
+                document.getElementById('horizontal').disabled = true;
+            }
+          } else {
+            document.getElementById('horizontal').checked = true;
+            document.getElementById('mouse').checked = true;
+        }
         let gameContainer = document.getElementById('game-container'),
             canvasContainer = document.getElementById('canvas-container'),
-            canvasWidth = gameContainer.offsetWidth - 20,
-            canvasHeight = canvasWidth / 1.61;
-        
-        canvasContainer.innerHTML = `<canvas id='game' width='${canvasWidth}' height='${canvasHeight}'></canvas>`;
+            canvasWidth = gameContainer.offsetWidth - 20;
+
+        if(document.getElementById('vertical').checked == true){
+            canvasContainer.innerHTML = `<canvas id='game' width='${canvasWidth}' height='${canvasWidth * 1.6}'></canvas>`;
+        } else if(document.getElementById('horizontal').checked == true){
+            canvasContainer.innerHTML = `<canvas id='game' width='${canvasWidth}' height='${canvasWidth / 1.6}'></canvas>`;
+        }
         executeGame();
     }
 }
@@ -356,14 +460,14 @@ window.onload = function(){
         observer.observe(element);
     }
 
-    if (location.pathname.includes('index') || location.pathname == '/') {
+    if (location.pathname.includes('game')) {
+        executeGame();
+    } else if (location.pathname.includes('index') || location.pathname == '/' || location.pathname .includes('Arcanoid')) {
         let playButton = document.getElementById('box-3');
 
         playButton.onclick = function() {
             window.location.href = './game.html';
         }
 
-    } else if (location.pathname.includes('game')) {
-        executeGame();
     }
 }

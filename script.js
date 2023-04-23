@@ -558,10 +558,9 @@ window.onload = function() {
     for (let element of bottomAppearedElements) {
         observer.observe(element);
     }
-    console.log(location.pathname)
     if (location.pathname.includes('game')) { // страница игры
         executeGame();
-    } else if (location.pathname.includes('index') || location.pathname == '/' || location.pathname.includes('Arcanoid')) { // главная страница 
+    } else if (location.pathname.includes('index') || location.pathname.split('').pop() == '/') { // главная страница 
         let playButton = document.getElementById('box-3'),
             appearanceButton = document.getElementById('box-2');
 

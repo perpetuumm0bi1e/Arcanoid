@@ -1,57 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="Website Icon" type="svg" href="./img/icon2.svg" />
     <link rel="stylesheet" href="./style.css" />
     <title>arcanoid</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <main>
-        <div class="header top-appearance-animation" id="header">
-            <a id="logo" href="./index.html">&lt; arcanoid &gt;</a>
-        </div>
-        <div class="container">
-            <div class="box impulse-appearance-animation" id="box-1">
-                <!-- <p class="small-text">
-            Игрок контролирует небольшую платформу-ракетку, которую можно
-            передвигать горизонтально от одной стенки до другой, подставляя её
-            под шарик, предотвращая его падение вниз. <br />
-            Удар шарика по кирпичу приводит к разрушению кирпича. <br />
-            После того как все кирпичи на данном уровне уничтожены, происходит
-            переход на следующий уровень, с новым набором кирпичей.
-          </p> -->
-                <p class="small-text">
-                    The player controls a small platform on a field of chosen orientation - horizontal or vertical.
-                    <em>In the smartphone version only horizontal is aviable.</em><br> His task is to smash all the bricks with the ball.<br> The configuration of the bricks can be generated automatically or configured independently.
-                </p>
+      <div class="header top-appearance-animation" id="header">
+        <a id="logo" href="./index.html">&lt; arcanoid &gt;</a>
+      </div>
+      <div class="container">
+        <div class="box impulse-appearance-animation" id="greeting-box">
+          <p class="subheading" id="greetings">
+            It seems like we didn't met yet. Please introduce yourself:
+            <br />
+            <br />
+            <br />
+            <br />
+          </p>
+          <div class="introduce-block">
+            <div class="input-data">
+              <input
+                class="medium-text"
+                type="text"
+                id="player-name"
+                required />
+              <div class="underline"></div>
+              <label class="medium-text">My name is...</label>
             </div>
-            <div class="sub-container">
-                <button class="box impulse-appearance-animation" id="box-2">
+            <button class="medium-text button-type-1" id="set-up-name">
+              &#10004;
+            </button>
+          </div>
+        </div>
+        <div class="sub-container">
+          <button class="box impulse-appearance-animation" id="box-2">
             <img class="wave" id="wave-1" src="./img/wave1.svg" />
             <h3 class="subheading">Appearance</h3>
             <p class="small-text">Adjusting the color palette</p>
           </button>
-                <button class="box impulse-appearance-animation" id="box-3">
+          <button class="box impulse-appearance-animation" id="box-3">
             <img class="wave" id="wave-2" src="./img/wave2.svg" />
             <h3 class="subheading">Play</h3>
             <p class="small-text">Switch to the mode selection</p>
           </button>
-                <button class="box impulse-appearance-animation" id="box-4">
+          <button class="box impulse-appearance-animation" id="box-4">
             <img class="wave" id="wave-3" src="./img/wave3.svg" />
             <h3 class="subheading">Settings</h3>
             <p class="small-text">Switch to control parameters</p>
           </button>
-            </div>
         </div>
+      </div>
     </main>
     <div class="footer">
-        <a class="small-text copyright" href="https://github.com/perpetuumm0bi1e">© perpetuumm0bi1e<br />2022</a
+      <a class="small-text copyright" href="https://github.com/perpetuumm0bi1e"
+        >© perpetuumm0bi1e<br />2022</a
       >
     </div>
   </body>
   <script type="text/javascript" src="./script.js"></script>
 </html>
+
+<!-- <div class="box impulse-appearance-animation" id="box-1">
+          <p class="small-text">
+            The player controls a small platform on a field of chosen
+            orientation - horizontal or vertical.
+            <em>In the smartphone version only horizontal is aviable.</em><br />
+            His task is to smash all the bricks with the ball.<br />
+            The configuration of the bricks can be generated automatically or
+            configured independently.
+          </p>
+        </div> -->

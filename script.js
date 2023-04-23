@@ -1,3 +1,4 @@
+
 function executeGame() {
     let field = document.getElementById('game'),
         context = field.getContext('2d'),
@@ -10,18 +11,18 @@ function executeGame() {
 
     const level1 = [
         [],
-        ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'],
-        ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'],
-        ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'],
-        ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
-        ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
-        ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
-        ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
-        ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
-        ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
-        ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'],
-        ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'],
-        ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y']
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
     ];
     const level2 = [
         [],
@@ -40,6 +41,7 @@ function executeGame() {
     ];
 
     const colorMap = {
+        'P': localStorage.bricksColor,
         'R': '#5955B3',
         'O': '#5955B3',
         'G': '#5955B3',
@@ -209,8 +211,8 @@ function executeGame() {
         // для вертикального
         if (paddle.x < wallSize) {
             paddle.x = wallSize
-        } else if (paddle.x + brickWidth > field.offsetWidth - wallSize) {
-            paddle.x = field.offsetWidth - wallSize - brickWidth;
+        } else if (paddle.x + paddle.width > field.offsetWidth - wallSize) {
+            paddle.x = field.offsetWidth - wallSize - paddle.width;
         }
 
         // движение шарика
@@ -306,7 +308,8 @@ function executeGame() {
             }
         }
         // отрисовка стен
-        context.fillStyle = '#FEFEFE';
+        context.fillStyle = localStorage.fieldColor;
+        document.getElementById('canvas-container').style.background = localStorage.fieldColor;
         context.fillRect(0, 0, field.offsetWidth, wallSize);
         context.fillRect(0, 0, wallSize, field.offsetHeight);
         context.fillRect(field.offsetWidth - wallSize, 0, wallSize, field.offsetHeight);
@@ -316,7 +319,7 @@ function executeGame() {
         if (ball.dx || ball.dy) {
             context.beginPath();
             context.arc(ball.x, ball.y, ball.height, 0, 360);
-            context.fillStyle = '#DA2E2E'; // цвет мяча
+            context.fillStyle = localStorage.ballColor; // цвет мяча
             context.fill();
         }
 
@@ -326,8 +329,8 @@ function executeGame() {
             context.fillRect(brick.x, brick.y, brick.width, brick.height);
         });
 
-        // отрисовка кирпичей
-        context.fillStyle = '#282828';
+        // отрисовка платформы
+        context.fillStyle = localStorage.paddleColor;
         context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
     }
 
@@ -498,8 +501,8 @@ function windowSetting() {
         } else { // для пк
             if (!radioHorizontal.checked && !radioVertical.checked) {
                 radioHorizontal.checked = true;
-                canvasWidth = 'calc(100vh - 40px)';
-                canvasHeight = 'calc((100vh - 40px) / 1.6)';
+                canvasWidth = gameContainer.offsetWidth - 20;
+                canvasHeight = canvasWidth / 1.6;
             }
             if (radioVertical.checked) {
                 canvasWidth = gameContainer.offsetWidth * .6;
@@ -517,6 +520,18 @@ window.addEventListener('resize', function(event) {
 });
 
 window.onload = function() {
+    if(!localStorage.ballColor){
+        localStorage.setItem('ballColor', '#DA2E2E');
+    }
+    if(!localStorage.paddleColor){
+        localStorage.setItem('paddleColor', '#282828');
+    }
+    if(!localStorage.bricksColor){
+        localStorage.setItem('bricksColor', '#5955B3');
+    }
+    if(!localStorage.fieldColor){
+        localStorage.setItem('fieldColor', '#FEFEFE');
+    }
     windowSetting();
 
     function onEntry(element) {
@@ -544,19 +559,51 @@ window.onload = function() {
         observer.observe(element);
     }
 
-    if (location.pathname.includes('game')) {
+    if (location.pathname.includes('game')) { // страница игры
         executeGame();
-    } else if (location.pathname.includes('index') || location.pathname == '/' || location.pathname.includes('Arcanoid')) {
-        let playButton = document.getElementById('box-3');
+    } else if (location.pathname.includes('index') || location.pathname == '/' || location.pathname.includes('Arcanoid')) { // главная страница 
+        let playButton = document.getElementById('box-3'),
+            appearanceButton = document.getElementById('box-2');
 
         playButton.onclick = function() {
             window.location.href = './mode.html';
         }
-    } else if (location.pathname.includes('mode')) {
+        appearanceButton.onclick = function() {
+            window.location.href = './appearance.html';
+        }
+
+        
+    } else if (location.pathname.includes('mode')) { // страница выбора режима
         let playButton = document.getElementById('infinity-button');
 
         playButton.onclick = function() {
             window.location.href = './game.html';
+        }
+    } else if(location.pathname.includes('appearance')){ // страница настройки внешнего вида
+        let ballColorInput = document.getElementById('ball-color'),
+            paddleColorInput = document.getElementById('paddle-color'),
+            bricksColorInput = document.getElementById('bricks-color'),
+            fieldColorInput = document.getElementById('field-color'),
+            saveAppearanceButton = document.getElementById('save-appearance');
+
+        if(!ballColorInput.hasAttribute('value')){
+            ballColorInput.setAttribute('value', localStorage.ballColor);
+        }
+        if(!paddleColorInput.hasAttribute('value')){
+            paddleColorInput.setAttribute('value', localStorage.paddleColor);
+        }
+        if(!bricksColorInput.hasAttribute('value')){
+            bricksColorInput.setAttribute('value', localStorage.bricksColor);
+        }
+        if(!fieldColorInput.hasAttribute('value')){
+            fieldColorInput.setAttribute('value', localStorage.fieldColor);
+        }
+
+        saveAppearanceButton.onclick = function() {
+            localStorage.setItem('ballColor', ballColorInput.value);
+            localStorage.setItem('paddleColor', paddleColorInput.value);
+            localStorage.setItem('bricksColor', bricksColorInput.value);
+            localStorage.setItem('fieldColor', fieldColorInput.value);
         }
     }
 }

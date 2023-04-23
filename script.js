@@ -603,6 +603,7 @@ window.onload = function() {
             localStorage.setItem('paddleColor', paddleColorInput.value);
             localStorage.setItem('bricksColor', bricksColorInput.value);
             localStorage.setItem('fieldColor', fieldColorInput.value);
+            window.location.href = './index.html';
         }
     }
 }

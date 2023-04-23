@@ -1,6 +1,4 @@
-
-
-function executeGame(){
+function executeGame() {
     let field = document.getElementById('game'),
         context = field.getContext('2d'),
         radioKeyboard = document.querySelector('#keyboard'),
@@ -59,22 +57,21 @@ function executeGame(){
         bricks = [],
         sec = 0,
         min = 0,
-        hrs = 0,
         t;
 
-    if(radioHorizontal.checked) { 
+    if (radioHorizontal.checked) {
         brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length;
         brickWidth = brickHeight / 2;
         paddleHeight = (field.offsetHeight - 2 * wallSize) / 5;
-        paddleWidth = paddleWidth * 0.1;
-    } else if(radioVertical.checked){
+        paddleWidth = paddleHeight * 0.1;
+    } else if (radioVertical.checked) {
         brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length;
         brickHeight = brickWidth / 2;
         paddleWidth = (field.offsetWidth - 2 * wallSize) / 5;
         paddleHeight = paddleWidth * 0.1;
     }
 
-    function tick(){
+    function tick() {
         sec++;
         if (sec >= 60) {
             sec = 0;
@@ -85,21 +82,21 @@ function executeGame(){
             }
         }
     }
-        
+
     function add() {
         tick();
         document.getElementById('time').innerHTML = (min > 9 ? min : "0" + min) + ":" + (sec > 9 ? sec : "0" + sec);
         timer();
     }
-        
+
     function timer() {
         t = setTimeout(add, 1000);
     }
-    
+
     document.getElementById('score').innerHTML = score;
     field.style.cursor = 'crosshair';
 
-    if(radioHorizontal.checked){
+    if (radioHorizontal.checked) {
         for (let row = 0; row < level1.length; row++) {
             for (let col = 0; col < level1[row].length; col++) {
                 const colorCode = level1[row][col];
@@ -134,32 +131,72 @@ function executeGame(){
         dx: 0, // направление по x
         dy: 0 // направление по y
     };
-    
+
     const ball = {
         x: (radioHorizontal.checked) ? field.offsetWidth * 0.6 : field.offsetWidth * 0.4,
         y: (radioHorizontal.checked) ? field.offsetHeight * 0.4 : field.offsetHeight * 0.6,
-        width: brickWidth / 2,
-        height: brickWidth / 2,
-        speed: 5,
+        width: 10,
+        height: 10,
+        speed: 7,
         dx: 0,
         dy: 0
     };
 
     // проверка на касание объектов
-    function collides(obj1, obj2) {
-        return obj1.x < obj2.x + obj2.width &&
-            obj1.x + obj1.width > obj2.x &&
-            obj1.y < obj2.y + obj2.height &&
-            obj1.y + obj1.height > obj2.y;
+    function collides(ball, obj, orientation, config) {
+        switch (orientation) {
+            case 'horizontal':
+                switch (config) {
+                    case 'paddle':
+                        return ball.x + ball.width >= obj.x &&
+                            ball.y >= obj.y &&
+                            ball.y <= obj.y + obj.height;
+                    case 'brick':
+                        return ball.x - ball.width <= obj.x + obj.width &&
+                            ball.y >= obj.y &&
+                            ball.y <= obj.y + obj.height ||
+                            ball.x + ball.width == obj.x &&
+                            ball.y >= obj.y &&
+                            ball.y <= obj.y + obj.height ||
+                            ball.y - ball.height == obj.y + obj.height &&
+                            ball.x <= obj.x + obj.width &&
+                            ball.x >= obj.x ||
+                            ball.y + ball.height == obj.y &&
+                            ball.x <= obj.x + obj.width &&
+                            ball.x >= obj.x;
+                }
+                break;
+            case 'vertical':
+                switch (config) {
+                    case 'paddle':
+                        return ball.y + ball.height >= obj.y &&
+                            ball.x >= obj.x &&
+                            ball.x <= obj.x + obj.width;
+                    case 'brick':
+                        return ball.y - ball.height <= obj.y + obj.height &&
+                            ball.x >= obj.x &&
+                            ball.x <= obj.x + obj.width ||
+                            ball.y + ball.height == obj.y &&
+                            ball.x >= obj.x &&
+                            ball.x <= obj.x + obj.width ||
+                            ball.x + ball.width == obj.x &&
+                            ball.y <= obj.y + obj.height &&
+                            ball.y >= obj.y ||
+                            ball.x - ball.width == obj.x + obj.width &&
+                            ball.y <= obj.y + obj.height &&
+                            ball.y >= obj.y;
+                }
+                break;
+        }
     }
 
     // главный цикл игры
     function loop() {
         //очистка поля и новая отрисовка
         requestAnimationFrame(loop);
-        context.clearRect(0, 0, field.offsetWidth, field.offsetHeight); 
+        context.clearRect(0, 0, field.offsetWidth, field.offsetHeight);
 
-        (radioHorizontal.checked) ? paddle.y += paddle.dy : paddle.x += paddle.dx; // движение платформы с заданной скоростью
+        (radioHorizontal.checked) ? paddle.y += paddle.dy: paddle.x += paddle.dx; // движение платформы с заданной скоростью
 
         // контроль за нахождением в границах поля
         // для горизонтального
@@ -168,22 +205,21 @@ function executeGame(){
         } else if (paddle.y > field.offsetHeight - wallSize - paddle.height) {
             paddle.y = field.offsetHeight - wallSize - paddle.height;
         }
-        
+
         // для вертикального
         if (paddle.x < wallSize) {
             paddle.x = wallSize
-          }
-          else if (paddle.x + brickWidth > field.offsetWidth - wallSize) {
+        } else if (paddle.x + brickWidth > field.offsetWidth - wallSize) {
             paddle.x = field.offsetWidth - wallSize - brickWidth;
-          }
-        
+        }
+
         // движение шарика
         ball.x += ball.dx;
         ball.y += ball.dy;
 
         // проверка координат шарика
         // для горизонтального
-        if(radioHorizontal.checked){
+        if (radioHorizontal.checked) {
             if (ball.x < wallSize + ball.width) {
                 ball.x = wallSize + ball.width;
                 ball.dx *= -1;
@@ -199,21 +235,20 @@ function executeGame(){
             if (ball.x < wallSize) {
                 ball.x = wallSize;
                 ball.dx *= -1;
-              }
-              else if (ball.x + ball.width > field.offsetWidth - wallSize) {
+            } else if (ball.x + ball.width > field.offsetWidth - wallSize) {
                 ball.x = field.offsetWidth - wallSize - ball.width;
                 ball.dx *= -1;
-              }
-              // проверяем верхнюю границу
-              if (ball.y < wallSize) {
+            }
+            // проверяем верхнюю границу
+            if (ball.y < wallSize) {
                 ball.y = wallSize;
                 ball.dy *= -1;
-              }
+            }
         }
 
         // перезапуск шарика
         // для горизонтального
-        if(radioHorizontal.checked){
+        if (radioHorizontal.checked) {
             if (ball.x + ball.width > field.offsetWidth - wallSize) {
                 ball.x = field.offsetWidth * 0.6;
                 ball.y = field.offsetHeight * 0.4;
@@ -230,25 +265,25 @@ function executeGame(){
         }
 
         // проверка касания платформы
-        if (radioHorizontal.checked && collides(ball, paddle)) {
+        if (radioHorizontal.checked && collides(ball, paddle, 'horizontal', 'paddle')) {
             ball.dx *= -1;
             ball.x = paddle.x - ball.width;
-        } else if (radioVertical.checked && collides(ball, paddle)){
+        } else if (radioVertical.checked && collides(ball, paddle, 'vertical', 'paddle')) {
             ball.dy *= -1;
             ball.y = paddle.y - ball.height;
         }
 
         // проверка касания кирпича
-        if (radioHorizontal.checked){
+        if (radioHorizontal.checked) {
             for (let i = 0; i < bricks.length; i++) {
                 let brick = bricks[i];
-                if (collides(ball, brick)) {
+                if (collides(ball, brick, 'horizontal', 'brick')) {
                     bricks.splice(i, 1);
                     score++;
                     document.getElementById('score').innerHTML = score;
                     if (ball.y + ball.height - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
                         ball.dy *= -1;
-                    } else if (ball.x + ball.width - ball.speed <= brick.x || ball.x >= brick.x + brick.width - ball.speed) {
+                    } else if (ball.x - ball.width - ball.speed <= brick.x + brick.width - ball.speed) {
                         ball.dx *= -1;
                     }
                     break;
@@ -257,21 +292,21 @@ function executeGame(){
         } else {
             for (let i = 0; i < bricks.length; i++) {
                 let brick = bricks[i];
-                if (collides(ball, brick)) {
-                bricks.splice(i, 1);
-                score++;
-                document.getElementById('score').innerHTML = score;
-                if (ball.y + ball.height - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
-                    ball.dy *= -1;
-                } else {
-                    ball.dx *= -1;
-                }
-                break;
+                if (collides(ball, brick, 'vertical', 'brick')) {
+                    bricks.splice(i, 1);
+                    if (ball.y + ball.height - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
+                        ball.dy *= -1;
+                    } else {
+                        ball.dx *= -1;
+                    }
+                    score++;
+                    document.getElementById('score').innerHTML = score;
+                    break;
                 }
             }
         }
         // отрисовка стен
-        context.fillStyle = '#FEFEFE'; 
+        context.fillStyle = '#FEFEFE';
         context.fillRect(0, 0, field.offsetWidth, wallSize);
         context.fillRect(0, 0, wallSize, field.offsetHeight);
         context.fillRect(field.offsetWidth - wallSize, 0, wallSize, field.offsetHeight);
@@ -292,7 +327,7 @@ function executeGame(){
         });
 
         // отрисовка кирпичей
-        context.fillStyle = '#282828'; 
+        context.fillStyle = '#282828';
         context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
     }
 
@@ -304,7 +339,7 @@ function executeGame(){
     // нажатие тачскрина
     field.addEventListener('touchstart', e => {
         e.preventDefault();
-      })
+    })
 
     // отжатие тачскрина
     field.addEventListener('touchend', e => {
@@ -313,23 +348,26 @@ function executeGame(){
             ball.dx = ball.speed / 2;
             ball.dy = ball.speed;
         }
+        if (touchscreenClickCounter == 1) {
+            timer();
+        }
     })
-      
+
     // ведение по тачскрину
     field.addEventListener('touchmove', e => {
-        touchPosition = { 
-            x: e.changedTouches[0].clientX - field.getBoundingClientRect().left, 
-            y: e.changedTouches[0].clientY - field.getBoundingClientRect().top 
+        touchPosition = {
+            x: e.changedTouches[0].clientX - field.getBoundingClientRect().left,
+            y: e.changedTouches[0].clientY - field.getBoundingClientRect().top
         };
         if (radioTouchscreen.checked) {
-            if(radioHorizontal.checked){
+            if (radioHorizontal.checked) {
                 paddle.y = touchPosition.y - paddleHeight / 2;
             } else {
                 paddle.x = touchPosition.x - paddleWidth / 2;
             }
         }
     })
-      
+
     // нажатие клавиши
     document.addEventListener('keydown', function(e) {
         if (radioKeyboard.checked && radioHorizontal.checked) {
@@ -369,10 +407,10 @@ function executeGame(){
         mouseClickCounter++;
 
         if (radioMouse.checked && ball.dx === 0 && ball.dy === 0) {
-            if(mouseClickCounter == 1){
+            if (mouseClickCounter == 1) {
                 timer();
             }
-            if(radioHorizontal.checked){
+            if (radioHorizontal.checked) {
                 ball.x = field.offsetWidth * 0.6;
                 ball.y = field.offsetHeight * 0.4;
             } else {
@@ -387,15 +425,16 @@ function executeGame(){
 
     // отслеживание движения курсора
     document.addEventListener('mousemove', e => {
-        pointerPosition = { 
-            x: e.pageX- field.getBoundingClientRect().left, 
-            y: e.pageY - field.getBoundingClientRect().top 
+        pointerPosition = {
+            x: e.pageX - field.getBoundingClientRect().left,
+            y: e.pageY - field.getBoundingClientRect().top
         };
         if (radioMouse.checked && radioHorizontal.checked) {
-            paddle.y = pointerPosition.y - paddleHeight / 2;
+            paddle.y = pointerPosition.y - paddleHeight;
         } else if (radioMouse.checked && radioVertical.checked) {
-            paddle.x = pointerPosition.x - paddleWidth / 2;
+            paddle.x = pointerPosition.x - paddleWidth;
         }
+
     });
 
     // Перезапуск
@@ -405,20 +444,30 @@ function executeGame(){
         executeGame();
     })
 
+    document.getElementById('save').onclick = function() {
+        windowSetting();
+    }
     requestAnimationFrame(loop);
-    
-} 
-function windowSetting(){
+
+}
+
+function windowSetting() {
+    let canvasWidth, canvasHeight;
+    let radioHorizontal = document.getElementById('horizontal'),
+        radioVertical = document.getElementById('vertical'),
+        gameContainer = document.getElementById('game-container'),
+        canvasContainer = document.getElementById('canvas-container');
+
     if (location.pathname.includes('index') || location.pathname == '/') {
         let playButton = document.getElementById('box-3'),
             designButton = document.getElementById('box-2'),
             settingsButton = document.getElementById('box-4');
-            
-        if(document.body.clientWidth < 920 && document.body.clientWidth > 678){
+
+        if (document.body.clientWidth < 920 && document.body.clientWidth > 678) {
             designButton.style.order = '1';
             playButton.style.order = '3';
             settingsButton.style.order = '2';
-        } else if(document.body.clientWidth < 678){
+        } else if (document.body.clientWidth < 678) {
             designButton.style.order = '2';
             playButton.style.order = '1';
             settingsButton.style.order = '3';
@@ -429,32 +478,45 @@ function windowSetting(){
         }
     } else if (location.pathname.includes('game')) {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            document.getElementById('vertical').checked = true;
-            document.getElementById('touchscreen').checked = true;
-            if(document.body.clientWidth < 740){
-                document.getElementById('horizontal').disabled = true;
+            // для телефонов
+            if (document.body.clientWidth < 740) {
+                radioHorizontal.disabled = true;
+                radioVertical.checked = true;
+                canvasWidth = gameContainer.offsetWidth - 20;
+                canvasHeight = canvasWidth * 1.6;
             }
-          } else {
-            document.getElementById('horizontal').checked = true;
+            // для планшетов
+            if (!radioHorizontal.checked && !radioVertical.checked && !radioHorizontal.disabled) {
+                radioHorizontal.checked = true;
+                canvasWidth = gameContainer.offsetWidth - 20;
+                canvasHeight = canvasWidth / 1.6;
+            } else if (radioVertical.checked && !radioHorizontal.disabled) {
+                canvasWidth = gameContainer.offsetWidth * .7;
+                canvasHeight = canvasWidth * 1.6;
+            }
+            document.getElementById('touchscreen').checked = true;
+        } else { // для пк
+            if (!radioHorizontal.checked && !radioVertical.checked) {
+                radioHorizontal.checked = true;
+                canvasWidth = 'calc(100vh - 40px)';
+                canvasHeight = 'calc((100vh - 40px) / 1.6)';
+            }
+            if (radioVertical.checked) {
+                canvasWidth = gameContainer.offsetWidth * .6;
+                canvasHeight = canvasWidth * 1.6;
+            }
             document.getElementById('mouse').checked = true;
         }
-        let gameContainer = document.getElementById('game-container'),
-            canvasContainer = document.getElementById('canvas-container'),
-            canvasWidth = gameContainer.offsetWidth - 20;
 
-        if(document.getElementById('vertical').checked == true){
-            canvasContainer.innerHTML = `<canvas id='game' width='${canvasWidth}' height='${canvasWidth * 1.6}'></canvas>`;
-        } else if(document.getElementById('horizontal').checked == true){
-            canvasContainer.innerHTML = `<canvas id='game' width='${canvasWidth}' height='${canvasWidth / 1.6}'></canvas>`;
-        }
+        canvasContainer.innerHTML = `<canvas id='game' width='${canvasWidth}' height='${canvasHeight}'></canvas>`;
         executeGame();
     }
 }
-window.addEventListener('resize', function(event){
+window.addEventListener('resize', function(event) {
     windowSetting();
- });
+});
 
-window.onload = function(){
+window.onload = function() {
     windowSetting();
 
     function onEntry(element) {
@@ -484,12 +546,17 @@ window.onload = function(){
 
     if (location.pathname.includes('game')) {
         executeGame();
-    } else if (location.pathname.includes('index') || location.pathname == '/' || location.pathname .includes('Arcanoid')) {
+    } else if (location.pathname.includes('index') || location.pathname == '/' || location.pathname.includes('Arcanoid')) {
         let playButton = document.getElementById('box-3');
+
+        playButton.onclick = function() {
+            window.location.href = './mode.html';
+        }
+    } else if (location.pathname.includes('mode')) {
+        let playButton = document.getElementById('infinity-button');
 
         playButton.onclick = function() {
             window.location.href = './game.html';
         }
-
     }
 }

@@ -9,44 +9,52 @@
     --blue: #0000C4;
     --red: #DA2E2E;
 }
-hr{
+
+hr {
     color: var(--black);
-    border-radius: 10px;
     width: 100%;
 }
-*{
+
+* {
     box-sizing: border-box;
 }
-a{
+
+a {
     text-decoration: none;
     transition: all .3s ease-in-out;
 }
+
 body {
     background: var(--gray);
     font-family: 'Mabrope', sans-serif;
-	height: 100%;
+    height: 100%;
 }
-main{
+
+main {
     min-height: calc(100vh - 100px);
 }
-.impulse-appearance-animation.appeared{
+
+.impulse-appearance-animation.appeared {
     animation-name: impulse-appearance;
     animation-duration: .8s;
     animation-iteration-count: 1;
     transition: all .5s ease-in-out;
 }
-.top-appearance-animation.appeared{
+
+.top-appearance-animation.appeared {
     animation-name: top-appearance;
     animation-duration: 1s;
     animation-iteration-count: 1;
     transition: all 1s ease-in-out;
 }
-.bottom-appearance-animation.appeared{
+
+.bottom-appearance-animation.appeared {
     animation-name: bottom-appearance;
     animation-duration: 1s;
     animation-iteration-count: 1;
     transition: all 1s ease-in-out;
 }
+
 @media screen and (min-width: 1024px) {
     html {
         font-size: 14px;
@@ -56,7 +64,6 @@ main{
         width: 167px;
         height: 81px;
     }
-    
     #wave-2 {
         width: 280px;
         height: 157px;
@@ -68,7 +75,7 @@ main{
         padding: 20px 30px;
         gap: 10px;
     }
-    #restart-img{
+    #restart-img {
         width: 40px;
     }
     .choice-group label {
@@ -80,6 +87,7 @@ main{
         padding: 40px 100px;
     }
 }
+
 @media screen and (min-width: 768px) and (max-width: 1024px) {
     html {
         font-size: 13px;
@@ -89,7 +97,6 @@ main{
         width: 167px;
         height: 81px;
     }
-    
     #wave-2 {
         width: 280px;
         height: 157px;
@@ -110,6 +117,7 @@ main{
         padding: 40px 60px;
     }
 }
+
 @media screen and (max-width: 767px) {
     html {
         font-size: 12px;
@@ -119,7 +127,6 @@ main{
         width: 130px;
         height: 63px;
     }
-    
     #wave-2 {
         width: 200px;
         height: 107px;
@@ -131,7 +138,7 @@ main{
         padding: 20px 30px;
         gap: 0px;
     }
-    #restart-img{
+    #restart-img {
         width: 35px;
     }
     .choice-group label {
@@ -143,36 +150,40 @@ main{
         padding: 20px 20px;
     }
 }
-@keyframes impulse-appearance{
-    0%{
+
+@keyframes impulse-appearance {
+    0% {
         opacity: 0;
         transform: scale(95%);
     }
-    33%{
+    33% {
         opacity: 1;
         transform: scale(101%);
     }
-    100%{
+    100% {
         opacity: 1;
         transform: scale(100%);
     }
 }
-@keyframes top-appearance{
-    0%{
+
+@keyframes top-appearance {
+    0% {
         transform: translateY(-100%);
     }
-    100%{
+    100% {
         transform: translateY(0%);
     }
 }
-@keyframes bottom-appearance{
-    0%{
+
+@keyframes bottom-appearance {
+    0% {
         transform: translateY(100%);
     }
-    100%{
+    100% {
         transform: translateY(0%);
     }
 }
+
 .header {
     display: flex;
     justify-content: center;
@@ -219,12 +230,14 @@ main{
     line-height: 160%;
     font-size: 1rem;
 }
-.medium-text{
+
+.medium-text {
     color: var(--dark-gray);
-    font-weight: 500;
+    font-weight: 400;
     line-height: 160%;
     font-size: 1.2rem;
 }
+
 .subheading {
     color: var(--black);
     line-height: 160%;
@@ -237,8 +250,28 @@ main{
     color: var(--dark-gray);
     line-height: 160%;
     font-weight: 500;
-    font-size: 2.5rem;
+    font-size: 2rem;
 }
+
+.game-box-text {
+    text-align: left;
+    align-self: flex-start;
+}
+
+.button {
+    margin-top: 50px;
+    padding: 7px 50px;
+    border: none;
+    border-radius: 10px;
+    transition: all .4s ease-in-out;
+}
+
+.button:hover {
+    color: var(--black);
+    box-shadow: 2px 2px var(--black);
+    transform: translate(-2px, -2px);
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -274,9 +307,11 @@ main{
 .box:hover {
     transform: translate(-2px, -2px);
 }
-#box-1{
+
+#box-1 {
     max-width: 100%;
 }
+
 #box-1:hover,
 #score-box:hover,
 #time-box:hover {
@@ -284,6 +319,8 @@ main{
 }
 
 #box-3:hover,
+#infinity-button:hover,
+#story-button:hover,
 #restart:hover {
     box-shadow: 3px 3px var(--red);
 }
@@ -295,11 +332,13 @@ main{
 
 #box-2:active,
 #box-3:active,
-#box-4:active {
+#box-4:active,
+#infinity-button:active,
+#story-button:active,
+#restart:active {
     box-shadow: none;
     transform: translate(0px, 0px);
 }
-
 
 #box-1 {
     width: 100%;
@@ -308,7 +347,9 @@ main{
 #box-2,
 #box-4,
 #time-box,
-#score-box {
+#score-box,
+#infinity-button,
+#story-button {
     flex-grow: 1;
 }
 
@@ -340,42 +381,45 @@ canvas {
 }
 
 .choice-item {
-	float: left;    
+    float: left;
 }
+
 .choice-group input[type=radio] {
-	display: none;
+    display: none;
 }
+
 .choice-group label {
     margin-top: 10px;
-	display: block;
-	cursor: pointer;
-	color: var(--dark-gray);
-	user-select: none;
+    display: block;
+    cursor: pointer;
+    color: var(--dark-gray);
+    user-select: none;
 }
- 
+
 .choice-group .choice-item:first-child label {
-	border-radius: 10px 0 0 10px;
+    border-radius: 10px 0 0 10px;
 }
+
 .choice-group .choice-item:last-child label {
-	border-radius: 0 10px 10px 0;
+    border-radius: 0 10px 10px 0;
 }
- 
-.choice-group input[type=radio]:checked + label {
-	background: var(--gray);
-	color: var(--black);
+
+.choice-group input[type=radio]:checked+label {
+    background: var(--gray);
+    color: var(--black);
 }
- 
+
 .choice-group label:hover {
-	color: var(--black);
+    color: var(--black);
 }
-#restart-img{
+
+#restart-img {
     height: auto;
 }
 
-.game-info-box{
+.game-info-box {
     justify-content: center;
     align-items: center;
     padding: 0px 20px;
     gap: 0px;
 }
- 

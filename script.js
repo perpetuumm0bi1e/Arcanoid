@@ -39,6 +39,16 @@ function executeGame() {
         ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P']
     ];
 
+    let level_bricks = [];
+    level_bricks.push([]);
+    if (sessionStorage.mode == 'infinity') {
+        for (let row = 0; row < sessionStorage.bricksNumberRow; row++) {
+            level_bricks.push([]);
+            for (let col = 0; col < sessionStorage.bricksNumberColumn; col++) {
+                level_bricks[row].push('P');
+            }
+        }
+    }
     const colorMap = {
         'P': localStorage.bricksColor,
         'R': '#5955B3',
@@ -60,17 +70,15 @@ function executeGame() {
         min = 0,
         t;
 
-    if (radioHorizontal.checked) {
-        brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length;
-        brickWidth = brickHeight / 2;
-        paddleHeight = (field.offsetHeight - 2 * wallSize) / 5;
-        paddleWidth = paddleHeight * 0.1;
-    } else if (radioVertical.checked) {
-        brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length;
-        brickHeight = brickWidth / 2;
-        paddleWidth = (field.offsetWidth - 2 * wallSize) / 5;
-        paddleHeight = paddleWidth * 0.1;
-    }
+    (radioHorizontal.checked) ?
+    (brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
+        brickWidth = brickHeight / 2,
+        paddleHeight = (sessionStorage.mode == 'infinity') ? localStorage.paddleSize : ((field.offsetHeight - 2 * wallSize) / 5),
+        paddleWidth = paddleHeight * 0.1) :
+    (brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
+        brickHeight = brickWidth / 2,
+        paddleWidth = (sessionStorage.mode == 'infinity') ? localStorage.paddleSize : ((field.offsetWidth - 2 * wallSize) / 5),
+        paddleHeight = paddleWidth * 0.1);
 
     function tick() {
         sec++;
@@ -97,33 +105,43 @@ function executeGame() {
     document.getElementById('score').innerHTML = score;
     field.style.cursor = 'crosshair';
 
-    if (radioHorizontal.checked) {
-        for (let row = 0; row < level1.length; row++) {
-            for (let col = 0; col < level1[row].length; col++) {
-                const colorCode = level1[row][col];
-                bricks.push({
-                    x: wallSize + (brickWidth + brickGap) * row + field.offsetWidth * 0.05,
-                    y: wallSize + (brickHeight + brickGap) * col,
-                    color: colorMap[colorCode],
-                    width: brickWidth,
-                    height: brickHeight
-                });
-            }
+    function bricksFill(arr, option) {
+        switch (option) {
+            case 'horizontal':
+                for (let row = 0; row < arr.length; row++) {
+                    for (let col = 0; col < arr[row].length; col++) {
+                        let colorCode = arr[row][col];
+                        bricks.push({
+                            x: wallSize + (brickWidth + brickGap) * row + field.offsetWidth * 0.05,
+                            y: wallSize + (brickHeight + brickGap) * col,
+                            color: colorMap[colorCode],
+                            width: brickWidth,
+                            height: brickHeight
+                        });
+                    }
+                }
+                break;
+            case 'vertical':
+                for (let row = 0; row < arr.length; row++) {
+                    for (let col = 0; col < arr[row].length; col++) {
+                        const colorCode = arr[row][col];
+                        bricks.push({
+                            x: wallSize + (brickWidth + brickGap) * col,
+                            y: wallSize + (brickHeight + brickGap) * row + field.offsetHeight * 0.05,
+                            color: colorMap[colorCode],
+                            width: brickWidth,
+                            height: brickHeight
+                        });
+                    }
+                }
+                break;
         }
-    } else {
-        for (let row = 0; row < level2.length; row++) {
-            for (let col = 0; col < level2[row].length; col++) {
-                const colorCode = level2[row][col];
-                bricks.push({
-                    x: wallSize + (brickWidth + brickGap) * col,
-                    y: wallSize + (brickHeight + brickGap) * row + field.offsetHeight * 0.05,
-                    color: colorMap[colorCode],
-                    width: brickWidth,
-                    height: brickHeight
-                });
-            }
-        }
+
     }
+    (radioHorizontal.checked) ?
+    ((sessionStorage.mode == 'infinity') ? bricksFill(level_bricks, 'horizontal') : bricksFill(level1, 'horizontal')) :
+    ((sessionStorage.mode == 'infinity') ? bricksFill(level_bricks, 'vertical') : bricksFill(level1, 'vartical'));
+
     const paddle = {
         x: (radioHorizontal.checked) ? field.offsetWidth * 0.9 : field.offsetWidth / 2 - paddleWidth / 2,
         y: (radioHorizontal.checked) ? field.offsetHeight / 2 - paddleWidth / 2 : field.offsetHeight * 0.9,
@@ -132,13 +150,12 @@ function executeGame() {
         dx: 0, // направление по x
         dy: 0 // направление по y
     };
-
+    console.log(paddle);
     const ball = {
         x: (radioHorizontal.checked) ? field.offsetWidth * 0.6 : field.offsetWidth * 0.4,
         y: (radioHorizontal.checked) ? field.offsetHeight * 0.4 : field.offsetHeight * 0.6,
-        width: 10,
-        height: 10,
-        speed: 7,
+        radius: (sessionStorage.mode == 'infinity') ? localStorage.ballRadius : 10,
+        speed: (sessionStorage.mode == 'infinity') ? localStorage.ballSpeed : 7,
         dx: 0,
         dy: 0
     };
@@ -149,20 +166,20 @@ function executeGame() {
             case 'horizontal':
                 switch (config) {
                     case 'paddle':
-                        return ball.x + ball.width >= obj.x &&
+                        return ball.x + ball.radius >= obj.x &&
                             ball.y >= obj.y &&
                             ball.y <= obj.y + obj.height;
                     case 'brick':
-                        return ball.x - ball.width <= obj.x + obj.width &&
+                        return ball.x - ball.radius <= obj.x + obj.width &&
                             ball.y >= obj.y &&
                             ball.y <= obj.y + obj.height ||
-                            ball.x + ball.width == obj.x &&
+                            ball.x + ball.radius == obj.x &&
                             ball.y >= obj.y &&
                             ball.y <= obj.y + obj.height ||
-                            ball.y - ball.height == obj.y + obj.height &&
+                            ball.y - ball.radius == obj.y + obj.height &&
                             ball.x <= obj.x + obj.width &&
                             ball.x >= obj.x ||
-                            ball.y + ball.height == obj.y &&
+                            ball.y + ball.radius == obj.y &&
                             ball.x <= obj.x + obj.width &&
                             ball.x >= obj.x;
                 }
@@ -170,20 +187,20 @@ function executeGame() {
             case 'vertical':
                 switch (config) {
                     case 'paddle':
-                        return ball.y + ball.height >= obj.y &&
+                        return ball.y + ball.radius >= obj.y &&
                             ball.x >= obj.x &&
                             ball.x <= obj.x + obj.width;
                     case 'brick':
-                        return ball.y - ball.height <= obj.y + obj.height &&
+                        return ball.y - ball.radius <= obj.y + obj.height &&
                             ball.x >= obj.x &&
                             ball.x <= obj.x + obj.width ||
-                            ball.y + ball.height == obj.y &&
+                            ball.y + ball.radius == obj.y &&
                             ball.x >= obj.x &&
                             ball.x <= obj.x + obj.width ||
-                            ball.x + ball.width == obj.x &&
+                            ball.x + ball.radius == obj.x &&
                             ball.y <= obj.y + obj.height &&
                             ball.y >= obj.y ||
-                            ball.x - ball.width == obj.x + obj.width &&
+                            ball.x - ball.radius == obj.x + obj.width &&
                             ball.y <= obj.y + obj.height &&
                             ball.y >= obj.y;
                 }
@@ -221,23 +238,23 @@ function executeGame() {
         // проверка координат шарика
         // для горизонтального
         if (radioHorizontal.checked) {
-            if (ball.x < wallSize + ball.width) {
-                ball.x = wallSize + ball.width;
+            if (ball.x < wallSize + ball.radius) {
+                ball.x = wallSize + ball.radius;
                 ball.dx *= -1;
             }
-            if (ball.y < wallSize + ball.height) {
-                ball.y = wallSize + ball.height;
+            if (ball.y < wallSize + ball.radius) {
+                ball.y = wallSize + ball.radius;
                 ball.dy *= -1;
-            } else if (ball.y + ball.height > field.offsetHeight - wallSize) {
-                ball.y = field.offsetHeight - wallSize - ball.height;
+            } else if (ball.y + ball.radius > field.offsetHeight - wallSize) {
+                ball.y = field.offsetHeight - wallSize - ball.radius;
                 ball.dy *= -1;
             }
         } else { // для вертикального
-            if (ball.x < wallSize) {
+            if (ball.x - ball.radius < wallSize) {
                 ball.x = wallSize;
                 ball.dx *= -1;
-            } else if (ball.x + ball.width > field.offsetWidth - wallSize) {
-                ball.x = field.offsetWidth - wallSize - ball.width;
+            } else if (ball.x + ball.radius > field.offsetWidth - wallSize) {
+                ball.x = field.offsetWidth - wallSize - ball.radius;
                 ball.dx *= -1;
             }
             // проверяем верхнюю границу
@@ -250,14 +267,14 @@ function executeGame() {
         // перезапуск шарика
         // для горизонтального
         if (radioHorizontal.checked) {
-            if (ball.x + ball.width > field.offsetWidth - wallSize) {
+            if (ball.x + ball.radius > field.offsetWidth - wallSize) {
                 ball.x = field.offsetWidth * 0.6;
                 ball.y = field.offsetHeight * 0.4;
                 ball.dx = 0;
                 ball.dy = 0;
             }
         } else { // для вертикального
-            if (ball.y + ball.width > field.offsetHeight - wallSize) {
+            if (ball.y + ball.radius > field.offsetHeight - wallSize) {
                 ball.x = field.offsetWidth * 0.4;
                 ball.y = field.offsetHeight * 0.6;
                 ball.dx = 0;
@@ -268,10 +285,10 @@ function executeGame() {
         // проверка касания платформы
         if (radioHorizontal.checked && collides(ball, paddle, 'horizontal', 'paddle')) {
             ball.dx *= -1;
-            ball.x = paddle.x - ball.width;
+            ball.x = paddle.x - ball.radius;
         } else if (radioVertical.checked && collides(ball, paddle, 'vertical', 'paddle')) {
             ball.dy *= -1;
-            ball.y = paddle.y - ball.height;
+            ball.y = paddle.y - ball.radius;
         }
 
         // проверка касания кирпича
@@ -282,9 +299,9 @@ function executeGame() {
                     bricks.splice(i, 1);
                     score++;
                     document.getElementById('score').innerHTML = score;
-                    if (ball.y + ball.height - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
+                    if (ball.y + ball.radius - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
                         ball.dy *= -1;
-                    } else if (ball.x - ball.width - ball.speed <= brick.x + brick.width - ball.speed) {
+                    } else if (ball.x - ball.radius - ball.speed <= brick.x + brick.width - ball.speed) {
                         ball.dx *= -1;
                     }
                     break;
@@ -295,7 +312,7 @@ function executeGame() {
                 let brick = bricks[i];
                 if (collides(ball, brick, 'vertical', 'brick')) {
                     bricks.splice(i, 1);
-                    if (ball.y + ball.height - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
+                    if (ball.y + ball.radius - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
                         ball.dy *= -1;
                     } else {
                         ball.dx *= -1;
@@ -318,7 +335,7 @@ function executeGame() {
         // отрисовка шарика,  если он в движении
         if (ball.dx || ball.dy) {
             context.beginPath();
-            context.arc(ball.x, ball.y, ball.height, 0, 360);
+            context.arc(ball.x, ball.y, ball.radius, 0, 360);
             context.fillStyle = localStorage.ballColor; // цвет мяча
             context.fill();
         }
@@ -385,9 +402,9 @@ function executeGame() {
             }
         } else if (radioKeyboard.checked && radioVertical.checked) {
             if (e.which === 65 || e.which === 37) {
-                paddle.dx = -10;
+                paddle.dx = (sessionStorage.mode == 'infinity') ? (-1 * localStorage.paddleSpeed) : -10;
             } else if (e.which === 68 || e.which === 39) {
-                paddle.dx = 10;
+                paddle.dx = (sessionStorage.mode == 'infinity') ? localStorage.paddleSpeed : 10;
             }
             if (ball.dx === 0 && ball.dy === 0 && e.which === 32) {
                 ball.dx = ball.speed / 2;
@@ -447,6 +464,39 @@ function executeGame() {
         executeGame();
     })
 
+
+    let bricksNumberRow = document.getElementById('bricks-number-row'),
+        resBricksNumberRow = document.getElementById('res-bricks-number-row'),
+        bricksNumberColumn = document.getElementById('bricks-number-column'),
+        resBricksNumberColumn = document.getElementById('res-bricks-number-column');
+
+    if (!bricksNumberRow.hasAttribute('value')) {
+        (sessionStorage.bricksNumberRow) ? bricksNumberRow.setAttribute('value', sessionStorage.bricksNumberRow): bricksNumberRow.setAttribute('value', 13);
+        resBricksNumberRow.innerHTML = bricksNumberRow.value;
+    }
+    if (!bricksNumberColumn.hasAttribute('value')) {
+        (sessionStorage.bricksNumberColumn) ? bricksNumberColumn.setAttribute('value', sessionStorage.bricksNumberColumn): bricksNumberColumn.setAttribute('value', 12);
+        resBricksNumberColumn.innerHTML = bricksNumberColumn.value;
+    }
+    if (!sessionStorage.bricksNumberRow) {
+        sessionStorage.setItem('bricksNumberRow', bricksNumberRow.value);
+    }
+    if (!sessionStorage.bricksNumberColumn) {
+        sessionStorage.setItem('bricksNumberColumn', bricksNumberColumn.value);
+    }
+
+    bricksNumberRow.style.backgroundSize = (bricksNumberRow.value - bricksNumberRow.min) * 100 / (bricksNumberRow.max - bricksNumberRow.min) + '% 100%';
+    bricksNumberRow.addEventListener('input', function() {
+        sessionStorage.setItem('bricksNumberRow', bricksNumberRow.value);
+        resBricksNumberRow.innerHTML = bricksNumberRow.value;
+        bricksNumberRow.style.backgroundSize = (bricksNumberRow.value - bricksNumberRow.min) * 100 / (bricksNumberRow.max - bricksNumberRow.min) + '% 100%';
+    })
+    bricksNumberColumn.style.backgroundSize = (bricksNumberColumn.value - bricksNumberColumn.min) * 100 / (bricksNumberColumn.max - bricksNumberColumn.min) + '% 100%';
+    bricksNumberColumn.addEventListener('input', function() {
+        sessionStorage.setItem('bricksNumberColumn', bricksNumberColumn.value);
+        resBricksNumberColumn.innerHTML = bricksNumberColumn.value;
+        bricksNumberColumn.style.backgroundSize = (bricksNumberColumn.value - bricksNumberColumn.min) * 100 / (bricksNumberColumn.max - bricksNumberColumn.min) + '% 100%';
+    })
     document.getElementById('save').onclick = function() {
         windowSetting();
     }
@@ -487,6 +537,8 @@ function windowSetting() {
                 radioVertical.checked = true;
                 canvasWidth = gameContainer.offsetWidth - 20;
                 canvasHeight = canvasWidth * 1.6;
+            } else {
+                radioHorizontal.disabled = false;
             }
             // для планшетов
             if (!radioHorizontal.checked && !radioVertical.checked && !radioHorizontal.disabled) {
@@ -501,12 +553,13 @@ function windowSetting() {
         } else { // для пк
             if (!radioHorizontal.checked && !radioVertical.checked) {
                 radioHorizontal.checked = true;
-                canvasWidth = gameContainer.offsetWidth - 20;
-                canvasHeight = canvasWidth / 1.6;
             }
             if (radioVertical.checked) {
                 canvasWidth = gameContainer.offsetWidth * .6;
                 canvasHeight = canvasWidth * 1.6;
+            } else if (radioHorizontal.checked) {
+                canvasWidth = gameContainer.offsetWidth - 20;
+                canvasHeight = canvasWidth / 1.6;
             }
             document.getElementById('mouse').checked = true;
         }
@@ -518,7 +571,6 @@ function windowSetting() {
 window.addEventListener('resize', function(event) {
     windowSetting();
 });
-
 window.onload = function() {
     if (!localStorage.ballColor) {
         localStorage.setItem('ballColor', '#DA2E2E');
@@ -531,6 +583,18 @@ window.onload = function() {
     }
     if (!localStorage.fieldColor) {
         localStorage.setItem('fieldColor', '#FEFEFE');
+    }
+    if (!localStorage.ballRadius) {
+        localStorage.setItem('ballRadius', '10');
+    }
+    if (!localStorage.ballSpeed) {
+        localStorage.setItem('ballSpeed', '7');
+    }
+    if (!localStorage.paddleSpeed) {
+        localStorage.setItem('paddleSpeed', '10');
+    }
+    if (!localStorage.paddleSize) {
+        localStorage.setItem('paddleSize', '120');
     }
     windowSetting();
 
@@ -558,11 +622,12 @@ window.onload = function() {
     for (let element of bottomAppearedElements) {
         observer.observe(element);
     }
-    if (location.pathname.includes('game')) { // страница игры
+    if (location.pathname.includes('infinity-game')) { // страница игры
         executeGame();
     } else if (location.pathname.includes('index') || location.pathname.split('').pop() == '/') { // главная страница 
         let playButton = document.getElementById('box-3'),
-            appearanceButton = document.getElementById('box-2');
+            appearanceButton = document.getElementById('box-2'),
+            settingsButton = document.getElementById('box-4');
 
         playButton.onclick = function() {
             window.location.href = './mode.html';
@@ -570,13 +635,17 @@ window.onload = function() {
         appearanceButton.onclick = function() {
             window.location.href = './appearance.html';
         }
+        settingsButton.onclick = function() {
+            window.location.href = './settings.html';
+        }
 
 
     } else if (location.pathname.includes('mode')) { // страница выбора режима
         let playButton = document.getElementById('infinity-button');
 
         playButton.onclick = function() {
-            window.location.href = './game.html';
+            sessionStorage.setItem('mode', 'infinity');
+            window.location.href = './infinity-game.html';
         }
     } else if (location.pathname.includes('appearance')) { // страница настройки внешнего вида
         let ballColorInput = document.getElementById('ball-color'),
@@ -603,6 +672,61 @@ window.onload = function() {
             localStorage.setItem('paddleColor', paddleColorInput.value);
             localStorage.setItem('bricksColor', bricksColorInput.value);
             localStorage.setItem('fieldColor', fieldColorInput.value);
+            window.location.href = './index.html';
+        }
+    } else if (location.pathname.includes('settings')) {
+        let paddleSpeed = document.getElementById('paddle-speed'),
+            resPaddleSpeed = document.getElementById('res-paddle-speed'),
+            ballSpeed = document.getElementById('ball-speed'),
+            resBallSpeed = document.getElementById('res-ball-speed'),
+            paddleSize = document.getElementById('paddle-size'),
+            resPaddleSize = document.getElementById('res-paddle-size'),
+            ballRadius = document.getElementById('ball-radius'),
+            resBallRadius = document.getElementById('res-ball-radius'),
+            saveSettingsButton = document.getElementById('save-settings');
+
+        if (!paddleSpeed.hasAttribute('value')) {
+            paddleSpeed.setAttribute('value', localStorage.paddleSpeed);
+            resPaddleSpeed.innerHTML = paddleSpeed.value;
+        }
+        if (!ballSpeed.hasAttribute('value')) {
+            ballSpeed.setAttribute('value', localStorage.ballSpeed);
+            resBallSpeed.innerHTML = ballSpeed.value;
+        }
+        if (!paddleSize.hasAttribute('value')) {
+            paddleSize.setAttribute('value', localStorage.paddleSize);
+            resPaddleSize.innerHTML = paddleSize.value;
+        }
+        if (!ballRadius.hasAttribute('value')) {
+            ballRadius.setAttribute('value', localStorage.ballRadius);
+            resBallRadius.innerHTML = ballRadius.value;
+        }
+
+        paddleSpeed.style.backgroundSize = (paddleSpeed.value - paddleSpeed.min) * 100 / (paddleSpeed.max - paddleSpeed.min) + '% 100%';
+        paddleSpeed.addEventListener('input', function() {
+            resPaddleSpeed.innerHTML = paddleSpeed.value;
+            paddleSpeed.style.backgroundSize = (paddleSpeed.value - paddleSpeed.min) * 100 / (paddleSpeed.max - paddleSpeed.min) + '% 100%';
+        })
+        ballSpeed.style.backgroundSize = (ballSpeed.value - ballSpeed.min) * 100 / (ballSpeed.max - ballSpeed.min) + '% 100%';
+        ballSpeed.addEventListener('input', function() {
+            resBallSpeed.innerHTML = ballSpeed.value;
+            ballSpeed.style.backgroundSize = (ballSpeed.value - ballSpeed.min) * 100 / (ballSpeed.max - ballSpeed.min) + '% 100%';
+        })
+        paddleSize.style.backgroundSize = (paddleSize.value - paddleSize.min) * 100 / (paddleSize.max - paddleSize.min) + '% 100%';
+        paddleSize.addEventListener('input', function() {
+            resPaddleSize.innerHTML = paddleSize.value;
+            paddleSize.style.backgroundSize = (paddleSize.value - paddleSize.min) * 100 / (paddleSize.max - paddleSize.min) + '% 100%';
+        })
+        ballRadius.style.backgroundSize = (ballRadius.value - ballRadius.min) * 100 / (ballRadius.max - ballRadius.min) + '% 100%';
+        ballRadius.addEventListener('input', function() {
+            resBallRadius.innerHTML = ballRadius.value;
+            ballRadius.style.backgroundSize = (ballRadius.value - ballRadius.min) * 100 / (ballRadius.max - ballRadius.min) + '% 100%';
+        })
+        saveSettingsButton.onclick = function() {
+            localStorage.setItem('paddleSpeed', paddleSpeed.value);
+            localStorage.setItem('ballSpeed', ballSpeed.value);
+            localStorage.setItem('paddleSize', paddleSize.value);
+            localStorage.setItem('ballRadius', ballRadius.value);
             window.location.href = './index.html';
         }
     }

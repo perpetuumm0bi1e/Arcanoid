@@ -309,7 +309,7 @@ main {
         border: 0.15rem solid var(--gray);
     }
     .control {
-        padding: 2.86rem 7.15rem;
+        padding: 2.86rem 4rem;
     }
 canvas {
     background-color: var(--white);

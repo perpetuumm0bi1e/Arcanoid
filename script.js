@@ -1,4 +1,3 @@
-
 function executeGame() {
     let field = document.getElementById('game'),
         context = field.getContext('2d'),
@@ -26,18 +25,18 @@ function executeGame() {
     ];
     const level2 = [
         [],
-        ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'],
-        ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'],
-        ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'],
-        ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
-        ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
-        ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
-        ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
-        ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
-        ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
-        ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'],
-        ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'],
-        ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y']
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P']
     ];
 
     const colorMap = {
@@ -50,7 +49,7 @@ function executeGame() {
 
     // параметры 
     let score = 0,
-        wallSize = 10,
+        wallSize = 12,
         brickGap = 5,
         brickHeight,
         brickWidth,
@@ -310,6 +309,7 @@ function executeGame() {
         // отрисовка стен
         context.fillStyle = localStorage.fieldColor;
         document.getElementById('canvas-container').style.background = localStorage.fieldColor;
+        document.getElementById('canvas-container').style.borderRadius = '2.15rem';
         context.fillRect(0, 0, field.offsetWidth, wallSize);
         context.fillRect(0, 0, wallSize, field.offsetHeight);
         context.fillRect(field.offsetWidth - wallSize, 0, wallSize, field.offsetHeight);
@@ -520,16 +520,16 @@ window.addEventListener('resize', function(event) {
 });
 
 window.onload = function() {
-    if(!localStorage.ballColor){
+    if (!localStorage.ballColor) {
         localStorage.setItem('ballColor', '#DA2E2E');
     }
-    if(!localStorage.paddleColor){
+    if (!localStorage.paddleColor) {
         localStorage.setItem('paddleColor', '#282828');
     }
-    if(!localStorage.bricksColor){
+    if (!localStorage.bricksColor) {
         localStorage.setItem('bricksColor', '#5955B3');
     }
-    if(!localStorage.fieldColor){
+    if (!localStorage.fieldColor) {
         localStorage.setItem('fieldColor', '#FEFEFE');
     }
     windowSetting();
@@ -558,7 +558,7 @@ window.onload = function() {
     for (let element of bottomAppearedElements) {
         observer.observe(element);
     }
-
+    console.log(location.pathname)
     if (location.pathname.includes('game')) { // страница игры
         executeGame();
     } else if (location.pathname.includes('index') || location.pathname == '/' || location.pathname.includes('Arcanoid')) { // главная страница 
@@ -572,30 +572,30 @@ window.onload = function() {
             window.location.href = './appearance.html';
         }
 
-        
+
     } else if (location.pathname.includes('mode')) { // страница выбора режима
         let playButton = document.getElementById('infinity-button');
 
         playButton.onclick = function() {
             window.location.href = './game.html';
         }
-    } else if(location.pathname.includes('appearance')){ // страница настройки внешнего вида
+    } else if (location.pathname.includes('appearance')) { // страница настройки внешнего вида
         let ballColorInput = document.getElementById('ball-color'),
             paddleColorInput = document.getElementById('paddle-color'),
             bricksColorInput = document.getElementById('bricks-color'),
             fieldColorInput = document.getElementById('field-color'),
             saveAppearanceButton = document.getElementById('save-appearance');
 
-        if(!ballColorInput.hasAttribute('value')){
+        if (!ballColorInput.hasAttribute('value')) {
             ballColorInput.setAttribute('value', localStorage.ballColor);
         }
-        if(!paddleColorInput.hasAttribute('value')){
+        if (!paddleColorInput.hasAttribute('value')) {
             paddleColorInput.setAttribute('value', localStorage.paddleColor);
         }
-        if(!bricksColorInput.hasAttribute('value')){
+        if (!bricksColorInput.hasAttribute('value')) {
             bricksColorInput.setAttribute('value', localStorage.bricksColor);
         }
-        if(!fieldColorInput.hasAttribute('value')){
+        if (!fieldColorInput.hasAttribute('value')) {
             fieldColorInput.setAttribute('value', localStorage.fieldColor);
         }
 

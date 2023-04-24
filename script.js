@@ -150,7 +150,6 @@ function executeGame() {
         dx: 0, // направление по x
         dy: 0 // направление по y
     };
-    console.log(paddle);
     const ball = {
         x: (radioHorizontal.checked) ? field.offsetWidth * 0.6 : field.offsetWidth * 0.4,
         y: (radioHorizontal.checked) ? field.offsetHeight * 0.4 : field.offsetHeight * 0.6,
@@ -613,21 +612,80 @@ window.onload = function() {
         impulseAppearedElements = document.querySelectorAll('.impulse-appearance-animation'),
         bottomAppearedElements = document.querySelectorAll('.bottom-appearance-animation');
 
-    for (let element of impulseAppearedElements) {
-        observer.observe(element);
-    }
-    for (let element of topAppearedElements) {
-        observer.observe(element);
-    }
-    for (let element of bottomAppearedElements) {
-        observer.observe(element);
-    }
+    for (let element of impulseAppearedElements) { observer.observe(element); }
+    for (let element of topAppearedElements) { observer.observe(element); }
+    for (let element of bottomAppearedElements) { observer.observe(element); }
+
     if (location.pathname.includes('infinity-game')) { // страница игры
         executeGame();
     } else if (location.pathname.includes('index') || location.pathname.split('').pop() == '/') { // главная страница 
         let playButton = document.getElementById('box-3'),
             appearanceButton = document.getElementById('box-2'),
-            settingsButton = document.getElementById('box-4');
+            settingsButton = document.getElementById('box-4'),
+            greetingBox = document.getElementById('greeting-box'),
+            setUpNameButton,
+            userNameInput;
+
+        //localStorage.removeItem('userName');
+        if (!localStorage.userName || localStorage.userName == undefined) {
+            greetingBox.innerHTML = `
+            <p class="medium-text-black" id="greetings">
+                It seems like we didn't met yet. Please introduce yourself:
+            </p>
+            <div class="introduce-block">
+                <div class="input-data">
+                    <input class="medium-text-black" type="text" id="player-name" required />
+                    <div class="underline"></div>
+                    <label class="medium-text">My name is...</label>
+                </div>
+                <button class="medium-text button-type-1" id="set-up-name">
+                    &#10003;
+                </button>`;
+
+            setUpNameButton = document.getElementById('set-up-name');
+            userNameInput = document.getElementById('player-name');
+
+            setUpNameButton.onclick = function() {
+                localStorage.setItem('userName', userNameInput.value);
+                location.reload();
+            }
+        }
+
+
+        if (localStorage.userName && localStorage.userName != undefined) {
+            var now = new Date(),
+                greetings = '';
+            if (now.getHours() >= 6 && now.getHours() < 12) {
+                let intros = [`Morning, ${localStorage.userName}! What a good day, isn't it?`,
+                    `Sup, ${localStorage.userName}! Wanna start day with game?`,
+                    `Yo, ${localStorage.userName}! Wanna play bright and early?`,
+                    `Ahoy, ${localStorage.userName}! How pleasant to see ya this morning...`
+                ];
+                greetings = intros[Math.floor(Math.random() * intros.length)];
+            } else if (now.getHours() >= 12 && now.getHours() < 18) {
+                let intros = [`Hey, ${localStorage.userName}! What a good day, isn't it?`,
+                    `Hi there, ${localStorage.userName}! Let's play?`,
+                    `Wats's up, ${localStorage.userName}! Wanna play?`,
+                    `Wassup, ${localStorage.userName}! Nice to see ya again :)`
+                ];
+                greetings = intros[Math.floor(Math.random() * intros.length)];
+            } else if (now.getHours() >= 18 && now.getHours() < 24) {
+                let intros = [`Sup, ${localStorage.userName}! Have you decided to spend the evening playing?`,
+                    `Hi there, ${localStorage.userName}! Tnx for choosing to spend this evening with me...`,
+                    `Wats's up, ${localStorage.userName}! So what are you doing up in the middle of the night?`,
+                    `Evening, ${localStorage.userName}! Nice to see ya again :)`
+                ];
+                greetings = intros[Math.floor(Math.random() * intros.length)];
+            } else if (now.getHours() < 6) {
+                let intros = [`Yo, ${localStorage.userName}! Decided to dedicate the night to brickbreaker?`,
+                    `Hi there, ${localStorage.userName}! People usually sleep at night... Well okay...`,
+                    `Wats's up, ${localStorage.userName}! Wanna to brighten up your evening with a game?`,
+                    `Sup, ${localStorage.userName}! Why are you awake, may I ask?`
+                ];
+                greetings = intros[Math.floor(Math.random() * intros.length)];
+            }
+            greetingBox.innerHTML = `<p class="small-text" id="greetings"> ${greetings} </p>`;
+        }
 
         playButton.onclick = function() {
             window.location.href = './mode.html';

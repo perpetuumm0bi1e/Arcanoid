@@ -73,11 +73,11 @@ function executeGame() {
     (radioHorizontal.checked) ?
     (brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
         brickWidth = brickHeight / 2,
-        paddleHeight = (sessionStorage.mode == 'infinity') ? localStorage.paddleSize : ((field.offsetHeight - 2 * wallSize) / 5),
+        paddleHeight = sessionStorage.mode == 'infinity' ? localStorage.paddleSize : (field.offsetHeight - 2 * wallSize) / 5,
         paddleWidth = paddleHeight * 0.1) :
     (brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
         brickHeight = brickWidth / 2,
-        paddleWidth = (sessionStorage.mode == 'infinity') ? localStorage.paddleSize : ((field.offsetWidth - 2 * wallSize) / 5),
+        paddleWidth = sessionStorage.mode == 'infinity' ? localStorage.paddleSize : (field.offsetWidth - 2 * wallSize) / 5,
         paddleHeight = paddleWidth * 0.1);
 
     function tick() {
@@ -139,12 +139,12 @@ function executeGame() {
 
     }
     (radioHorizontal.checked) ?
-    ((sessionStorage.mode == 'infinity') ? bricksFill(level_bricks, 'horizontal') : bricksFill(level1, 'horizontal')) :
-    ((sessionStorage.mode == 'infinity') ? bricksFill(level_bricks, 'vertical') : bricksFill(level1, 'vartical'));
+        (sessionStorage.mode == 'infinity' ? bricksFill(level_bricks, 'horizontal') : bricksFill(level1, 'horizontal')) :
+        (sessionStorage.mode == 'infinity' ? bricksFill(level_bricks, 'vertical') : bricksFill(level1, 'vartical'));
 
     const paddle = {
-        x: (radioHorizontal.checked) ? field.offsetWidth * 0.9 : field.offsetWidth / 2 - paddleWidth / 2,
-        y: (radioHorizontal.checked) ? field.offsetHeight / 2 - paddleWidth / 2 : field.offsetHeight * 0.9,
+        x: radioHorizontal.checked ? field.offsetWidth * 0.9 : field.offsetWidth / 2 - paddleWidth / 2,
+        y: radioHorizontal.checked ? field.offsetHeight / 2 - paddleWidth / 2 : field.offsetHeight * 0.9,
         width: paddleWidth,
         height: paddleHeight,
         dx: 0, // направление по x
@@ -265,21 +265,17 @@ function executeGame() {
 
         // перезапуск шарика
         // для горизонтального
-        if (radioHorizontal.checked) {
-            if (ball.x + ball.radius > field.offsetWidth - wallSize) {
-                ball.x = field.offsetWidth * 0.6;
-                ball.y = field.offsetHeight * 0.4;
-                ball.dx = 0;
-                ball.dy = 0;
-            }
-        } else { // для вертикального
-            if (ball.y + ball.radius > field.offsetHeight - wallSize) {
-                ball.x = field.offsetWidth * 0.4;
-                ball.y = field.offsetHeight * 0.6;
-                ball.dx = 0;
-                ball.dy = 0;
-            }
-        }
+        if (radioHorizontal.checked && (ball.x + ball.radius > field.offsetWidth - wallSize)) {
+            ball.x = field.offsetWidth * 0.6;
+            ball.y = field.offsetHeight * 0.4;
+            ball.dx = 0;
+            ball.dy = 0;
+        } else if (radioVertical.checked && (ball.y + ball.radius > field.offsetHeight - wallSize)) { // lkz dthnbrfkmyjuj
+            ball.x = field.offsetWidth * 0.4;
+            ball.y = field.offsetHeight * 0.6;
+            ball.dx = 0;
+            ball.dy = 0;
+       }
 
         // проверка касания платформы
         if (radioHorizontal.checked && collides(ball, paddle, 'horizontal', 'paddle')) {
@@ -379,11 +375,7 @@ function executeGame() {
             y: e.changedTouches[0].clientY - field.getBoundingClientRect().top
         };
         if (radioTouchscreen.checked) {
-            if (radioHorizontal.checked) {
-                paddle.y = touchPosition.y - paddleHeight / 2;
-            } else {
-                paddle.x = touchPosition.x - paddleWidth / 2;
-            }
+            (radioHorizontal.checked) ? paddle.y = touchPosition.y - paddleHeight / 2 : paddle.x = touchPosition.x - paddleWidth / 2;
         }
     })
 
@@ -429,13 +421,9 @@ function executeGame() {
             if (mouseClickCounter == 1) {
                 timer();
             }
-            if (radioHorizontal.checked) {
-                ball.x = field.offsetWidth * 0.6;
-                ball.y = field.offsetHeight * 0.4;
-            } else {
-                ball.x = field.offsetWidth * 0.4;
-                ball.y = field.offsetHeight * 0.6;
-            }
+            (radioHorizontal.checked) ?
+                (ball.x = field.offsetWidth * 0.6, ball.y = field.offsetHeight * 0.4) :
+                (ball.x = field.offsetWidth * 0.4, ball.y = field.offsetHeight * 0.6);
             ball.dx = ball.speed;
             ball.dy = ball.speed;
             field.style.cursor = 'none';
@@ -470,11 +458,16 @@ function executeGame() {
         resBricksNumberColumn = document.getElementById('res-bricks-number-column');
 
     if (!bricksNumberRow.hasAttribute('value')) {
-        (sessionStorage.bricksNumberRow) ? bricksNumberRow.setAttribute('value', sessionStorage.bricksNumberRow): bricksNumberRow.setAttribute('value', 13);
+        (sessionStorage.bricksNumberRow) ? 
+        bricksNumberRow.setAttribute('value', sessionStorage.bricksNumberRow) : 
+        bricksNumberRow.setAttribute('value', 13);
         resBricksNumberRow.innerHTML = bricksNumberRow.value;
     }
     if (!bricksNumberColumn.hasAttribute('value')) {
-        (sessionStorage.bricksNumberColumn) ? bricksNumberColumn.setAttribute('value', sessionStorage.bricksNumberColumn): bricksNumberColumn.setAttribute('value', 12);
+        (sessionStorage.bricksNumberColumn) ? 
+        bricksNumberColumn.setAttribute('value', sessionStorage.bricksNumberColumn) : 
+        bricksNumberColumn.setAttribute('value', 12);
+
         resBricksNumberColumn.innerHTML = bricksNumberColumn.value;
     }
     if (!sessionStorage.bricksNumberRow) {
@@ -511,34 +504,31 @@ function windowSetting() {
         canvasContainer = document.getElementById('canvas-container');
 
     if (location.pathname.includes('index') || location.pathname == '/') {
-        let playButton = document.getElementById('box-3'),
-            designButton = document.getElementById('box-2'),
-            settingsButton = document.getElementById('box-4');
+        let playButton = document.getElementById('play-box'),
+            designButton = document.getElementById('appearance-box'),
+            settingsButton = document.getElementById('settings-box');
 
-        if (document.body.clientWidth < 920 && document.body.clientWidth > 678) {
-            designButton.style.order = '1';
-            playButton.style.order = '3';
-            settingsButton.style.order = '2';
-        } else if (document.body.clientWidth < 678) {
-            designButton.style.order = '2';
-            playButton.style.order = '1';
-            settingsButton.style.order = '3';
-        } else {
-            designButton.style.order = '1';
-            playButton.style.order = '2';
-            settingsButton.style.order = '3';
-        }
+        // (document.body.clientWidth <= 920 && document.body.clientWidth > 678) ?
+        //     (designButton.style.order = '1', 
+        //     playButton.style.order = '3', 
+        //     settingsButton.style.order = '2') :
+        // (document.body.clientWidth <= 678) ?
+        //     (designButton.style.order = '2', 
+        //     playButton.style.order = '1', 
+        //     settingsButton.style.order = '3') :
+        //     (designButton.style.order = '1', 
+        //     playButton.style.order = '2', 
+        //     settingsButton.style.order = '3');
+
     } else if (location.pathname.includes('game')) {
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             // для телефонов
-            if (document.body.clientWidth < 740) {
-                radioHorizontal.disabled = true;
-                radioVertical.checked = true;
-                canvasWidth = gameContainer.offsetWidth - 20;
-                canvasHeight = canvasWidth * 1.6;
-            } else {
+            (document.body.clientWidth < 740) ? 
+                (radioHorizontal.disabled = true,
+                radioVertical.checked = true, 
+                canvasWidth = gameContainer.offsetWidth - 20, 
+                canvasHeight = canvasWidth * 1.6) :
                 radioHorizontal.disabled = false;
-            }
             // для планшетов
             if (!radioHorizontal.checked && !radioVertical.checked && !radioHorizontal.disabled) {
                 radioHorizontal.checked = true;
@@ -619,10 +609,11 @@ window.onload = function() {
     if (location.pathname.includes('infinity-game')) { // страница игры
         executeGame();
     } else if (location.pathname.includes('index') || location.pathname.split('').pop() == '/') { // главная страница 
-        let playButton = document.getElementById('box-3'),
-            appearanceButton = document.getElementById('box-2'),
-            settingsButton = document.getElementById('box-4'),
+        let playButton = document.getElementById('play-box'),
+            appearanceButton = document.getElementById('appearance-box'),
+            settingsButton = document.getElementById('settings-box'),
             greetingBox = document.getElementById('greeting-box'),
+            detailsButton = document.getElementById('details-box'),
             setUpNameButton,
             userNameInput;
 
@@ -684,7 +675,8 @@ window.onload = function() {
                 ];
                 greetings = intros[Math.floor(Math.random() * intros.length)];
             }
-            greetingBox.innerHTML = `<p class="small-text" id="greetings"> ${greetings} </p>`;
+            greetingBox.classList.remove('box');
+            greetingBox.innerHTML = `<p class="medium-text description-label"> ${greetings} </p>`;
         }
 
         playButton.onclick = function() {
@@ -695,6 +687,9 @@ window.onload = function() {
         }
         settingsButton.onclick = function() {
             window.location.href = './settings.html';
+        }
+        detailsButton.onclick = function() {
+            window.location.href = './details.html';
         }
 
 

@@ -50,7 +50,7 @@ function executeGame() {
         }
     }
     const colorMap = {
-        'P': localStorage.bricksColor,
+        'P': sessionStorage.bricksColor,
         'R': '#5955B3',
         'O': '#5955B3',
         'G': '#5955B3',
@@ -284,8 +284,8 @@ function executeGame() {
         }
 
         // отрисовка стен
-        context.fillStyle = localStorage.fieldColor;
-        document.getElementById('canvas-container').style.background = localStorage.fieldColor;
+        context.fillStyle = sessionStorage.fieldColor;
+        document.getElementById('canvas-container').style.background = sessionStorage.fieldColor;
         document.getElementById('canvas-container').style.borderRadius = '2.15rem';
         context.fillRect(0, 0, field.offsetWidth, wallSize);
         context.fillRect(0, 0, wallSize, field.offsetHeight);
@@ -296,7 +296,7 @@ function executeGame() {
         if (ball.dx || ball.dy) {
             context.beginPath();
             context.arc(ball.x, ball.y, ball.radius, 0, 360);
-            context.fillStyle = localStorage.ballColor; // цвет мяча
+            context.fillStyle = sessionStorage.ballColor; // цвет мяча
             context.fill();
         }
 
@@ -307,7 +307,7 @@ function executeGame() {
         });
 
         // отрисовка платформы
-        context.fillStyle = localStorage.paddleColor;
+        context.fillStyle = sessionStorage.paddleColor;
         context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
     }
     // функция запуска мяча
@@ -316,6 +316,7 @@ function executeGame() {
         if (ball.dx === 0 && ball.dy === 0) {
             if (counter == 1) {
                 timer();
+                field.style.cursor = 'none';
             }
             if (radioHorizontal.checked) {
                 ball.x = field.offsetWidth * 0.6;
@@ -328,7 +329,6 @@ function executeGame() {
                 ball.dx = ball.speed / 1.5;
                 ball.dy = ball.speed;
             }
-            field.style.cursor = 'none';
         }
         return counter;
     }
@@ -414,13 +414,15 @@ function executeGame() {
         executeGame();
     })
 
-
     document.getElementById('save').onclick = function() {
-        console.log('до');
-        console.log(sessionStorage);
-        console.log(localStorage);
         windowSetting();
     }
+    document.addEventListener('keyup', function(e) {
+        if (e.which === 13) {
+            windowSetting();
+        }
+    });
+
     requestAnimationFrame(loop);
 
 }
@@ -438,49 +440,6 @@ function windowSetting() {
             settingsButton = document.getElementById('settings-box'),
             detailsButton = document.getElementById('details-box'),
             profileButton = document.getElementById('profile-box');
-        //     greetingBox = document.getElementById('greeting-box'),
-        //     detailsButton = document.getElementById('details-box'),
-        //     profileButton = document.getElementById('profile-box');
-
-        // if (localStorage.userName && localStorage.userName != undefined) {
-        //     var now = new Date(),
-        //         greetings = '';
-        //     if (now.getHours() >= 6 && now.getHours() < 12) {
-        //         let intros = [`Morning, ${localStorage.userName}! What a good day, isn't it?`,
-        //             `Sup, ${localStorage.userName}! Wanna start day with game?`,
-        //             `Yo, ${localStorage.userName}! Wanna play bright and early?`,
-        //             `Ahoy, ${localStorage.userName}! How pleasant to see ya this morning...`,
-        //             `Hi there, ${localStorage.userName}! Top of the morning to you <3`
-        //         ];
-        //         greetings = intros[Math.floor(Math.random() * intros.length)];
-        //     } else if (now.getHours() >= 12 && now.getHours() < 18) {
-        //         let intros = [`Hey, ${localStorage.userName}! What a good day, isn't it?`,
-        //             `Hi there, ${localStorage.userName}! Let's play?`,
-        //             `Wats's up, ${localStorage.userName}! Wanna break some blocks?`,
-        //             `Wassup, ${localStorage.userName}! Nice to see ya again :)`,
-        //             `Oh, ${localStorage.userName}, there's stacks to do and there's stacks to see, 
-        //             there's stacks to touch and there's stacks to be, so many ways to spend your time, but you decided to do it with me... 
-        //             So pathetically, but i'm still just a blocks breaker...`
-        //         ];
-        //         greetings = intros[Math.floor(Math.random() * intros.length)];
-        //     } else if (now.getHours() >= 18 && now.getHours() < 24) {
-        //         let intros = [`Sup, ${localStorage.userName}! Decided to spend the evening crashing bricks?`,
-        //             `Hi there, ${localStorage.userName}! Tnx for choosing to spend this evening with me...`,
-        //             `Wats's up, ${localStorage.userName}! So what are you doing up in the middle of the night?`,
-        //             `Evening, ${localStorage.userName}! Nice to see ya again :)`
-        //         ];
-        //         greetings = intros[Math.floor(Math.random() * intros.length)];
-        //     } else if (now.getHours() < 6) {
-        //         let intros = [`Yo, ${localStorage.userName}! Decided to dedicate the night to brickbreaker?`,
-        //             `Hi there, ${localStorage.userName}! People usually sleep at night... Well okay...`,
-        //             `Wats's up, ${localStorage.userName}! Wanna to brighten up your evening with a game?`,
-        //             `Sup, ${localStorage.userName}! Why are you awake, may I ask?`
-        //         ];
-        //         greetings = intros[Math.floor(Math.random() * intros.length)];
-        //     }
-        //     greetingBox.classList.remove('box');
-        //     greetingBox.innerHTML = `<p class="medium-text description-label"> ${greetings} </p>`;
-        // }
 
         playButton.onclick = function() {
             window.location.href = './mode.html';
@@ -513,17 +472,15 @@ function windowSetting() {
             fieldColorInput = document.getElementById('field-color'),
             saveAppearanceButton = document.getElementById('save-appearance');
 
-        if (!ballColorInput.hasAttribute('value')) {
-            ballColorInput.setAttribute('value', localStorage.ballColor);
-        }
-        if (!paddleColorInput.hasAttribute('value')) {
-            paddleColorInput.setAttribute('value', localStorage.paddleColor);
-        }
-        if (!bricksColorInput.hasAttribute('value')) {
-            bricksColorInput.setAttribute('value', localStorage.bricksColor);
-        }
-        if (!fieldColorInput.hasAttribute('value')) {
-            fieldColorInput.setAttribute('value', localStorage.fieldColor);
+        setValueFromLocal(ballColorInput, 'ballColor');
+        setValueFromLocal(paddleColorInput, 'paddleColor');
+        setValueFromLocal(bricksColorInput, 'bricksColor');
+        setValueFromLocal(fieldColorInput, 'fieldColor');
+
+        function setValueFromLocal(input, key) {
+            if (!input.hasAttribute('value')) {
+                input.setAttribute('value', localStorage[key]);
+            }
         }
 
         saveAppearanceButton.onclick = function() {
@@ -533,6 +490,17 @@ function windowSetting() {
             localStorage.setItem('fieldColor', fieldColorInput.value);
             window.location.href = './index.html';
         }
+
+        document.addEventListener('keyup', function(e) {
+            if (e.which === 13) {
+                localStorage.setItem('ballColor', ballColorInput.value);
+                localStorage.setItem('paddleColor', paddleColorInput.value);
+                localStorage.setItem('bricksColor', bricksColorInput.value);
+                localStorage.setItem('fieldColor', fieldColorInput.value);
+                window.location.href = './index.html';
+            }
+        });
+        windowSetting();
     } else if (location.pathname.includes('profile')) {
         let saveSettingsButton = document.getElementById('save-settings'),
             playerName = document.getElementById('player-name'),
@@ -558,6 +526,13 @@ function windowSetting() {
             localStorage.setItem('userName', playerName.value);
             location.reload();
         }
+
+        document.addEventListener('keyup', function(e) {
+            if (e.which === 13) {
+                localStorage.setItem('userName', playerName.value);
+                location.reload();
+            }
+        });
     } else if (location.pathname.includes('settings')) {
         let paddleSpeed = document.getElementById('paddle-speed'),
             resPaddleSpeed = document.getElementById('res-paddle-speed'),
@@ -585,27 +560,18 @@ function windowSetting() {
             ballRadius.setAttribute('value', localStorage.ballRadius);
             resBallRadius.innerHTML = ballRadius.value;
         }
+        setRangeValue(paddleSpeed, resPaddleSpeed);
+        setRangeValue(ballSpeed, resBallSpeed);
+        setRangeValue(paddleSize, resPaddleSize);
+        setRangeValue(ballRadius, resBallRadius);
 
-        paddleSpeed.style.backgroundSize = (paddleSpeed.value - paddleSpeed.min) * 100 / (paddleSpeed.max - paddleSpeed.min) + '% 100%';
-        paddleSpeed.addEventListener('input', function() {
-            resPaddleSpeed.innerHTML = paddleSpeed.value;
-            paddleSpeed.style.backgroundSize = (paddleSpeed.value - paddleSpeed.min) * 100 / (paddleSpeed.max - paddleSpeed.min) + '% 100%';
-        })
-        ballSpeed.style.backgroundSize = (ballSpeed.value - ballSpeed.min) * 100 / (ballSpeed.max - ballSpeed.min) + '% 100%';
-        ballSpeed.addEventListener('input', function() {
-            resBallSpeed.innerHTML = ballSpeed.value;
-            ballSpeed.style.backgroundSize = (ballSpeed.value - ballSpeed.min) * 100 / (ballSpeed.max - ballSpeed.min) + '% 100%';
-        })
-        paddleSize.style.backgroundSize = (paddleSize.value - paddleSize.min) * 100 / (paddleSize.max - paddleSize.min) + '% 100%';
-        paddleSize.addEventListener('input', function() {
-            resPaddleSize.innerHTML = paddleSize.value;
-            paddleSize.style.backgroundSize = (paddleSize.value - paddleSize.min) * 100 / (paddleSize.max - paddleSize.min) + '% 100%';
-        })
-        ballRadius.style.backgroundSize = (ballRadius.value - ballRadius.min) * 100 / (ballRadius.max - ballRadius.min) + '% 100%';
-        ballRadius.addEventListener('input', function() {
-            resBallRadius.innerHTML = ballRadius.value;
-            ballRadius.style.backgroundSize = (ballRadius.value - ballRadius.min) * 100 / (ballRadius.max - ballRadius.min) + '% 100%';
-        })
+        function setRangeValue(range, label) {
+            range.style.backgroundSize = (range.value - range.min) * 100 / (range.max - range.min) + '% 100%';
+            range.addEventListener('input', function() {
+                label.innerHTML = range.value;
+                range.style.backgroundSize = (range.value - range.min) * 100 / (range.max - range.min) + '% 100%';
+            })
+        }
         saveSettingsButton.onclick = function() {
             localStorage.setItem('paddleSpeed', paddleSpeed.value);
             localStorage.setItem('ballSpeed', ballSpeed.value);
@@ -613,6 +579,16 @@ function windowSetting() {
             localStorage.setItem('ballRadius', ballRadius.value);
             location.reload();
         }
+
+        document.addEventListener('keyup', function(e) {
+            if (e.which === 13) {
+                localStorage.setItem('paddleSpeed', paddleSpeed.value);
+                localStorage.setItem('ballSpeed', ballSpeed.value);
+                localStorage.setItem('paddleSize', paddleSize.value);
+                localStorage.setItem('ballRadius', ballRadius.value);
+                location.reload();
+            }
+        });
     } else if (location.pathname.includes('game')) { // страница игры
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 
@@ -666,33 +642,48 @@ function windowSetting() {
                 paddleSize = document.getElementById('paddle-size'),
                 resPaddleSize = document.getElementById('res-paddle-size'),
                 ballRadius = document.getElementById('ball-radius'),
-                resBallRadius = document.getElementById('res-ball-radius');
+                resBallRadius = document.getElementById('res-ball-radius'),
+                ballColor = document.getElementById('ball-color'),
+                paddleColor = document.getElementById('paddle-color'),
+                bricksColor = document.getElementById('bricks-color'),
+                fieldColor = document.getElementById('field-color');
 
 
             checkSessionStorageValueConst(bricksNumberRow, resBricksNumberRow, 13, 'bricksNumberRow');
             checkSessionStorageValueConst(bricksNumberColumn, resBricksNumberColumn, 12), 'bricksNumberColumn';
             checkSessionStorageValueConst(gapsSize, resGapsSize, 5, 'gapsSize');
 
-            checkSessionStorageValueLocal(paddleSpeed, resPaddleSpeed, 'paddleSpeed');
-            checkSessionStorageValueLocal(ballSpeed, resBallSpeed, 'ballSpeed');
-            checkSessionStorageValueLocal(paddleSize, resPaddleSize, 'paddleSize');
-            checkSessionStorageValueLocal(ballRadius, resBallRadius, 'ballRadius');
+            setInputValueFromSessionOrLocal(paddleSpeed, resPaddleSpeed, 'paddleSpeed');
+            setInputValueFromSessionOrLocal(ballSpeed, resBallSpeed, 'ballSpeed');
+            setInputValueFromSessionOrLocal(paddleSize, resPaddleSize, 'paddleSize');
+            setInputValueFromSessionOrLocal(ballRadius, resBallRadius, 'ballRadius');
+            setInputValueFromSessionOrLocal(ballRadius, resBallRadius, 'ballRadius');
 
-            setSessioonStorageItem(bricksNumberRow, 'bricksNumberRow');
-            setSessioonStorageItem(bricksNumberColumn, 'bricksNumberColumn');
-            setSessioonStorageItem(gapsSize, 'gapsSize');
-            setSessioonStorageItem(paddleSpeed, 'paddleSpeed');
-            setSessioonStorageItem(ballSpeed, 'ballSpeed');
-            setSessioonStorageItem(paddleSize, 'paddleSize');
-            setSessioonStorageItem(ballRadius, 'ballRadius');
+            setInputValueFromSessionOrLocal(ballColor, '', 'ballColor');
+            setInputValueFromSessionOrLocal(paddleColor, '', 'paddleColor');
+            setInputValueFromSessionOrLocal(bricksColor, '', 'bricksColor');
+            setInputValueFromSessionOrLocal(fieldColor, '', 'fieldColor');
 
-            fillSessionStorageValue(bricksNumberRow, resBricksNumberRow, 'bricksNumberRow');
-            fillSessionStorageValue(bricksNumberColumn, resBricksNumberColumn, 'bricksNumberColumn');
-            fillSessionStorageValue(gapsSize, resGapsSize, 'gapsSize');
-            fillSessionStorageValue(paddleSpeed, resPaddleSpeed, 'paddleSpeed');
-            fillSessionStorageValue(ballSpeed, resBallSpeed, 'ballSpeed');
-            fillSessionStorageValue(paddleSize, resPaddleSize, 'paddleSize');
-            fillSessionStorageValue(ballRadius, resBallRadius, 'ballRadius');
+            setSessionStorageItem(bricksNumberRow, 'bricksNumberRow');
+            setSessionStorageItem(bricksNumberColumn, 'bricksNumberColumn');
+            setSessionStorageItem(gapsSize, 'gapsSize');
+            setSessionStorageItem(paddleSpeed, 'paddleSpeed');
+            setSessionStorageItem(ballSpeed, 'ballSpeed');
+            setSessionStorageItem(paddleSize, 'paddleSize');
+            setSessionStorageItem(ballRadius, 'ballRadius');
+
+            setSessionStorageItem(ballColor, 'ballColor');
+            setSessionStorageItem(paddleColor, 'paddleColor');
+            setSessionStorageItem(bricksColor, 'bricksColor');
+            setSessionStorageItem(fieldColor, 'fieldColor');
+
+            setRangeSessionValue(bricksNumberRow, resBricksNumberRow, 'bricksNumberRow');
+            setRangeSessionValue(bricksNumberColumn, resBricksNumberColumn, 'bricksNumberColumn');
+            setRangeSessionValue(gapsSize, resGapsSize, 'gapsSize');
+            setRangeSessionValue(paddleSpeed, resPaddleSpeed, 'paddleSpeed');
+            setRangeSessionValue(ballSpeed, resBallSpeed, 'ballSpeed');
+            setRangeSessionValue(paddleSize, resPaddleSize, 'paddleSize');
+            setRangeSessionValue(ballRadius, resBallRadius, 'ballRadius');
 
             function checkSessionStorageValueConst(range, label, value, key) {
                 if (!range.hasAttribute('value')) {
@@ -703,22 +694,22 @@ function windowSetting() {
                 }
             }
 
-            function checkSessionStorageValueLocal(range, label, key) {
-                if (!range.hasAttribute('value')) {
+            function setInputValueFromSessionOrLocal(input, label, key) {
+                if (!input.hasAttribute('value')) {
                     (sessionStorage[key]) ?
-                    range.setAttribute('value', sessionStorage[key]):
-                        range.setAttribute('value', localStorage[key]);
-                    label.innerHTML = range.value;
+                    input.setAttribute('value', sessionStorage[key]):
+                        input.setAttribute('value', localStorage[key]);
+                    if (label != '') {
+                        label.innerHTML = input.value;
+                    }
                 }
             }
 
-            function setSessioonStorageItem(range, key) {
-                if (!sessionStorage[key]) {
-                    sessionStorage.setItem(key, range.value);
-                }
+            function setSessionStorageItem(input, key) {
+                sessionStorage.setItem(key, input.value);
             }
 
-            function fillSessionStorageValue(range, label, key) {
+            function setRangeSessionValue(range, label, key) {
                 range.style.backgroundSize = (range.value - range.min) * 100 / (range.max - range.min) + '% 100%';
                 range.addEventListener('input', function() {
                     sessionStorage.setItem(key, range.value);
@@ -739,29 +730,20 @@ window.addEventListener('resize', function(event) {
     windowSetting();
 });
 window.onload = function() {
-    if (!localStorage.ballColor) {
-        localStorage.setItem('ballColor', '#DA2E2E');
-    }
-    if (!localStorage.paddleColor) {
-        localStorage.setItem('paddleColor', '#282828');
-    }
-    if (!localStorage.bricksColor) {
-        localStorage.setItem('bricksColor', '#5955B3');
-    }
-    if (!localStorage.fieldColor) {
-        localStorage.setItem('fieldColor', '#FEFEFE');
-    }
-    if (!localStorage.ballRadius) {
-        localStorage.setItem('ballRadius', '10');
-    }
-    if (!localStorage.ballSpeed) {
-        localStorage.setItem('ballSpeed', '7');
-    }
-    if (!localStorage.paddleSpeed) {
-        localStorage.setItem('paddleSpeed', '10');
-    }
-    if (!localStorage.paddleSize) {
-        localStorage.setItem('paddleSize', '120');
+
+    setValueToLocalIfNotExists('paddleSize', '120');
+    setValueToLocalIfNotExists('paddleSpeed', '10');
+    setValueToLocalIfNotExists('ballSpeed', '7');
+    setValueToLocalIfNotExists('ballRadius', '10');
+    setValueToLocalIfNotExists('fieldColor', '#FEFEFE');
+    setValueToLocalIfNotExists('bricksColor', '#5955B3');
+    setValueToLocalIfNotExists('paddleColor', '#282828');
+    setValueToLocalIfNotExists('ballColor', '#DA2E2E');
+
+    function setValueToLocalIfNotExists(key, value) {
+        if (!localStorage[key]) {
+            localStorage.setItem(key, value);
+        }
     }
     windowSetting();
 
@@ -787,6 +769,35 @@ window.onload = function() {
     if (location.pathname.includes('index') || location.pathname.split('').pop() == '/') { // главная страница 
         let greetingBox = document.getElementById('greeting-box');
 
+        if (!localStorage.userName || localStorage.userName == undefined) {
+            greetingBox.innerHTML = `
+            <p class="medium-text-black" id="greetings">
+                It seems like we didn't met yet. Please introduce yourself:
+            </p>
+            <div class="introduce-block">
+                <div class="input-data">
+                    <input class="medium-text-black" type="text" id="player-name" required />
+                    <div class="underline"></div>
+                    <label class="medium-text">My name is...</label>
+                </div>
+                <button class="medium-text button-type-1" id="set-up-name"></button>
+            </div>`;
+
+            let userNameInput = document.getElementById('player-name'),
+                setUpUserName = document.getElementById('set-up-name');
+
+            setUpUserName.onclick = function() {
+                localStorage.setItem('userName', userNameInput.value);
+                location.reload();
+            }
+            document.addEventListener('keyup', function(e) {
+                if (e.which === 13) {
+                    localStorage.setItem('userName', userNameInput.value);
+                    location.reload();
+                }
+            });
+
+        }
         if (localStorage.userName && localStorage.userName != undefined) {
             var now = new Date(),
                 greetings = '';

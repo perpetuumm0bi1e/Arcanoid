@@ -203,6 +203,12 @@
         transform: translate(-0.143rem, -0.143rem);
     }
     
+    .button-type-1:active {
+        color: var(--black);
+        box-shadow: none;
+        transform: translate(0rem, 0rem);
+    }
+    
     .button-type-2 {
         flex-grow: 1;
         margin-top: 5rem;
@@ -217,6 +223,31 @@
         color: var(--black);
         box-shadow: 0.143rem 0.143rem var(--black);
         transform: translate(-0.143rem, -0.143rem);
+    }
+    
+    .button-type-2:hover {
+        color: var(--black);
+        box-shadow: none;
+        transform: translate(0rem, 0rem);
+    }
+    
+    .button-type-3 {
+        padding: .5rem 4rem;
+        background: transparent;
+        border: .1rem solid var(--gray);
+        border-radius: .7rem;
+        transition: all .4s ease-in-out;
+    }
+    
+    .button-type-3:hover {
+        color: var(--black);
+        border: .1rem solid var(--black);
+    }
+    
+    .button-type-3:active {
+        background: var(--gray);
+        color: var(--black);
+        border: .1rem solid var(--black);
     }
     
     .container {
@@ -392,6 +423,8 @@
     }
     
     details {
+        display: flex;
+        flex-direction: column;
         width: 100%;
         transition: all .5s ease-in-out;
     }
@@ -430,6 +463,7 @@
         letter-spacing: 0.05rem;
         color: var(--black);
     }
+    
     details:not([open])>summary {
         margin: 0px auto;
         width: auto;
@@ -452,25 +486,30 @@
         width: 100%;
         padding: .2rem;
     } */
-    summary.item-parameters{
+    
+    summary.item-parameters {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: flex-start;
         gap: 1rem;
     }
-    summary.item-parameters>div{
+    
+    summary.item-parameters>div {
         background-position: center center;
         background-repeat: no-repeat;
         height: 2rem;
         width: 2rem;
     }
-    details:not([open])>summary.item-parameters>div{
+    
+    details:not([open])>summary.item-parameters>div {
         background-image: url(./img/plus-icon.svg);
     }
-    details[open]>summary.item-parameters>div{
+    
+    details[open]>summary.item-parameters>div {
         background-image: url(./img/minus-icon.svg);
     }
+    
     details summary::-webkit-details-marker {
         display: none
     }
@@ -483,10 +522,12 @@
         justify-content: flex-start;
         gap: 1rem;
     }
-    .details-content>p.small-text{
+    
+    .details-content>p.small-text {
         margin: 0rem;
         align-self: center;
     }
+    
     .details-item {
         width: 100%;
     }
@@ -513,9 +554,11 @@
     #greeting-box {
         width: 100%;
     }
-    .container>div>p+p.small-text{
+    
+    .container>div>p+p.small-text {
         margin-top: -2rem;
     }
+    
     .description-label {
         letter-spacing: 0.07rem;
         text-align: center;
@@ -593,7 +636,8 @@
         background-position: center center;
         background-repeat: no-repeat;
     }
-    #set-up-name:hover{
+    
+    #set-up-name:hover {
         background-image: url(./img/confirm-black-icon.svg);
     }
     
@@ -640,7 +684,8 @@
     .box:has(input) {
         flex-grow: 1;
     }
-    .attention-box{
+    
+    .attention-box {
         width: 100%;
         background-color: var(--gray);
         border-radius: 1rem;
@@ -652,16 +697,51 @@
         padding: 1rem 2rem;
         margin: 2rem 0rem;
     }
-    .attention-box>div.attention-icon{
+    
+    .attention-box>div.attention-icon {
         background-image: url(./img/attention-icon.svg);
         background-position: center center;
         background-repeat: no-repeat;
         height: 2rem;
         width: 2rem;
     }
-    .attention-box>p.small-text{
+    
+    .attention-box>p.small-text {
         margin: 0;
     }
-    .attention-box+div{
+    
+    .attention-box+div {
         margin-bottom: 3rem;
+    }
+    
+    .color-items {
+        flex-grow: 1;
+        align-self: center;
+        justify-self: center;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem 1.7rem;
+        width: 100%;
+        margin: 1rem auto;
+    }
+    
+    .color-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .color-item p {
+        text-align: center;
+        margin-bottom: -3rem;
+    }
+    
+    .details-item button {
+        margin: 4rem auto;
+        justify-self: center;
     }

@@ -27,24 +27,8 @@ function executeGame() {
         ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
         ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
     ];
-    const level2 = [
-        [],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P']
-    ];
 
     let level_bricks = [];
-    level_bricks.push([]);
     if (sessionStorage.mode == 'infinity') {
         for (let row = 0; row < sessionStorage.bricksNumberRow; row++) {
             level_bricks.push([]);
@@ -142,7 +126,7 @@ function executeGame() {
             case 'vertical':
                 for (let row = 0; row < arr.length; row++) {
                     for (let col = 0; col < arr[row].length; col++) {
-                        const colorCode = arr[row][col];
+                        let colorCode = arr[row][col];
                         bricks.push({
                             x: wallSize + (brickWidth + brickGap) * col,
                             y: wallSize + (brickHeight + brickGap) * row + field.offsetHeight * 0.05,
@@ -214,31 +198,18 @@ function executeGame() {
 
         // проверка координат шарика
         // для горизонтального
-        if (radioHorizontal.checked) {
-            if (ball.x < wallSize + ball.radius) {
-                ball.x = wallSize + ball.radius;
-                ball.dx *= -1;
-            }
-            if (ball.y < wallSize + ball.radius) {
-                ball.y = wallSize + ball.radius;
-                ball.dy *= -1;
-            } else if (ball.y + ball.radius > field.offsetHeight - wallSize) {
-                ball.y = field.offsetHeight - wallSize - ball.radius;
-                ball.dy *= -1;
-            }
-        } else if (radioVertical.checked) { // для вертикального
-            if (ball.x - ball.radius < wallSize) {
-                ball.x = wallSize + ball.radius;
-                ball.dx *= -1;
-            } else if (ball.x + ball.radius > field.offsetWidth - wallSize) {
-                ball.x = field.offsetWidth - wallSize - ball.radius;
-                ball.dx *= -1;
-            }
-            if (ball.y < wallSize + ball.radius) {
-                ball.y = wallSize + ball.radius;
-                ball.dy *= -1;
-            }
+        if (ball.x - ball.radius < wallSize ) {
+            ball.x = wallSize + ball.radius;
+            (radioHorizontal.checked) ? ball.dx *= -1 : ball.dy *= -1;
         }
+        if (ball.y < wallSize + ball.radius) {
+            ball.y = wallSize + ball.radius;
+            (radioHorizontal.checked) ? ball.dy *= -1 : ball.dx *= -1;
+        } else if (ball.y + ball.radius > field.offsetHeight - wallSize) {
+            ball.y = field.offsetHeight - wallSize - ball.radius;
+            (radioHorizontal.checked) ? ball.dy *= -1 : ball.dx *= -1;
+        }
+       
 
         // перезапуск шарика
         // для горизонтального
@@ -255,12 +226,9 @@ function executeGame() {
         }
 
         // проверка касания платформы
-        if (radioHorizontal.checked && collides(ball, paddle)) {
-            ball.dx *= -1;
-            ball.x = paddle.x - ball.radius;
-        } else if (radioVertical.checked && collides(ball, paddle)) {
-            ball.dy *= -1;
-            ball.y = paddle.y - ball.radius;
+        if (collides(ball, paddle)) {
+            (radioHorizontal.checked) ? (ball.dx *= -1, ball.x = paddle.x - ball.radius) : 
+            (ball.dy *= -1, ball.y = paddle.y - ball.radius);
         }
 
         // проверка касания кирпича
@@ -306,13 +274,17 @@ function executeGame() {
 
         // отрисовка кирпичей
         bricks.forEach(function(brick) {
+            context.beginPath();
             context.fillStyle = brick.color;
-            context.fillRect(brick.x, brick.y, brick.width, brick.height);
+            context.roundRect(brick.x, brick.y, brick.width, brick.height, [3]);
+            context.fill();
         });
 
         // отрисовка платформы
+        context.beginPath();
         context.fillStyle = sessionStorage.paddleColor;
-        context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+        context.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, [5]);
+        context.fill();
     }
     // функция запуска мяча
     function threwBall(counter) {
@@ -340,10 +312,10 @@ function executeGame() {
         touchPosition,
         pointerPosition;
 
-    // нажатие тачскрина
-    field.addEventListener('touchstart', e => {
-        e.preventDefault();
-    })
+    // // нажатие тачскрина
+    // field.addEventListener('touchstart', e => {
+    //     e.preventDefault();
+    // })
 
     // отжатие тачскрина
     field.addEventListener('touchend', e => {

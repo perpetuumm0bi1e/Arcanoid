@@ -69,29 +69,29 @@ function executeGame() {
         sec = 0,
         min = 0,
         t;
-    console.log(sessionStorage)
+
     if (sessionStorage.mode == 'story') {
         brickGap = 5;
         (radioHorizontal.checked) ?
         (brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
-            brickWidth = brickHeight / 2,
-            paddleHeight = sessionStorage.mode == 'infinity' ? Number(localStorage.paddleSize) : (field.offsetHeight - 2 * wallSize) / 5,
-            paddleWidth = paddleHeight * 0.1) :
+            brickWidth = brickHeight / 2.5,
+            paddleHeight = sessionStorage.mode == 'infinity' ? Number(sessionStorage.paddleSize) : (field.offsetHeight - 2 * wallSize) / 5,
+            paddleWidth = 10) :
         (brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
-            brickHeight = brickWidth / 2,
-            paddleWidth = sessionStorage.mode == 'infinity' ? Number(localStorage.paddleSize) : (field.offsetWidth - 2 * wallSize) / 5,
-            paddleHeight = paddleWidth * 0.1);
+            brickHeight = brickWidth / 2.5,
+            paddleWidth = sessionStorage.mode == 'infinity' ? Number(sessionStorage.paddleSize) : (field.offsetWidth - 2 * wallSize) / 5,
+            paddleHeight = 10);
     } else if (sessionStorage.mode == 'infinity') {
         brickGap = Number(sessionStorage.gapsSize);
         (radioHorizontal.checked) ?
         (brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (sessionStorage.bricksNumberColumn - 1)) / sessionStorage.bricksNumberColumn,
-            brickWidth = brickHeight / 2,
-            paddleHeight = sessionStorage.mode == 'infinity' ? Number(localStorage.paddleSize) : (field.offsetHeight - 2 * wallSize) / 5,
-            paddleWidth = paddleHeight * 0.1) :
+            brickWidth = brickHeight / 2.5,
+            paddleHeight = sessionStorage.mode == 'infinity' ? Number(sessionStorage.paddleSize) : (field.offsetHeight - 2 * wallSize) / 5,
+            paddleWidth = 10) :
         (brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (sessionStorage.bricksNumberColumn - 1)) / sessionStorage.bricksNumberColumn,
-            brickHeight = brickWidth / 2,
-            paddleWidth = sessionStorage.mode == 'infinity' ? Number(localStorage.paddleSize) : (field.offsetWidth - 2 * wallSize) / 5,
-            paddleHeight = paddleWidth * 0.1);
+            brickHeight = brickWidth / 2.5,
+            paddleWidth = sessionStorage.mode == 'infinity' ? Number(sessionStorage.paddleSize) : (field.offsetWidth - 2 * wallSize) / 5,
+            paddleHeight = 10);
     }
 
     function tick() {
@@ -157,8 +157,8 @@ function executeGame() {
     (sessionStorage.mode == 'infinity' ? bricksFill(level_bricks, 'vertical') : bricksFill(level1, 'vartical'));
 
     const paddle = {
-        x: radioHorizontal.checked ? field.offsetWidth * 0.9 : field.offsetWidth / 2 - paddleWidth / 2,
-        y: radioHorizontal.checked ? field.offsetHeight / 2 - paddleWidth / 2 : field.offsetHeight * 0.9,
+        x: radioHorizontal.checked ? field.offsetWidth * 0.94 : field.offsetWidth / 2 - paddleWidth / 2,
+        y: radioHorizontal.checked ? field.offsetHeight / 2 - paddleWidth / 2 : field.offsetHeight * 0.94,
         width: Number(paddleWidth),
         height: Number(paddleHeight),
         dx: 0, // направление по x
@@ -167,13 +167,13 @@ function executeGame() {
     const ball = {
         x: (radioHorizontal.checked) ? field.offsetWidth * 0.6 : field.offsetWidth * 0.4,
         y: (radioHorizontal.checked) ? field.offsetHeight * 0.4 : field.offsetHeight * 0.6,
-        radius: (sessionStorage.mode == 'infinity') ? Number(localStorage.ballRadius) : 10,
-        speed: (sessionStorage.mode == 'infinity') ? Number(localStorage.ballSpeed) : 7,
+        radius: (sessionStorage.mode == 'infinity') ? Number(sessionStorage.ballRadius) : 10,
+        speed: (sessionStorage.mode == 'infinity') ? Number(sessionStorage.ballSpeed) : 7,
         dx: 0,
         dy: 0
     };
-    // проверка касания объектов
 
+    // проверка касания объектов
     function collides(obj1, obj2) {
         return obj1.x < obj2.x + obj2.width &&
             obj1.x + obj1.radius > obj2.x &&
@@ -310,9 +310,29 @@ function executeGame() {
         context.fillStyle = localStorage.paddleColor;
         context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
     }
-
-    let touchscreenClickCounter = 0,
-        mouseClickCounter = 0,
+// функция запуска мяча
+    function threwBall(counter){
+        counter++;
+        if(ball.dx === 0 && ball.dy === 0){
+            if (counter == 1) { 
+                timer(); 
+            }
+            if (radioHorizontal.checked) {
+                ball.x = field.offsetWidth * 0.6;
+                ball.y = field.offsetHeight * 0.4;
+                ball.dx = ball.speed;
+                ball.dy = ball.speed / 1.5;
+            } else if (radioVertical.checked) {
+                ball.x = field.offsetWidth * 0.4;
+                ball.y = field.offsetHeight * 0.6;
+                ball.dx = ball.speed / 1.5;
+                ball.dy = ball.speed;
+            }
+            field.style.cursor = 'none';
+        }
+        return counter;
+    }
+    let сlickCounter = 0,
         touchPosition,
         pointerPosition;
 
@@ -323,14 +343,7 @@ function executeGame() {
 
     // отжатие тачскрина
     field.addEventListener('touchend', e => {
-        touchscreenClickCounter++;
-        if (ball.dx === 0 && ball.dy === 0) {
-            ball.dx = ball.speed / 2;
-            ball.dy = ball.speed;
-        }
-        if (touchscreenClickCounter == 1) {
-            timer();
-        }
+        сlickCounter = threwBall(сlickCounter);
     })
 
     // ведение по тачскрину
@@ -348,23 +361,21 @@ function executeGame() {
     document.addEventListener('keydown', function(e) {
         if (radioKeyboard.checked && radioHorizontal.checked) {
             if (e.which === 87 || e.which === 38) {
-                paddle.dy = -10;
+                paddle.dy = (sessionStorage.mode == 'infinity') ? (-1 * sessionStorage.paddleSpeed) : -10;
             } else if (e.which === 83 || e.which === 40) {
-                paddle.dy = 10;
+                paddle.dy = (sessionStorage.mode == 'infinity') ? sessionStorage.paddleSpeed : 10;
             }
-            if (ball.dx === 0 && ball.dy === 0 && e.which === 32) {
-                ball.dx = ball.speed;
-                ball.dy = ball.speed / 2;
+            if (e.which === 32) {
+                сlickCounter = threwBall(сlickCounter);
             }
         } else if (radioKeyboard.checked && radioVertical.checked) {
             if (e.which === 65 || e.which === 37) {
-                paddle.dx = (sessionStorage.mode == 'infinity') ? (-1 * localStorage.paddleSpeed) : -10;
+                paddle.dx = (sessionStorage.mode == 'infinity') ? (-1 * sessionStorage.paddleSpeed) : -10;
             } else if (e.which === 68 || e.which === 39) {
-                paddle.dx = (sessionStorage.mode == 'infinity') ? localStorage.paddleSpeed : 10;
+                paddle.dx = (sessionStorage.mode == 'infinity') ? sessionStorage.paddleSpeed : 10;
             }
-            if (ball.dx === 0 && ball.dy === 0 && e.which === 32) {
-                ball.dx = ball.speed / 2;
-                ball.dy = ball.speed;
+            if (e.which === 32) {
+                сlickCounter = threwBall(сlickCounter);
             }
         }
     });
@@ -377,29 +388,9 @@ function executeGame() {
             paddle.dx = 0;
         }
     });
-    console.log(ball)
-        // клик по полю для запуска мяча
+    // клик по полю для запуска мяча
     field.addEventListener('click', function(e) {
-        mouseClickCounter++;
-
-        if (radioMouse.checked && ball.dx === 0 && ball.dy === 0) {
-            if (mouseClickCounter == 1) {
-                timer();
-            }
-            if (radioHorizontal.checked) {
-                ball.x = field.offsetWidth * 0.6;
-                ball.y = field.offsetHeight * 0.4;
-                ball.dx = ball.speed;
-                ball.dy = ball.speed / 2;
-            } else if (radioVertical.checked) {
-                ball.x = field.offsetWidth * 0.4;
-                ball.y = field.offsetHeight * 0.6;
-                ball.dx = ball.speed / 2;
-                ball.dy = ball.speed;
-            }
-            console.log(ball)
-            field.style.cursor = 'none';
-        }
+        сlickCounter = threwBall(сlickCounter);
     });
 
     // отслеживание движения курсора
@@ -424,60 +415,10 @@ function executeGame() {
     })
 
 
-    let bricksNumberRow = document.getElementById('bricks-number-row'),
-        resBricksNumberRow = document.getElementById('res-bricks-number-row'),
-        bricksNumberColumn = document.getElementById('bricks-number-column'),
-        resBricksNumberColumn = document.getElementById('res-bricks-number-column'),
-        gapsSize = document.getElementById('gaps-size'),
-        resGapsSize = document.getElementById('res-gaps-size');
-
-    if (!bricksNumberRow.hasAttribute('value')) {
-        (sessionStorage.bricksNumberRow) ?
-        bricksNumberRow.setAttribute('value', sessionStorage.bricksNumberRow):
-            bricksNumberRow.setAttribute('value', 13);
-        resBricksNumberRow.innerHTML = bricksNumberRow.value;
-    }
-    if (!bricksNumberColumn.hasAttribute('value')) {
-        (sessionStorage.bricksNumberColumn) ?
-        bricksNumberColumn.setAttribute('value', sessionStorage.bricksNumberColumn):
-            bricksNumberColumn.setAttribute('value', 12);
-        resBricksNumberColumn.innerHTML = bricksNumberColumn.value;
-    }
-    if (!gapsSize.hasAttribute('value')) {
-        (sessionStorage.gapsSize) ?
-        gapsSize.setAttribute('value', sessionStorage.gapsSize):
-            gapsSize.setAttribute('value', 5);
-        resGapsSize.innerHTML = gapsSize.value;
-    }
-    if (!sessionStorage.bricksNumberRow) {
-        sessionStorage.setItem('bricksNumberRow', bricksNumberRow.value);
-    }
-    if (!sessionStorage.bricksNumberColumn) {
-        sessionStorage.setItem('bricksNumberColumn', bricksNumberColumn.value);
-    }
-    if (!sessionStorage.gapsSize) {
-        sessionStorage.setItem('gapsSize', gapsSize.value);
-    }
-
-    bricksNumberRow.style.backgroundSize = (bricksNumberRow.value - bricksNumberRow.min) * 100 / (bricksNumberRow.max - bricksNumberRow.min) + '% 100%';
-    bricksNumberRow.addEventListener('input', function() {
-        sessionStorage.setItem('bricksNumberRow', bricksNumberRow.value);
-        resBricksNumberRow.innerHTML = bricksNumberRow.value;
-        bricksNumberRow.style.backgroundSize = (bricksNumberRow.value - bricksNumberRow.min) * 100 / (bricksNumberRow.max - bricksNumberRow.min) + '% 100%';
-    })
-    bricksNumberColumn.style.backgroundSize = (bricksNumberColumn.value - bricksNumberColumn.min) * 100 / (bricksNumberColumn.max - bricksNumberColumn.min) + '% 100%';
-    bricksNumberColumn.addEventListener('input', function() {
-        sessionStorage.setItem('bricksNumberColumn', bricksNumberColumn.value);
-        resBricksNumberColumn.innerHTML = bricksNumberColumn.value;
-        bricksNumberColumn.style.backgroundSize = (bricksNumberColumn.value - bricksNumberColumn.min) * 100 / (bricksNumberColumn.max - bricksNumberColumn.min) + '% 100%';
-    })
-    gapsSize.style.backgroundSize = (gapsSize.value - gapsSize.min) * 100 / (gapsSize.max - gapsSize.min) + '% 100%';
-    gapsSize.addEventListener('input', function() {
-        sessionStorage.setItem('gapsSize', gapsSize.value);
-        resGapsSize.innerHTML = gapsSize.value;
-        gapsSize.style.backgroundSize = (gapsSize.value - gapsSize.min) * 100 / (gapsSize.max - gapsSize.min) + '% 100%';
-    })
     document.getElementById('save').onclick = function() {
+        console.log('до');
+        console.log(sessionStorage);
+        console.log(localStorage);
         windowSetting();
     }
     requestAnimationFrame(loop);
@@ -491,40 +432,206 @@ function windowSetting() {
         gameContainer = document.getElementById('game-container'),
         canvasContainer = document.getElementById('canvas-container');
 
-    if (location.pathname.includes('index') || location.pathname == '/') {
-        let playButton = document.getElementById('play-box'),
-            designButton = document.getElementById('appearance-box'),
-            settingsButton = document.getElementById('settings-box');
-
-        // (document.body.clientWidth <= 920 && document.body.clientWidth > 678) ?
-        //     (designButton.style.order = '1', 
-        //     playButton.style.order = '3', 
-        //     settingsButton.style.order = '2') :
-        // (document.body.clientWidth <= 678) ?
-        //     (designButton.style.order = '2', 
-        //     playButton.style.order = '1', 
-        //     settingsButton.style.order = '3') :
-        //     (designButton.style.order = '1', 
-        //     playButton.style.order = '2', 
-        //     settingsButton.style.order = '3');
-
-    } else if (location.pathname.includes('game')) {
+        if (location.pathname.includes('index') || location.pathname.split('').pop() == '/') { // главная страница 
+            let playButton = document.getElementById('play-box'),
+                appearanceButton = document.getElementById('appearance-box'),
+                settingsButton = document.getElementById('settings-box'),
+                greetingBox = document.getElementById('greeting-box'),
+                detailsButton = document.getElementById('details-box'),
+                profileButton = document.getElementById('profile-box');
+    
+            if (localStorage.userName && localStorage.userName != undefined) {
+                var now = new Date(),
+                    greetings = '';
+                if (now.getHours() >= 6 && now.getHours() < 12) {
+                    let intros = [`Morning, ${localStorage.userName}! What a good day, isn't it?`,
+                        `Sup, ${localStorage.userName}! Wanna start day with game?`,
+                        `Yo, ${localStorage.userName}! Wanna play bright and early?`,
+                        `Ahoy, ${localStorage.userName}! How pleasant to see ya this morning...`,
+                        `Hi there, ${localStorage.userName}! Top of the morning to you <3`
+                    ];
+                    greetings = intros[Math.floor(Math.random() * intros.length)];
+                } else if (now.getHours() >= 12 && now.getHours() < 18) {
+                    let intros = [`Hey, ${localStorage.userName}! What a good day, isn't it?`,
+                        `Hi there, ${localStorage.userName}! Let's play?`,
+                        `Wats's up, ${localStorage.userName}! Wanna break some blocks?`,
+                        `Wassup, ${localStorage.userName}! Nice to see ya again :)`,
+                        `Oh, ${localStorage.userName}, there's stacks to do and there's stacks to see, 
+                        there's stacks to touch and there's stacks to be, so many ways to spend your time, but you decided to do it with me... 
+                        So pathetically, but i'm still just a blocks breaker...`
+                    ];
+                    greetings = intros[Math.floor(Math.random() * intros.length)];
+                } else if (now.getHours() >= 18 && now.getHours() < 24) {
+                    let intros = [`Sup, ${localStorage.userName}! Decided to spend the evening crashing bricks?`,
+                        `Hi there, ${localStorage.userName}! Tnx for choosing to spend this evening with me...`,
+                        `Wats's up, ${localStorage.userName}! So what are you doing up in the middle of the night?`,
+                        `Evening, ${localStorage.userName}! Nice to see ya again :)`
+                    ];
+                    greetings = intros[Math.floor(Math.random() * intros.length)];
+                } else if (now.getHours() < 6) {
+                    let intros = [`Yo, ${localStorage.userName}! Decided to dedicate the night to brickbreaker?`,
+                        `Hi there, ${localStorage.userName}! People usually sleep at night... Well okay...`,
+                        `Wats's up, ${localStorage.userName}! Wanna to brighten up your evening with a game?`,
+                        `Sup, ${localStorage.userName}! Why are you awake, may I ask?`
+                    ];
+                    greetings = intros[Math.floor(Math.random() * intros.length)];
+                }
+                greetingBox.classList.remove('box');
+                greetingBox.innerHTML = `<p class="medium-text description-label"> ${greetings} </p>`;
+            }
+    
+            playButton.onclick = function() {
+                window.location.href = './mode.html';
+            }
+            appearanceButton.onclick = function() {
+                window.location.href = './appearance.html';
+            }
+            settingsButton.onclick = function() {
+                window.location.href = './settings.html';
+            }
+            detailsButton.onclick = function() {
+                window.location.href = './details.html';
+            }
+            profileButton.onclick = function() {
+                window.location.href = './profile.html';
+            }
+    
+    
+        } else if (location.pathname.includes('mode')) { // страница выбора режима
+            let playButton = document.getElementById('infinity-button');
+    
+            playButton.onclick = function() {
+                sessionStorage.setItem('mode', 'infinity');
+                window.location.href = './infinity-game.html';
+            }
+        } else if (location.pathname.includes('appearance')) { // страница настройки внешнего вида
+            let ballColorInput = document.getElementById('ball-color'),
+                paddleColorInput = document.getElementById('paddle-color'),
+                bricksColorInput = document.getElementById('bricks-color'),
+                fieldColorInput = document.getElementById('field-color'),
+                saveAppearanceButton = document.getElementById('save-appearance');
+    
+            if (!ballColorInput.hasAttribute('value')) { 
+                ballColorInput.setAttribute('value', localStorage.ballColor); 
+            }
+            if (!paddleColorInput.hasAttribute('value')) { 
+                paddleColorInput.setAttribute('value', localStorage.paddleColor); 
+            }
+            if (!bricksColorInput.hasAttribute('value')) { 
+                bricksColorInput.setAttribute('value', localStorage.bricksColor); 
+            }
+            if (!fieldColorInput.hasAttribute('value')) { 
+                fieldColorInput.setAttribute('value', localStorage.fieldColor); 
+            }
+    
+            saveAppearanceButton.onclick = function() {
+                localStorage.setItem('ballColor', ballColorInput.value);
+                localStorage.setItem('paddleColor', paddleColorInput.value);
+                localStorage.setItem('bricksColor', bricksColorInput.value);
+                localStorage.setItem('fieldColor', fieldColorInput.value);
+                window.location.href = './index.html';
+            }
+        } else if (location.pathname.includes('profile')) {
+            let saveSettingsButton = document.getElementById('save-settings'),
+                playerName = document.getElementById('player-name'),
+                forgetMeButton = document.getElementById('forget-me');
+                
+            (localStorage.userName) ? playerName.value = localStorage.userName : playerName.value = '';
+    
+            forgetMeButton.onclick = function(){
+                let answer = prompt('Clear all user data? Write "YES" if you are sure:', '');
+                switch(answer){
+                    case 'YES':
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        location.reload();
+                        break;
+                    default:
+                        alert("Data cleanup canceled");
+                        break;
+                }
+            }
+            
+            saveSettingsButton.onclick = function() {
+                localStorage.setItem('userName', playerName.value);
+                location.reload();
+            }
+        } else if (location.pathname.includes('settings')) {
+            let paddleSpeed = document.getElementById('paddle-speed'),
+                resPaddleSpeed = document.getElementById('res-paddle-speed'),
+                ballSpeed = document.getElementById('ball-speed'),
+                resBallSpeed = document.getElementById('res-ball-speed'),
+                paddleSize = document.getElementById('paddle-size'),
+                resPaddleSize = document.getElementById('res-paddle-size'),
+                ballRadius = document.getElementById('ball-radius'),
+                resBallRadius = document.getElementById('res-ball-radius'),
+                saveSettingsButton = document.getElementById('save-settings');
+    
+            if (!paddleSpeed.hasAttribute('value')) {
+                paddleSpeed.setAttribute('value', localStorage.paddleSpeed);
+                resPaddleSpeed.innerHTML = paddleSpeed.value;
+            }
+            if (!ballSpeed.hasAttribute('value')) {
+                ballSpeed.setAttribute('value', localStorage.ballSpeed);
+                resBallSpeed.innerHTML = ballSpeed.value;
+            }
+            if (!paddleSize.hasAttribute('value')) {
+                paddleSize.setAttribute('value', localStorage.paddleSize);
+                resPaddleSize.innerHTML = paddleSize.value;
+            }
+            if (!ballRadius.hasAttribute('value')) {
+                ballRadius.setAttribute('value', localStorage.ballRadius);
+                resBallRadius.innerHTML = ballRadius.value;
+            }
+    
+            paddleSpeed.style.backgroundSize = (paddleSpeed.value - paddleSpeed.min) * 100 / (paddleSpeed.max - paddleSpeed.min) + '% 100%';
+            paddleSpeed.addEventListener('input', function() {
+                resPaddleSpeed.innerHTML = paddleSpeed.value;
+                paddleSpeed.style.backgroundSize = (paddleSpeed.value - paddleSpeed.min) * 100 / (paddleSpeed.max - paddleSpeed.min) + '% 100%';
+            })
+            ballSpeed.style.backgroundSize = (ballSpeed.value - ballSpeed.min) * 100 / (ballSpeed.max - ballSpeed.min) + '% 100%';
+            ballSpeed.addEventListener('input', function() {
+                resBallSpeed.innerHTML = ballSpeed.value;
+                ballSpeed.style.backgroundSize = (ballSpeed.value - ballSpeed.min) * 100 / (ballSpeed.max - ballSpeed.min) + '% 100%';
+            })
+            paddleSize.style.backgroundSize = (paddleSize.value - paddleSize.min) * 100 / (paddleSize.max - paddleSize.min) + '% 100%';
+            paddleSize.addEventListener('input', function() {
+                resPaddleSize.innerHTML = paddleSize.value;
+                paddleSize.style.backgroundSize = (paddleSize.value - paddleSize.min) * 100 / (paddleSize.max - paddleSize.min) + '% 100%';
+            })
+            ballRadius.style.backgroundSize = (ballRadius.value - ballRadius.min) * 100 / (ballRadius.max - ballRadius.min) + '% 100%';
+            ballRadius.addEventListener('input', function() {
+                resBallRadius.innerHTML = ballRadius.value;
+                ballRadius.style.backgroundSize = (ballRadius.value - ballRadius.min) * 100 / (ballRadius.max - ballRadius.min) + '% 100%';
+            })
+            saveSettingsButton.onclick = function() {
+                localStorage.setItem('paddleSpeed', paddleSpeed.value);
+                localStorage.setItem('ballSpeed', ballSpeed.value);
+                localStorage.setItem('paddleSize', paddleSize.value);
+                localStorage.setItem('ballRadius', ballRadius.value);
+                location.reload();
+            }
+        } else if (location.pathname.includes('game')) { // страница игры
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+
             // для телефонов
             (document.body.clientWidth < 740) ?
             (radioHorizontal.disabled = true,
                 radioVertical.checked = true,
                 canvasWidth = gameContainer.offsetWidth - 20,
-                canvasHeight = canvasWidth * 1.6) :
+                canvasHeight = canvasWidth * 2.2) :
             radioHorizontal.disabled = false;
+
             // для планшетов
             if (!radioHorizontal.checked && !radioVertical.checked && !radioHorizontal.disabled) {
                 radioHorizontal.checked = true;
-                canvasWidth = gameContainer.offsetWidth - 20;
-                canvasHeight = canvasWidth / 1.6;
-            } else if (radioVertical.checked && !radioHorizontal.disabled) {
+            } 
+            if (radioVertical.checked && !radioHorizontal.disabled) {
                 canvasWidth = gameContainer.offsetWidth * .7;
-                canvasHeight = canvasWidth * 1.6;
+                canvasHeight = canvasWidth * 1.9;
+            } else if (radioHorizontal.checked && !radioHorizontal.disabled) {
+                canvasWidth = gameContainer.offsetWidth - 20;
+                canvasHeight = canvasWidth / 1.3;
             }
             document.getElementById('touchscreen').checked = true;
         } else { // для пк
@@ -542,8 +649,89 @@ function windowSetting() {
         }
 
         canvasContainer.innerHTML = `<canvas id='game' width='${canvasWidth}' height='${canvasHeight}'></canvas>`;
-        executeGame();
+
+        if (location.pathname.includes('infinity-game')) { 
+            let bricksNumberRow = document.getElementById('bricks-number-row'),
+                resBricksNumberRow = document.getElementById('res-bricks-number-row'),
+                bricksNumberColumn = document.getElementById('bricks-number-column'),
+                resBricksNumberColumn = document.getElementById('res-bricks-number-column'),
+                gapsSize = document.getElementById('gaps-size'),
+                resGapsSize = document.getElementById('res-gaps-size'),
+                paddleSpeed = document.getElementById('paddle-speed'),
+                resPaddleSpeed = document.getElementById('res-paddle-speed'),
+                ballSpeed = document.getElementById('ball-speed'),
+                resBallSpeed = document.getElementById('res-ball-speed'),
+                paddleSize = document.getElementById('paddle-size'),
+                resPaddleSize = document.getElementById('res-paddle-size'),
+                ballRadius = document.getElementById('ball-radius'),
+                resBallRadius = document.getElementById('res-ball-radius');
+        
+                
+            checkSessionStorageValueConst(bricksNumberRow, resBricksNumberRow, 13, 'bricksNumberRow');
+            checkSessionStorageValueConst(bricksNumberColumn, resBricksNumberColumn, 12), 'bricksNumberColumn';
+            checkSessionStorageValueConst(gapsSize, resGapsSize, 5, 'gapsSize');
+    
+            checkSessionStorageValueLocal(paddleSpeed, resPaddleSpeed, 'paddleSpeed');
+            checkSessionStorageValueLocal(ballSpeed, resBallSpeed, 'ballSpeed');
+            checkSessionStorageValueLocal(paddleSize, resPaddleSize, 'paddleSize');
+            checkSessionStorageValueLocal(ballRadius, resBallRadius, 'ballRadius');
+    
+            setSessioonStorageItem(bricksNumberRow, 'bricksNumberRow');
+            setSessioonStorageItem(bricksNumberColumn, 'bricksNumberColumn');
+            setSessioonStorageItem(gapsSize, 'gapsSize');
+            setSessioonStorageItem(paddleSpeed, 'paddleSpeed');
+            setSessioonStorageItem(ballSpeed, 'ballSpeed');
+            setSessioonStorageItem(paddleSize, 'paddleSize');
+            setSessioonStorageItem(ballRadius, 'ballRadius');
+    
+            fillSessionStorageValue(bricksNumberRow, resBricksNumberRow, 'bricksNumberRow');
+            fillSessionStorageValue(bricksNumberColumn, resBricksNumberColumn, 'bricksNumberColumn');
+            fillSessionStorageValue(gapsSize, resGapsSize, 'gapsSize');
+            fillSessionStorageValue(paddleSpeed, resPaddleSpeed, 'paddleSpeed');
+            fillSessionStorageValue(ballSpeed, resBallSpeed, 'ballSpeed');
+            fillSessionStorageValue(paddleSize, resPaddleSize, 'paddleSize');
+            fillSessionStorageValue(ballRadius, resBallRadius, 'ballRadius');
+    
+            function checkSessionStorageValueConst(range, label, value, key){
+                if (!range.hasAttribute('value')) {
+                    (sessionStorage[key]) ?
+                    range.setAttribute('value', sessionStorage[key]):
+                    range.setAttribute('value', value);
+                    label.innerHTML = range.value;
+                }
+            }
+    
+            function checkSessionStorageValueLocal(range, label, key){
+                if (!range.hasAttribute('value')) {
+                    (sessionStorage[key]) ?
+                    range.setAttribute('value', sessionStorage[key]):
+                    range.setAttribute('value', localStorage[key]);
+                    label.innerHTML = range.value;
+                }
+            }
+    
+            function setSessioonStorageItem(range, key){
+                if (!sessionStorage[key]) {
+                    sessionStorage.setItem(key, range.value);
+                }
+            }
+    
+            function fillSessionStorageValue(range, label, key){
+                range.style.backgroundSize = (range.value - range.min) * 100 / (range.max - range.min) + '% 100%';
+                range.addEventListener('input', function() {
+                    sessionStorage.setItem(key, range.value);
+                    label.innerHTML = range.value;
+                    range.style.backgroundSize = (range.value - range.min) * 100 / (range.max - range.min) + '% 100%';
+                })
+            }
+            
+    console.log('после');
+            console.log(sessionStorage);
+            console.log(localStorage);
+            executeGame();
+        }
     }
+    
 }
 window.addEventListener('resize', function(event) {
     windowSetting();
@@ -592,187 +780,5 @@ window.onload = function() {
 
     for (let element of impulseAppearedElements) { observer.observe(element); }
     for (let element of topAppearedElements) { observer.observe(element); }
-    for (let element of bottomAppearedElements) { observer.observe(element); }
-
-    if (location.pathname.includes('infinity-game')) { // страница игры
-        executeGame();
-    } else if (location.pathname.includes('index') || location.pathname.split('').pop() == '/') { // главная страница 
-        let playButton = document.getElementById('play-box'),
-            appearanceButton = document.getElementById('appearance-box'),
-            settingsButton = document.getElementById('settings-box'),
-            greetingBox = document.getElementById('greeting-box'),
-            detailsButton = document.getElementById('details-box'),
-            setUpNameButton,
-            userNameInput;
-
-        //localStorage.removeItem('userName');
-        if (!localStorage.userName || localStorage.userName == undefined) {
-            greetingBox.innerHTML = `
-            <p class="medium-text-black" id="greetings">
-                It seems like we didn't met yet. Please introduce yourself:
-            </p>
-            <div class="introduce-block">
-                <div class="input-data">
-                    <input class="medium-text-black" type="text" id="player-name" required />
-                    <div class="underline"></div>
-                    <label class="medium-text">My name is...</label>
-                </div>
-                <button class="medium-text button-type-1" id="set-up-name">
-                    &#10003;
-                </button>`;
-
-            setUpNameButton = document.getElementById('set-up-name');
-            userNameInput = document.getElementById('player-name');
-
-            setUpNameButton.onclick = function() {
-                localStorage.setItem('userName', userNameInput.value);
-                location.reload();
-            }
-        }
-
-
-        if (localStorage.userName && localStorage.userName != undefined) {
-            var now = new Date(),
-                greetings = '';
-            if (now.getHours() >= 6 && now.getHours() < 12) {
-                let intros = [`Morning, ${localStorage.userName}! What a good day, isn't it?`,
-                    `Sup, ${localStorage.userName}! Wanna start day with game?`,
-                    `Yo, ${localStorage.userName}! Wanna play bright and early?`,
-                    `Ahoy, ${localStorage.userName}! How pleasant to see ya this morning...`,
-                    `Hi there, ${localStorage.userName}! Top of the morning to you <3`
-                ];
-                greetings = intros[Math.floor(Math.random() * intros.length)];
-            } else if (now.getHours() >= 12 && now.getHours() < 18) {
-                let intros = [`Hey, ${localStorage.userName}! What a good day, isn't it?`,
-                    `Hi there, ${localStorage.userName}! Let's play?`,
-                    `Wats's up, ${localStorage.userName}! Wanna break some blocks?`,
-                    `Wassup, ${localStorage.userName}! Nice to see ya again :)`,
-                    `Oh, ${localStorage.userName}, there's stacks to do and there's stacks to see, 
-                    there's stacks to touch and there's stacks to be, so many ways to spend your time, but you decided to do it with me... 
-                    So pathetically, but i'm still just a blocks breaker...`
-                ];
-                greetings = intros[Math.floor(Math.random() * intros.length)];
-            } else if (now.getHours() >= 18 && now.getHours() < 24) {
-                let intros = [`Sup, ${localStorage.userName}! Decided to spend the evening crashing bricks?`,
-                    `Hi there, ${localStorage.userName}! Tnx for choosing to spend this evening with me...`,
-                    `Wats's up, ${localStorage.userName}! So what are you doing up in the middle of the night?`,
-                    `Evening, ${localStorage.userName}! Nice to see ya again :)`
-                ];
-                greetings = intros[Math.floor(Math.random() * intros.length)];
-            } else if (now.getHours() < 6) {
-                let intros = [`Yo, ${localStorage.userName}! Decided to dedicate the night to brickbreaker?`,
-                    `Hi there, ${localStorage.userName}! People usually sleep at night... Well okay...`,
-                    `Wats's up, ${localStorage.userName}! Wanna to brighten up your evening with a game?`,
-                    `Sup, ${localStorage.userName}! Why are you awake, may I ask?`
-                ];
-                greetings = intros[Math.floor(Math.random() * intros.length)];
-            }
-            greetingBox.classList.remove('box');
-            greetingBox.innerHTML = `<p class="medium-text description-label"> ${greetings} </p>`;
-        }
-
-        playButton.onclick = function() {
-            window.location.href = './mode.html';
-        }
-        appearanceButton.onclick = function() {
-            window.location.href = './appearance.html';
-        }
-        settingsButton.onclick = function() {
-            window.location.href = './settings.html';
-        }
-        detailsButton.onclick = function() {
-            window.location.href = './details.html';
-        }
-
-
-    } else if (location.pathname.includes('mode')) { // страница выбора режима
-        let playButton = document.getElementById('infinity-button');
-
-        playButton.onclick = function() {
-            sessionStorage.setItem('mode', 'infinity');
-            window.location.href = './infinity-game.html';
-        }
-    } else if (location.pathname.includes('appearance')) { // страница настройки внешнего вида
-        let ballColorInput = document.getElementById('ball-color'),
-            paddleColorInput = document.getElementById('paddle-color'),
-            bricksColorInput = document.getElementById('bricks-color'),
-            fieldColorInput = document.getElementById('field-color'),
-            saveAppearanceButton = document.getElementById('save-appearance');
-
-        if (!ballColorInput.hasAttribute('value')) {
-            ballColorInput.setAttribute('value', localStorage.ballColor);
-        }
-        if (!paddleColorInput.hasAttribute('value')) {
-            paddleColorInput.setAttribute('value', localStorage.paddleColor);
-        }
-        if (!bricksColorInput.hasAttribute('value')) {
-            bricksColorInput.setAttribute('value', localStorage.bricksColor);
-        }
-        if (!fieldColorInput.hasAttribute('value')) {
-            fieldColorInput.setAttribute('value', localStorage.fieldColor);
-        }
-
-        saveAppearanceButton.onclick = function() {
-            localStorage.setItem('ballColor', ballColorInput.value);
-            localStorage.setItem('paddleColor', paddleColorInput.value);
-            localStorage.setItem('bricksColor', bricksColorInput.value);
-            localStorage.setItem('fieldColor', fieldColorInput.value);
-            window.location.href = './index.html';
-        }
-    } else if (location.pathname.includes('settings')) {
-        let paddleSpeed = document.getElementById('paddle-speed'),
-            resPaddleSpeed = document.getElementById('res-paddle-speed'),
-            ballSpeed = document.getElementById('ball-speed'),
-            resBallSpeed = document.getElementById('res-ball-speed'),
-            paddleSize = document.getElementById('paddle-size'),
-            resPaddleSize = document.getElementById('res-paddle-size'),
-            ballRadius = document.getElementById('ball-radius'),
-            resBallRadius = document.getElementById('res-ball-radius'),
-            saveSettingsButton = document.getElementById('save-settings');
-
-        if (!paddleSpeed.hasAttribute('value')) {
-            paddleSpeed.setAttribute('value', localStorage.paddleSpeed);
-            resPaddleSpeed.innerHTML = paddleSpeed.value;
-        }
-        if (!ballSpeed.hasAttribute('value')) {
-            ballSpeed.setAttribute('value', localStorage.ballSpeed);
-            resBallSpeed.innerHTML = ballSpeed.value;
-        }
-        if (!paddleSize.hasAttribute('value')) {
-            paddleSize.setAttribute('value', localStorage.paddleSize);
-            resPaddleSize.innerHTML = paddleSize.value;
-        }
-        if (!ballRadius.hasAttribute('value')) {
-            ballRadius.setAttribute('value', localStorage.ballRadius);
-            resBallRadius.innerHTML = ballRadius.value;
-        }
-
-        paddleSpeed.style.backgroundSize = (paddleSpeed.value - paddleSpeed.min) * 100 / (paddleSpeed.max - paddleSpeed.min) + '% 100%';
-        paddleSpeed.addEventListener('input', function() {
-            resPaddleSpeed.innerHTML = paddleSpeed.value;
-            paddleSpeed.style.backgroundSize = (paddleSpeed.value - paddleSpeed.min) * 100 / (paddleSpeed.max - paddleSpeed.min) + '% 100%';
-        })
-        ballSpeed.style.backgroundSize = (ballSpeed.value - ballSpeed.min) * 100 / (ballSpeed.max - ballSpeed.min) + '% 100%';
-        ballSpeed.addEventListener('input', function() {
-            resBallSpeed.innerHTML = ballSpeed.value;
-            ballSpeed.style.backgroundSize = (ballSpeed.value - ballSpeed.min) * 100 / (ballSpeed.max - ballSpeed.min) + '% 100%';
-        })
-        paddleSize.style.backgroundSize = (paddleSize.value - paddleSize.min) * 100 / (paddleSize.max - paddleSize.min) + '% 100%';
-        paddleSize.addEventListener('input', function() {
-            resPaddleSize.innerHTML = paddleSize.value;
-            paddleSize.style.backgroundSize = (paddleSize.value - paddleSize.min) * 100 / (paddleSize.max - paddleSize.min) + '% 100%';
-        })
-        ballRadius.style.backgroundSize = (ballRadius.value - ballRadius.min) * 100 / (ballRadius.max - ballRadius.min) + '% 100%';
-        ballRadius.addEventListener('input', function() {
-            resBallRadius.innerHTML = ballRadius.value;
-            ballRadius.style.backgroundSize = (ballRadius.value - ballRadius.min) * 100 / (ballRadius.max - ballRadius.min) + '% 100%';
-        })
-        saveSettingsButton.onclick = function() {
-            localStorage.setItem('paddleSpeed', paddleSpeed.value);
-            localStorage.setItem('ballSpeed', ballSpeed.value);
-            localStorage.setItem('paddleSize', paddleSize.value);
-            localStorage.setItem('ballRadius', ballRadius.value);
-            window.location.href = './index.html';
-        }
-    }
+    for (let element of bottomAppearedElements) { observer.observe(element); }  
 }

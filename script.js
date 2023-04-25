@@ -1,3 +1,7 @@
+let saveAlert = document.createElement('div');
+saveAlert.className = 'attention-box save-alert-box';
+saveAlert.innerHTML = '<div class="save-alert-icon"></div><p class="small-text">Updated<p>';
+
 function executeGame() {
     let field = document.getElementById('game'),
         context = field.getContext('2d'),
@@ -416,10 +420,18 @@ function executeGame() {
 
     document.getElementById('save').onclick = function() {
         windowSetting();
+        document.getElementById('save').parentNode.append(saveAlert);
+        setTimeout(function() {
+            document.getElementById('save').parentNode.lastChild.remove();
+        }, 2000)
     }
     document.addEventListener('keyup', function(e) {
         if (e.which === 13) {
             windowSetting();
+            document.getElementById('save').parentNode.append(saveAlert);
+            setTimeout(function() {
+                document.getElementById('save').parentNode.lastChild.remove();
+            }, 2000)
         }
     });
 
@@ -488,7 +500,10 @@ function windowSetting() {
             localStorage.setItem('paddleColor', paddleColorInput.value);
             localStorage.setItem('bricksColor', bricksColorInput.value);
             localStorage.setItem('fieldColor', fieldColorInput.value);
-            window.location.href = './index.html';
+            saveAppearanceButton.parentNode.append(saveAlert);
+            setTimeout(function() {
+                saveAppearanceButton.parentNode.lastChild.remove();
+            }, 2000)
         }
 
         document.addEventListener('keyup', function(e) {
@@ -497,7 +512,10 @@ function windowSetting() {
                 localStorage.setItem('paddleColor', paddleColorInput.value);
                 localStorage.setItem('bricksColor', bricksColorInput.value);
                 localStorage.setItem('fieldColor', fieldColorInput.value);
-                window.location.href = './index.html';
+                saveAppearanceButton.parentNode.append(saveAlert);
+                setTimeout(function() {
+                    saveAppearanceButton.parentNode.lastChild.remove();
+                }, 2000)
             }
         });
         windowSetting();
@@ -524,13 +542,19 @@ function windowSetting() {
 
         saveSettingsButton.onclick = function() {
             localStorage.setItem('userName', playerName.value);
-            location.reload();
+            saveSettingsButton.parentNode.append(saveAlert);
+            setTimeout(function() {
+                saveSettingsButton.parentNode.lastChild.remove();
+            }, 2000)
         }
 
         document.addEventListener('keyup', function(e) {
             if (e.which === 13) {
                 localStorage.setItem('userName', playerName.value);
-                location.reload();
+                saveSettingsButton.parentNode.append(saveAlert);
+                setTimeout(function() {
+                    saveSettingsButton.parentNode.lastChild.remove();
+                }, 2000)
             }
         });
     } else if (location.pathname.includes('settings')) {
@@ -577,7 +601,10 @@ function windowSetting() {
             localStorage.setItem('ballSpeed', ballSpeed.value);
             localStorage.setItem('paddleSize', paddleSize.value);
             localStorage.setItem('ballRadius', ballRadius.value);
-            location.reload();
+            saveSettingsButton.parentNode.append(saveAlert);
+            setTimeout(function() {
+                saveSettingsButton.parentNode.lastChild.remove();
+            }, 2000)
         }
 
         document.addEventListener('keyup', function(e) {
@@ -586,7 +613,10 @@ function windowSetting() {
                 localStorage.setItem('ballSpeed', ballSpeed.value);
                 localStorage.setItem('paddleSize', paddleSize.value);
                 localStorage.setItem('ballRadius', ballRadius.value);
-                location.reload();
+                saveSettingsButton.parentNode.append(saveAlert);
+                setTimeout(function() {
+                    saveSettingsButton.parentNode.lastChild.remove();
+                }, 2000)
             }
         });
     } else if (location.pathname.includes('game')) { // страница игры

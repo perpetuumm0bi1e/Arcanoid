@@ -6,6 +6,7 @@
         --gray: #F2F2F2;
         --dark-gray: #999999;
         --green: #D6FC51;
+        --light-green: #E9EFD3;
         --blue: #0000C4;
         --red: #DA2E2E;
     }
@@ -698,12 +699,17 @@
         margin: 2rem 0rem;
     }
     
-    .attention-box>div.attention-icon {
+    .attention-box>div.attention-icon,
+    .attention-box>div.save-alert-icon {
         background-image: url(./img/attention-icon.svg);
         background-position: center center;
         background-repeat: no-repeat;
         height: 2rem;
         width: 2rem;
+    }
+    
+    .attention-box>div.save-alert-icon {
+        background-image: url(./img/confirm-black-icon.svg);
     }
     
     .attention-box>p.small-text {

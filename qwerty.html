@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono&display=swap" rel="stylesheet">
+    <title>malmyzh_ball</title>
+</head>
+<style>
+    .body {
+        background: rgb(24, 24, 24);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    canvas {
+        background-color: rgb(24, 24, 24);
+        box-shadow: 0 0 5px var(--color), 0 0 25px var(--color), 0 0 40px var(--color);
+    }
+    
+    :root {
+        --color: #804cdb;
+    }
+    
+    .container {
+        position: relative;
+    }
+    
+    .cont {
+        font-family: 'Space Mono', monospace;
+        position: relative;
+        display: flex;
+        justify-content: space-around;
+    }
+    
+    ul {
+        list-style: none;
+    }
+    
+    li {
+        margin: 10px;
+    }
+    
+    .control {
+        text-align: center;
+        width: 300px;
+        height: 80px;
+        position: relative;
+        padding: 15px;
+        letter-spacing: 3px;
+        background: rgb(15, 20, 0);
+        color: var(--color);
+        font-size: 15px;
+        font-weight: bold;
+        border-radius: 25px;
+        border: 1px solid var(--color);
+        transition: 0.3s;
+        margin: 50px;
+        box-shadow: 0 0 5px var(--color), 0 0 25px var(--color), 0 0 40px var(--color);
+    }
+    
+    .control_choice {
+        position: relative;
+        left: 30px;
+        text-align: left;
+    }
+</style>
+
+<body class="body">
+    <div class="container">
+        <div class="canvas">
+            <canvas width="1200" height="740" id="game"></canvas>
+        </div>
+        <div class="cont">
+            <form class="control">
+                <div class=control_choice>
+                    <ul>
+                        <li>
+                            <input type="radio" id="keyboard" name="choice">
+                            <label for="dark">Keyboard</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="mouse" name=choice checked>
+                            <label for="dark">Mouse</label>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <script src="./qwerty.js"></script>
+    </div>
+</body>
+
+</html>

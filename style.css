@@ -29,9 +29,11 @@
         background: var(--gray);
         font-family: 'Mabrope', sans-serif;
     }
-    main{
+    
+    main {
         min-height: 100vh;
     }
+    
     .impulse-appearance-animation.appeared {
         animation-name: impulse-appearance;
         animation-duration: .8s;
@@ -236,9 +238,11 @@
         gap: 1.07rem;
         width: 100%;
     }
-    .buttons-sub-container .button-type-2{
+    
+    .buttons-sub-container .button-type-2 {
         margin-top: 0rem;
     }
+    
     .box {
         flex-grow: 1;
         display: flex;
@@ -282,7 +286,7 @@
         box-shadow: none;
         transform: translate(0px, 0px);
     }
-   
+    
     #play-box,
     #restart {
         flex-grow: 2;
@@ -314,7 +318,6 @@
     }
     
     canvas {
-        background-color: var(--white);
         border-radius: 2.15rem;
         touch-action: none;
         cursor: crosshair;
@@ -465,7 +468,6 @@
         box-shadow: none;
         transform: none;
     }
-    
     
     input[type='color'] {
         margin: 4rem auto 1rem auto;

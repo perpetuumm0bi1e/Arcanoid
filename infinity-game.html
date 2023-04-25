@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,51 +10,41 @@
     <link rel="icon" href="ю/img/icon2.svg" type="image/vnd.microsoft.icon" />
     <link rel="stylesheet" href="./style.css" />
     <title>&lt; arkanoid &gt;</title>
-  </head>
+</head>
 
-  <body>
+<body>
     <main>
-      <div class="header 1top-appearance-animation" id="header">
-        <a id="logo" href="./index.html"> &lt; arkanoid &gt;</a>
-      </div>
-      <div class="container" id="game-container">
-        <div class="sub-container">
-          <div
-            class="game-info-box box impulse-appearance-animation"
-            id="score-box">
-            <p class="gray-heading" id="score">0</p>
-          </div>
-          <button
-            class="game-info-box box impulse-appearance-animation"
-            id="restart">
+        <div class="header 1top-appearance-animation" id="header">
+            <a id="logo" href="./index.html"> &lt; arkanoid &gt;</a>
+        </div>
+        <div class="container" id="game-container">
+            <div class="sub-container">
+                <div class="game-info-box box impulse-appearance-animation" id="score-box">
+                    <p class="gray-heading" id="score">0</p>
+                </div>
+                <button class="game-info-box box impulse-appearance-animation" id="restart">
             <img id="restart-img" src="./img/restart.svg" />
           </button>
-          <div
-            class="game-info-box box impulse-appearance-animation"
-            id="time-box">
-            <p class="gray-heading" id="time">00:00</p>
-          </div>
-        </div>
-        <div class="canvas" id="canvas-container">
-          <!-- здесь будет создано поле через скрипт -->
-        </div>
-        <div class="control impulse-appearance-animation">
-          <details class="details">
-            <summary>
-              <p class="medium-text">Match parameters</p>
-              <div class="underline-2"></div>
-            </summary>
-            <div class="details-content">
-              <div class="details-item">
-                <p class="medium-text game-box-text">Orientation</p>
-                <div class="choice-group">
-                  <div class="choice-item">
-                    <input type="radio" id="horizontal" name="align-choice" />
-                    <label
-                      class="main-text medium-text"
-                      for="horizontal"
-                      id="horizontal-label"
-                      >Horizontal</label
+                <div class="game-info-box box impulse-appearance-animation" id="time-box">
+                    <p class="gray-heading" id="time">00:00</p>
+                </div>
+            </div>
+            <div class="canvas" id="canvas-container">
+                <!-- здесь будет создано поле через скрипт -->
+            </div>
+            <div class="control impulse-appearance-animation">
+                <details class="details">
+                    <summary>
+                        <p class="medium-text">Match parameters</p>
+                        <div class="underline-2"></div>
+                    </summary>
+                    <div class="details-content">
+                        <div class="details-item">
+                            <p class="medium-text game-box-text">Orientation</p>
+                            <div class="choice-group">
+                                <div class="choice-item">
+                                    <input type="radio" id="horizontal" name="align-choice" />
+                                    <label class="main-text medium-text" for="horizontal" id="horizontal-label">Horizontal</label
                     >
                   </div>
                   <div class="choice-item">
@@ -73,15 +64,14 @@
                   <div class="choice-item">
                     <input type="radio" id="keyboard" name="choice" />
                     <label class="medium-text" for="keyboard">Keyboard</label>
-                  </div>
-                  <div class="choice-item">
-                    <input type="radio" id="mouse" name="choice" />
-                    <label class="medium-text" for="mouse">Mouse</label>
-                  </div>
-                  <div class="choice-item">
-                    <input type="radio" id="touchscreen" name="choice" />
-                    <label class="medium-text" for="touchscreen"
-                      >Touchscreen</label
+                                </div>
+                                <div class="choice-item">
+                                    <input type="radio" id="mouse" name="choice" />
+                                    <label class="medium-text" for="mouse">Mouse</label>
+                                </div>
+                                <div class="choice-item">
+                                    <input type="radio" id="touchscreen" name="choice" />
+                                    <label class="medium-text" for="touchscreen">Touchscreen</label
                     >
                   </div>
                 </div>
@@ -114,6 +104,24 @@
                     <input
                       type="range"
                       id="bricks-number-column"
+                      min="1"
+                      max="20"
+                      step="1" />
+                  </div>
+                </div>
+              </div>
+              <div class="details-item">
+                <p class="medium-text game-box-text">
+                  Size of gaps
+                </p>
+                <div class="range">
+                  <p
+                    class="medium-text-black"
+                    id="res-gaps-size"></p>
+                  <div>
+                    <input
+                      type="range"
+                      id="gaps-size"
                       min="1"
                       max="20"
                       step="1" />

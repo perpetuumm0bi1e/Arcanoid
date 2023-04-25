@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,102 +10,81 @@
     <link rel="icon" href="ю/img/icon2.svg" type="image/vnd.microsoft.icon" />
     <link rel="stylesheet" href="./style.css" />
     <title>arkanoid</title>
-  </head>
+</head>
 
-  <body>
+<body>
     <main>
-      <div class="header top-appearance-animation" id="header">
-        <a id="logo" href="./index.html">&lt; arkanoid &gt;</a>
-      </div>
-      <div class="container">
-        <div class="impulse-appearance-animation">
-          <p class="medium-text description-label">User settings</p>
+        <div class="header top-appearance-animation" id="header">
+            <a id="logo" href="./index.html">&lt; arkanoid &gt;</a>
         </div>
-        <div class="sub-container settings-sub-container">
-          <div class="non-transform box impulse-appearance-animation">
-            <h3 class="medium-text-black">Name</h3>
-            <div class="input-data">
-              <input
-                class="medium-text-black"
-                type="text"
-                placeholder="Old name"
-                id="player-name"
-                required />
-              <div class="underline"></div>
+        <div class="container">
+            <div class="impulse-appearance-animation">
+                <p class="medium-text description-label">User settings</p>
             </div>
-          </div>
-        </div>
-        <div class="sub-container buttons-sub-container">
-          <button class="button-type-2 medium-text" id="forget-me">
+            <div class="sub-container settings-sub-container">
+                <div class="non-transform box impulse-appearance-animation">
+                    <h3 class="medium-text-black">Name</h3>
+                    <div class="input-data">
+                        <input class="medium-text-black" type="text" placeholder="Old name" id="player-name" required />
+                        <div class="underline"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-container buttons-sub-container">
+                <button class="button-type-2 medium-text" id="forget-me">
             Forget me completely
           </button>
-          <button class="button-type-2 medium-text" id="clear-progress">
+                <button class="button-type-2 medium-text" id="clear-progress">
             Clear my progress
           </button>
-        </div>
-          <div class="impulse-appearance-animation">
-            <p class="medium-text description-label">Infinity mode settings</p>
-          </div>
-          <div class="sub-container settings-sub-container">
-            <div class="non-transform box impulse-appearance-animation">
-              <h3 class="medium-text-black">Paddle speed</h3>
-              <p class="small-text">For keyboard control type</p>
-              <div class="range">
-                <p class="medium-text-black" id="res-paddle-speed"></p>
-                <input
-                  type="range"
-                  id="paddle-speed"
-                  min="1"
-                  max="20"
-                  step="1" />
-              </div>
             </div>
+            <div class="impulse-appearance-animation">
+                <p class="medium-text description-label">Infinity mode settings</p>
+            </div>
+            <div class="sub-container settings-sub-container">
+                <div class="non-transform box impulse-appearance-animation">
+                    <h3 class="medium-text-black">Paddle speed</h3>
+                    <p class="small-text">For keyboard control type</p>
+                    <div class="range">
+                        <p class="medium-text-black" id="res-paddle-speed"></p>
+                        <input type="range" id="paddle-speed" min="1" max="20" step="1" />
+                    </div>
+                </div>
 
-            <div class="non-transform box impulse-appearance-animation">
-              <h3 class="medium-text-black">Paddle size</h3>
-              <p class="small-text">For all control types</p>
-              <div class="range">
-                <p class="medium-text-black" id="res-paddle-size"></p>
-                <input
-                  type="range"
-                  id="paddle-size"
-                  min="50"
-                  max="250"
-                  step="10" />
-              </div>
-            </div>
-            <div class="non-transform box impulse-appearance-animation">
-              <h3 class="medium-text-black">Ball speed</h3>
-              <p class="small-text">For all control types</p>
-              <div class="range">
-                <p class="medium-text-black" id="res-ball-speed"></p>
-                <input type="range" id="ball-speed" min="5" max="20" step="1" />
-              </div>
-            </div>
+                <div class="non-transform box impulse-appearance-animation">
+                    <h3 class="medium-text-black">Paddle size</h3>
+                    <p class="small-text">For all control types</p>
+                    <div class="range">
+                        <p class="medium-text-black" id="res-paddle-size"></p>
+                        <input type="range" id="paddle-size" min="50" max="250" step="10" />
+                    </div>
+                </div>
+                <div class="non-transform box impulse-appearance-animation">
+                    <h3 class="medium-text-black">Ball speed</h3>
+                    <p class="small-text">For all control types</p>
+                    <div class="range">
+                        <p class="medium-text-black" id="res-ball-speed"></p>
+                        <input type="range" id="ball-speed" min="5" max="20" step="1" />
+                    </div>
+                </div>
 
-            <div class="non-transform box impulse-appearance-animation">
-              <h3 class="medium-text-black">Ball radius</h3>
-              <p class="small-text">For all control types</p>
-              <div class="range">
-                <p class="medium-text-black" id="res-ball-radius"></p>
-                <input
-                  type="range"
-                  id="ball-radius"
-                  min="5"
-                  max="15"
-                  step="1" />
-              </div>
+                <div class="non-transform box impulse-appearance-animation">
+                    <h3 class="medium-text-black">Ball radius</h3>
+                    <p class="small-text">For all control types</p>
+                    <div class="range">
+                        <p class="medium-text-black" id="res-ball-radius"></p>
+                        <input type="range" id="ball-radius" min="4" max="12" step="1" />
+                    </div>
+                </div>
             </div>
-          </div>
-          <button class="button-type-2 medium-text" id="save-settings">
+            <button class="button-type-2 medium-text" id="save-settings">
             Save
           </button>
         </div>
-      </div>
+        </div>
     </main>
     <div class="footer">
-      <a class="small-text copyright" href="https://github.com/perpetuumm0bi1e"
-        >© perpetuumm0bi1e<br />2022</a
+        <a class="small-text copyright" href="https://github.com/perpetuumm0bi1e">© perpetuumm0bi1e<br />2022</a
       >
     </div>
   </body>

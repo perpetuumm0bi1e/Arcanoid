@@ -619,7 +619,7 @@ function windowSetting() {
             (radioHorizontal.disabled = true,
                 radioVertical.checked = true,
                 canvasWidth = gameContainer.offsetWidth - 20,
-                canvasHeight = canvasWidth * 2.2) :
+                canvasHeight = canvasWidth * 2) :
             radioHorizontal.disabled = false;
 
             // для планшетов

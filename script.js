@@ -39,43 +39,75 @@ function executeGame() {
         radioHorizontal = document.querySelector('#horizontal'),
         radioVertical = document.querySelector('#vertical');
 
-    const level1 = [
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-    ];
+    let level_bricks = [], maxScore = 0, colorMap = {}, parameters = {}, environmentColors = {};
 
-    let level_bricks = [], maxScore = sessionStorage.bricksNumberRow * sessionStorage.bricksNumberColumn;
+
+    if(sessionStorage.mode == 'story'){
+        let levelData;
+        let rawFile = new XMLHttpRequest();
+        rawFile.open("GET", `./levels/level-${sessionStorage.level}.txt`, false);
+        rawFile.onreadystatechange = function () {
+            if(rawFile.readyState === 4) {
+                if(rawFile.status === 200 || rawFile.status == 0) {
+                    levelData = rawFile.responseText;
+                }
+            }
+        }
+        rawFile.send(null);
+
+        let levelDataRows = levelData.split('\r\n'),
+            elementsSizes = levelDataRows[0].split(':'),
+            elementsColors = levelDataRows[1].split(':'),
+            bricksColors = levelDataRows[2].split(':');
+
+        for(let i = 0; i < elementsSizes.length; i +=2 ){
+            parameters[elementsSizes[i]] = Number(elementsSizes[i + 1]);
+        }
+        for(let i = 0; i < bricksColors.length; i +=2 ){
+            colorMap[`${bricksColors[i]}`] = `${bricksColors[i + 1]}`;
+        }
+        for(let i = 0; i < elementsColors.length; i +=2 ){
+            environmentColors[`${elementsColors[i]}`] = `${elementsColors[i + 1]}`;
+        }
+
+        for (let row = 0; row < levelDataRows.length - 3; row++) {
+            let levelRow = levelDataRows[row + 3].split(':');
+            level_bricks.push([]);
+            for (let col = 0; col < levelRow.length; col++) {
+                level_bricks[row].push(levelRow[col]);
+            }
+        }
+    } else if(sessionStorage.mode == 'infinity'){
     if (sessionStorage.mode == 'infinity') {
         for (let row = 0; row < sessionStorage.bricksNumberRow; row++) {
             level_bricks.push([]);
             for (let col = 0; col < sessionStorage.bricksNumberColumn; col++) {
-                level_bricks[row].push('P');
+                level_bricks[row].push('inf');
             }
         }
     }
-    console.log(maxScore);
-    const colorMap = {
-        'P': sessionStorage.bricksColor,
-        'R': '#5955B3',
-        'O': '#5955B3',
-        'G': '#5955B3',
-        'Y': '#5955B3'
+    colorMap = {
+        'inf': sessionStorage.bricksColor
     };
+    parameters = {
+        'brick': 30,
+        'paddle': Number(sessionStorage.paddleSize),
+        'gap': Number(sessionStorage.gapsSize),
+        'ball-speed': Number(sessionStorage.ballSpeed),
+        'ball': Number(sessionStorage.ballRadius),
+        'paddle-speed': Number(sessionStorage.paddleSpeed)
+    };
+    environmentColors = {
+        'field': sessionStorage.field,
+        'ball': sessionStorage.ballColor,
+        'paddle': sessionStorage.paddleColor
+    }
+}
 
     // параметры 
     let score = 0,
         wallSize = 10,
-        brickGap,
+        brickGap = parameters['gap'],
         brickHeight,
         brickWidth,
         paddleWidth,
@@ -84,30 +116,16 @@ function executeGame() {
         sec = 0,
         min = 0,
         t;
-
-    if (sessionStorage.mode == 'story') {
-        brickGap = 5;
-        (radioHorizontal.checked) ?
-        (brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
-            brickWidth = brickHeight / 2.5,
-            paddleHeight = sessionStorage.mode == 'infinity' ? Number(sessionStorage.paddleSize) : (field.offsetHeight - 2 * wallSize) / 5,
-            paddleWidth = 10) :
-        (brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (level1[1].length - 1)) / level1[1].length,
-            brickHeight = brickWidth / 2.5,
-            paddleWidth = sessionStorage.mode == 'infinity' ? Number(sessionStorage.paddleSize) : (field.offsetWidth - 2 * wallSize) / 5,
-            paddleHeight = 10);
-    } else if (sessionStorage.mode == 'infinity') {
-        brickGap = Number(sessionStorage.gapsSize);
-        (radioHorizontal.checked) ?
-        (brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (sessionStorage.bricksNumberColumn - 1)) / sessionStorage.bricksNumberColumn,
-            brickWidth = brickHeight / 2.5,
-            paddleHeight = sessionStorage.mode == 'infinity' ? Number(sessionStorage.paddleSize) : (field.offsetHeight - 2 * wallSize) / 5,
-            paddleWidth = 10) :
-        (brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (sessionStorage.bricksNumberColumn - 1)) / sessionStorage.bricksNumberColumn,
-            brickHeight = brickWidth / 2.5,
-            paddleWidth = sessionStorage.mode == 'infinity' ? Number(sessionStorage.paddleSize) : (field.offsetWidth - 2 * wallSize) / 5,
-            paddleHeight = 10);
-    }
+    
+    (radioHorizontal.checked) ?
+    (brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level_bricks[1].length - 1)) / level_bricks[1].length,
+        brickWidth = parameters['brick'],
+        paddleHeight = parameters['paddle'],
+        paddleWidth = 10) :
+    (brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (level_bricks[1].length)) / level_bricks[1].length,
+        brickHeight = parameters['brick'],
+        paddleWidth = parameters['paddle'],
+        paddleHeight = 10);
 
     function tick() {
         sec++;
@@ -138,36 +156,37 @@ function executeGame() {
         for (let row = 0; row < arr.length; row++) {
             for (let col = 0; col < arr[row].length; col++) {
                 let colorCode = arr[row][col];
-                bricks.push({
-                    x: option == 'horizontal' ?
-                        wallSize + (brickWidth + brickGap) * row + field.offsetWidth * 0.05 : wallSize + (brickWidth + brickGap) * col,
-                    y: option == 'horizontal' ?
-                        wallSize + (brickHeight + brickGap) * col : wallSize + (brickHeight + brickGap) * row + field.offsetHeight * 0.05,
-                    color: colorMap[colorCode],
-                    width: brickWidth,
-                    height: brickHeight
-                });
+                if(arr[row][col] != 0){
+                    maxScore++;
+                    bricks.push({
+                        x: option == 'horizontal' ?
+                            wallSize + (brickWidth + brickGap) * row + field.offsetWidth * 0.05 : wallSize + (brickWidth + brickGap) * col,
+                        y: option == 'horizontal' ?
+                            wallSize + (brickHeight + brickGap) * col : wallSize + (brickHeight + brickGap) * row + field.offsetHeight * 0.05,
+                        color: colorMap[colorCode],
+                        width: brickWidth,
+                        height: brickHeight
+                    });
+                }
             }
         }
 
     }
-    (radioHorizontal.checked) ?
-    (sessionStorage.mode == 'infinity' ? bricksFill(level_bricks, 'horizontal') : bricksFill(level1, 'horizontal')) :
-    (sessionStorage.mode == 'infinity' ? bricksFill(level_bricks, 'vertical') : bricksFill(level1, 'vartical'));
-
+    (radioHorizontal.checked) ? bricksFill(level_bricks, 'horizontal') : bricksFill(level_bricks, 'vartical');
+    console.log(maxScore);
     const paddle = {
         x: radioHorizontal.checked ? field.offsetWidth * 0.94 : field.offsetWidth / 2 - paddleWidth / 2,
         y: radioHorizontal.checked ? field.offsetHeight / 2 - paddleWidth / 2 : field.offsetHeight * 0.9,
-        width: Number(paddleWidth),
-        height: Number(paddleHeight),
+        width: paddleWidth,
+        height: paddleHeight,
         dx: 0, // направление по x
         dy: 0 // направление по y
     };
     const ball = {
         x: (radioHorizontal.checked) ? field.offsetWidth * 0.6 : field.offsetWidth * 0.4,
         y: (radioHorizontal.checked) ? field.offsetHeight * 0.4 : field.offsetHeight * 0.6,
-        radius: (sessionStorage.mode == 'infinity') ? Number(sessionStorage.ballRadius) : 10,
-        speed: (sessionStorage.mode == 'infinity') ? Number(sessionStorage.ballSpeed) : 7,
+        radius: parameters['ball'],
+        speed: parameters['ball-speed'],
         dx: 0,
         dy: 0
     };
@@ -195,7 +214,6 @@ function executeGame() {
         } else if (paddle.y > field.offsetHeight - wallSize - paddle.height) {
             paddle.y = field.offsetHeight - wallSize - paddle.height;
         }
-
         // для вертикального
         if (paddle.x < wallSize) {
             paddle.x = wallSize
@@ -269,10 +287,8 @@ function executeGame() {
         }
 
         // настройка фона канваса
-        //document.getElementById('canvas-container').style.background = sessionStorage.fieldColor;
-        //document.getElementById('canvas-container').style.borderRadius = '2.15rem';
         context.beginPath();
-        context.fillStyle = sessionStorage.fieldColor;
+        context.fillStyle = environmentColors['field'];
         context.roundRect(0, 0, field.offsetWidth, field.offsetHeight, [30]);
         context.fill();
         context.closePath();
@@ -281,7 +297,7 @@ function executeGame() {
         if (ball.dx || ball.dy) {
             context.beginPath();
             context.arc(ball.x, ball.y, ball.radius, 0, 360);
-            context.fillStyle = sessionStorage.ballColor; // цвет мяча
+            context.fillStyle = environmentColors['ball']; // цвет мяча
             context.fill();
             context.closePath();
         }
@@ -297,7 +313,7 @@ function executeGame() {
 
         // отрисовка платформы
         context.beginPath();
-        context.fillStyle = sessionStorage.paddleColor;
+        context.fillStyle = environmentColors['paddle'];
         context.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, [5]);
         context.fill();
         context.closePath();
@@ -310,15 +326,23 @@ function executeGame() {
                 timer();
                 field.style.cursor = 'none';
             }
+            let rand = 0;
+            while(true){
+                rand = Math.random();
+                if(rand > 0.4 && rand < 0.75){
+                    break;
+                }
+            }
+            console.log(rand)
             if (radioHorizontal.checked) {
                 ball.x = field.offsetWidth * 0.6;
                 ball.y = field.offsetHeight * 0.4;
                 ball.dx = ball.speed;
-                ball.dy = ball.speed / 1.5;
+                ball.dy = ball.speed * rand;
             } else if (radioVertical.checked) {
                 ball.x = field.offsetWidth * 0.4;
                 ball.y = field.offsetHeight * 0.6;
-                ball.dx = ball.speed / 1.5;
+                ball.dx = ball.speed * rand;
                 ball.dy = ball.speed;
             }
         }
@@ -330,13 +354,20 @@ function executeGame() {
 
     function scoreCheck(){
         if (score == maxScore){
+            let heading = document.getElementById('modal-heading'),
+                info = document.getElementById('match-information');
+
             pageYOffset = window.pageYOffset;
             modal.classList.add('is-open');
             isModalOpen = true;
-            document.getElementById('match-information').innerHTML = `Total score: ${score}<br><br>Time: ${document.getElementById('time').innerHTML}`;
-            // clearTimeout(t);
-            // document.getElementById('time').innerHTML = "00:00";
-            restartButton.click();
+
+            if (sessionStorage.mode == 'infinity') {
+                info.innerHTML = `Total score: ${score}<br><br>Time: ${document.getElementById('time').innerHTML}`;
+                restartButton.click();
+            } else if(sessionStorage.mode == 'story'){
+                heading.innerHTML = `Level completed!`;
+                info.innerHTML = `Total score: ${score}<br><br>Time: ${document.getElementById('time').innerHTML}`;
+            }
         }
     }
     
@@ -374,9 +405,9 @@ function executeGame() {
             }
         } else if (radioKeyboard.checked && radioVertical.checked) {
             if (e.which === 65 || e.which === 37) {
-                paddle.dx = (sessionStorage.mode == 'infinity') ? (-1 * sessionStorage.paddleSpeed) : -10;
+                paddle.dx = -1 * parameters['paddle-speed'];
             } else if (e.which === 68 || e.which === 39) {
-                paddle.dx = (sessionStorage.mode == 'infinity') ? sessionStorage.paddleSpeed : 10;
+                paddle.dx = parameters['paddle-speed'];
             }
             if (e.which === 32) {
                 сlickCounter = threwBall(сlickCounter);
@@ -753,8 +784,19 @@ function windowSetting() {
                 })
             }
             executeGame();
+        } else if(location.pathname.includes('game-level')){
+            executeGame();
         }
-    }
+    } else if(location.pathname.includes('levels-map')){
+        let levels = document.getElementsByClassName('level-box');
+
+        for (const level of levels){
+            level.onclick = function(){
+                sessionStorage.setItem('level', level.value)
+                window.location.href = ('./game-level.html');
+            }
+        };
+    } 
 
 }
 window.addEventListener('resize', function(event) {
@@ -763,6 +805,7 @@ window.addEventListener('resize', function(event) {
 window.onload = function() {
     console.log(localStorage);
     console.log(sessionStorage);
+
     setValueToLocalIfNotExists('paddleSize', '120');
     setValueToLocalIfNotExists('paddleSpeed', '10');
     setValueToLocalIfNotExists('ballSpeed', '7');
@@ -777,7 +820,6 @@ window.onload = function() {
             localStorage.setItem(key, value);
         }
     }
-    windowSetting();
 
     function onEntry(element) {
         element.forEach(change => {
@@ -873,4 +915,6 @@ window.onload = function() {
             greetingBox.innerHTML = `<p class="medium-text description-label"> ${greetings} </p>`;
         }
     }
+    
+    windowSetting();
 }

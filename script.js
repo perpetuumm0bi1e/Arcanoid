@@ -47,7 +47,7 @@ function executeGame() {
 
     // параметры 
     let score = 0,
-        wallSize = 12,
+        wallSize = 5,
         brickGap,
         brickHeight,
         brickWidth,
@@ -108,35 +108,19 @@ function executeGame() {
     field.style.cursor = 'crosshair';
 
     function bricksFill(arr, option) {
-        switch (option) {
-            case 'horizontal':
-                for (let row = 0; row < arr.length; row++) {
-                    for (let col = 0; col < arr[row].length; col++) {
-                        let colorCode = arr[row][col];
-                        bricks.push({
-                            x: wallSize + (brickWidth + brickGap) * row + field.offsetWidth * 0.05,
-                            y: wallSize + (brickHeight + brickGap) * col,
-                            color: colorMap[colorCode],
-                            width: brickWidth,
-                            height: brickHeight
-                        });
-                    }
-                }
-                break;
-            case 'vertical':
-                for (let row = 0; row < arr.length; row++) {
-                    for (let col = 0; col < arr[row].length; col++) {
-                        let colorCode = arr[row][col];
-                        bricks.push({
-                            x: wallSize + (brickWidth + brickGap) * col,
-                            y: wallSize + (brickHeight + brickGap) * row + field.offsetHeight * 0.05,
-                            color: colorMap[colorCode],
-                            width: brickWidth,
-                            height: brickHeight
-                        });
-                    }
-                }
-                break;
+        for (let row = 0; row < arr.length; row++) {
+            for (let col = 0; col < arr[row].length; col++) {
+                let colorCode = arr[row][col];
+                bricks.push({
+                    x: option == 'horizontal' ?
+                        wallSize + (brickWidth + brickGap) * row + field.offsetWidth * 0.05 : wallSize + (brickWidth + brickGap) * col,
+                    y: option == 'horizontal' ?
+                        wallSize + (brickHeight + brickGap) * col : wallSize + (brickHeight + brickGap) * row + field.offsetHeight * 0.05,
+                    color: colorMap[colorCode],
+                    width: brickWidth,
+                    height: brickHeight
+                });
+            }
         }
 
     }
@@ -162,11 +146,12 @@ function executeGame() {
     };
 
     // проверка касания объектов
-    function collides(obj1, obj2) {
-        return obj1.x < obj2.x + obj2.width &&
-            obj1.x + obj1.radius > obj2.x &&
-            obj1.y < obj2.y + obj2.height &&
-            obj1.y + obj1.radius > obj2.y;
+    function collides(ball, rectangle) {
+        // return (ball.radius >= Math.sqrt(Math.pow((rectangle.x + rectangle.width / 2 - ball.x), 2) + Math.pow((rectangle.y + rectangle.height / 2 - ball.y), 2)));
+        return ball.x < rectangle.x + rectangle.width &&
+            ball.x + ball.radius > rectangle.x &&
+            ball.y < rectangle.y + rectangle.height &&
+            ball.y + ball.radius > rectangle.y;
     }
 
     // главный цикл игры
@@ -174,7 +159,6 @@ function executeGame() {
         //очистка поля и новая отрисовка
         requestAnimationFrame(loop);
         context.clearRect(0, 0, field.offsetWidth, field.offsetHeight);
-
         (radioHorizontal.checked) ? paddle.y += paddle.dy: paddle.x += paddle.dx; // движение платформы с заданной скоростью
 
         // контроль за нахождением платформы в границах поля
@@ -232,11 +216,11 @@ function executeGame() {
         // проверка касания платформы
         if (collides(ball, paddle)) {
             if (radioHorizontal.checked) {
-                ball.dx *= -1;
                 ball.x = paddle.x - ball.radius;
+                ball.dx *= -1;
             } else if (radioVertical.checked) {
-                ball.dy *= -1;
                 ball.y = paddle.y - ball.radius;
+                ball.dy *= -1;
             }
         }
 
@@ -245,17 +229,9 @@ function executeGame() {
             let brick = bricks[i];
             if (collides(ball, brick)) {
                 bricks.splice(i, 1);
-                if (ball.y + ball.radius - ball.speed <= brick.y) {
-                    ball.y = brick.y - ball.radius;
+                if (ball.y + ball.radius - ball.speed <= brick.y || ball.y >= brick.y + brick.height - ball.speed) {
                     ball.dy *= -1;
-                } else if (ball.y + ball.speed >= brick.y + brick.height) {
-                    ball.y = brick.y + brick.height + ball.radius;
-                    ball.dy *= -1;
-                } else if (ball.x + ball.radius - ball.speed <= brick.x) {
-                    ball.x = brick.x - ball.radius;
-                    ball.dx *= -1;
-                } else if (ball.x >= brick.x + brick.width - ball.speed) {
-                    ball.x = brick.x + brick.width + ball.radius;
+                } else {
                     ball.dx *= -1;
                 }
                 score++;
@@ -264,14 +240,14 @@ function executeGame() {
             }
         }
 
-        // отрисовка стен
+        // настройка фона канваса
+        //document.getElementById('canvas-container').style.background = sessionStorage.fieldColor;
+        //document.getElementById('canvas-container').style.borderRadius = '2.15rem';
+        context.beginPath();
         context.fillStyle = sessionStorage.fieldColor;
-        document.getElementById('canvas-container').style.background = sessionStorage.fieldColor;
-        document.getElementById('canvas-container').style.borderRadius = '2.15rem';
-        context.fillRect(0, 0, field.offsetWidth, wallSize);
-        context.fillRect(0, 0, wallSize, field.offsetHeight);
-        context.fillRect(field.offsetWidth - wallSize, 0, wallSize, field.offsetHeight);
-        context.fillRect(0, field.offsetHeight - wallSize, field.offsetWidth, wallSize);
+        context.roundRect(0, 0, field.offsetWidth, field.offsetHeight, [30]);
+        context.fill();
+        context.closePath();
 
         // отрисовка шарика,  если он в движении
         if (ball.dx || ball.dy) {
@@ -279,6 +255,7 @@ function executeGame() {
             context.arc(ball.x, ball.y, ball.radius, 0, 360);
             context.fillStyle = sessionStorage.ballColor; // цвет мяча
             context.fill();
+            context.closePath();
         }
 
         // отрисовка кирпичей
@@ -287,6 +264,7 @@ function executeGame() {
             context.fillStyle = brick.color;
             context.roundRect(brick.x, brick.y, brick.width, brick.height, [3]);
             context.fill();
+            context.closePath();
         });
 
         // отрисовка платформы
@@ -294,6 +272,7 @@ function executeGame() {
         context.fillStyle = sessionStorage.paddleColor;
         context.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, [5]);
         context.fill();
+        context.closePath();
     }
     // функция запуска мяча
     function threwBall(counter) {
@@ -403,7 +382,9 @@ function executeGame() {
         windowSetting();
         document.getElementById('save').parentNode.append(saveAlert);
         setTimeout(function() {
-            document.getElementById('save').parentNode.lastChild.remove();
+            if (document.getElementById('save').parentNode.lastChild != document.getElementById('save')) {
+                document.getElementById('save').parentNode.lastChild.remove();
+            }
         }, 2000)
     }
     document.addEventListener('keyup', function(e) {
@@ -411,7 +392,9 @@ function executeGame() {
             windowSetting();
             document.getElementById('save').parentNode.append(saveAlert);
             setTimeout(function() {
-                document.getElementById('save').parentNode.lastChild.remove();
+                if (document.getElementById('save').parentNode.lastChild != document.getElementById('save')) {
+                    document.getElementById('save').parentNode.lastChild.remove();
+                }
             }, 2000)
         }
     });
@@ -662,7 +645,7 @@ function windowSetting() {
 
 
             checkSessionStorageValueConst(bricksNumberRow, resBricksNumberRow, 13, 'bricksNumberRow');
-            checkSessionStorageValueConst(bricksNumberColumn, resBricksNumberColumn, 12), 'bricksNumberColumn';
+            checkSessionStorageValueConst(bricksNumberColumn, resBricksNumberColumn, 12, 'bricksNumberColumn');
             checkSessionStorageValueConst(gapsSize, resGapsSize, 5, 'gapsSize');
 
             setInputValueFromSessionOrLocal(paddleSpeed, resPaddleSpeed, 'paddleSpeed');

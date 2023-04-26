@@ -58,6 +58,19 @@
         animation-iteration-count: 1;
         transition: all 1s ease-in-out;
     }
+    .light-top-appearance-animation.appeared {
+        animation-name: top-appearance-light;
+        animation-duration: 1s;
+        animation-iteration-count: 1;
+        transition: all 1s ease-in-out;
+    }
+    
+    .light-bottom-appearance-animation.appeared {
+        animation-name: bottom-appearance-light;
+        animation-duration: 1s;
+        animation-iteration-count: 1;
+        transition: all 1s ease-in-out;
+    }
     
     @media screen and (min-width: 1024px) {
         html {
@@ -81,9 +94,9 @@
         0% {
             transform: scale(95%);
         }
-        33% {
+        /* 33% {
             transform: scale(101%);
-        }
+        } */
         100% {
             transform: scale(100%);
         }
@@ -97,7 +110,22 @@
             transform: translateY(0%);
         }
     }
-    
+    @keyframes top-appearance-light {
+        0% {
+            transform: translateY(-5%);
+        }
+        100% {
+            transform: translateY(0%);
+        }
+    }
+    @keyframes bottom-appearance-light {
+        0% {
+            transform: translateY(5%);
+        }
+        100% {
+            transform: translateY(0%);
+        }
+    }
     @keyframes bottom-appearance {
         0% {
             transform: translateY(100%);
@@ -108,9 +136,6 @@
     }
     
     .header {
-        position: absolute;
-        top: 0;
-        left: 0;
         display: flex;
         justify-content: center;
         align-content: center;
@@ -147,6 +172,7 @@
     }
     
     .copyright {
+        text-align: center;
         color: var(--white);
     }
     
@@ -154,7 +180,6 @@
         color: var(--dark-gray);
         font-weight: 300;
         letter-spacing: 0.05rem;
-        text-align: left;
         line-height: 160%;
         font-size: 1rem;
     }
@@ -229,7 +254,7 @@
         transform: translate(-0.143rem, -0.143rem);
     }
     
-    .button-type-2:hover {
+    .button-type-2:active {
         color: var(--black);
         box-shadow: none;
         transform: translate(0rem, 0rem);

@@ -466,6 +466,7 @@ function windowSetting() {
             setTimeout(function() {
                 saveAppearanceButton.parentNode.lastChild.remove();
             }, 2000)
+            windowSetting();
         }
 
         document.addEventListener('keyup', function(e) {
@@ -478,9 +479,9 @@ function windowSetting() {
                 setTimeout(function() {
                     saveAppearanceButton.parentNode.lastChild.remove();
                 }, 2000)
+                windowSetting();
             }
         });
-        windowSetting();
     } else if (location.pathname.includes('profile')) {
         let saveSettingsButton = document.getElementById('save-settings'),
             playerName = document.getElementById('player-name'),
@@ -716,6 +717,8 @@ window.addEventListener('resize', function(event) {
     windowSetting();
 });
 window.onload = function() {
+    console.log(localStorage);
+    console.log(sessionStorage);
     setValueToLocalIfNotExists('paddleSize', '120');
     setValueToLocalIfNotExists('paddleSpeed', '10');
     setValueToLocalIfNotExists('ballSpeed', '7');
@@ -745,11 +748,15 @@ window.onload = function() {
 
     let topAppearedElements = document.querySelectorAll('.top-appearance-animation'),
         impulseAppearedElements = document.querySelectorAll('.impulse-appearance-animation'),
-        bottomAppearedElements = document.querySelectorAll('.bottom-appearance-animation');
+        bottomAppearedElements = document.querySelectorAll('.bottom-appearance-animation'),
+        lightBottomAppearedElements = document.querySelectorAll('.light-bottom-appearance-animation'),
+        lightTopAppearedElements = document.querySelectorAll('.light-top-appearance-animation');
 
     for (let element of impulseAppearedElements) { observer.observe(element); }
     for (let element of topAppearedElements) { observer.observe(element); }
     for (let element of bottomAppearedElements) { observer.observe(element); }
+    for (let element of lightBottomAppearedElements) { observer.observe(element); }
+    for (let element of lightTopAppearedElements) { observer.observe(element); }
 
     if (location.pathname.includes('index') || location.pathname.split('').pop() == '/') { // главная страница 
         let greetingBox = document.getElementById('greeting-box');

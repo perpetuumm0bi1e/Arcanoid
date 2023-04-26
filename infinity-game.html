@@ -1,225 +1,223 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="apple-touch-icon" sizes="180x180" href="./favicons/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="./favicons/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="./favicons/favicon-16x16.png" />
-		<link rel="manifest" href="/site.webmanifest" />
-		<link rel="stylesheet" href="./style.css" />
-		<title>&lt; arkanoid &gt;</title>
-	</head>
 
-	<body>
-		<main>
-			<div class="header 1top-appearance-animation" id="header">
-				<a id="logo" href="./index.html"> &lt; arkanoid &gt;</a>
-			</div>
-			<div class="container" id="game-container">
-				<audio src="./audio/hit-wall.mp3" id="audio" hidden></audio>
-				<div class="sub-container">
-					<div class="game-info-box box impulse-appearance-animation" id="score-box">
-						<p class="gray-heading" id="score">0</p>
-					</div>
-					<button class="game-info-box box impulse-appearance-animation" id="restart">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicons/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>&lt; arkanoid &gt;</title>
+</head>
+
+<body>
+    <main>
+        <div class="header 1top-appearance-animation" id="header">
+            <a id="logo" href="./index.html"> &lt; arkanoid &gt;</a>
+        </div>
+        <div class="container" id="game-container">
+            <audio src="./audio/hit-wall.mp3" id="audio" hidden></audio>
+            <div class="sub-container">
+                <div class="game-info-box box impulse-appearance-animation" id="score-box">
+                    <p class="gray-heading" id="score">0</p>
+                </div>
+                <button class="game-info-box box impulse-appearance-animation" id="restart">
 						<img id="restart-img" src="./img/restart.svg" />
 					</button>
-					<div class="game-info-box box impulse-appearance-animation" id="time-box">
-						<p class="gray-heading" id="time">00:00</p>
-					</div>
-				</div>
-				<div class="canvas" id="canvas-container">
-					<!-- здесь будет создано поле через скрипт -->
-				</div>
-				<div class="control impulse-appearance-animation">
-					<details class="details">
-						<summary>
-							<p class="medium-text">Match parameters</p>
-							<div class="underline-2"></div>
-						</summary>
-						<div class="details-content">
-							<p class="small-text description-label">
-								These parameters will be used only within the current session
-							</p>
-							<div class="attention-box">
-								<div class="attention-icon"></div>
-								<p class="small-text description-label">Remember to save your changes</p>
-							</div>
-							<div class="details-item">
-								<p class="medium-text-black game-box-text">Control</p>
-								<div class="choice-group">
-									<div class="choice-item">
-										<input type="radio" id="keyboard" name="choice" />
-										<label class="medium-text" for="keyboard">Keyboard</label>
-									</div>
-									<div class="choice-item">
-										<input type="radio" id="mouse" name="choice" />
-										<label class="medium-text" for="mouse">Mouse</label>
-									</div>
-									<div class="choice-item">
-										<input type="radio" id="touchscreen" name="choice" />
-										<label class="medium-text" for="touchscreen">Touchscreen</label>
-									</div>
-								</div>
-							</div>
-							<div class="details-item">
-								<details>
-									<summary class="item-parameters">
-										<div></div>
-										<p class="medium-text-black game-box-text">Orientation</p>
-									</summary>
-									<div class="choice-group">
-										<div class="choice-item">
-											<input type="radio" id="horizontal" name="align-choice" />
-											<label class="main-text medium-text" for="horizontal" id="horizontal-label"
-												>Horizontal</label
-											>
-										</div>
-										<div class="choice-item">
-											<input type="radio" id="vertical" name="align-choice" />
-											<label class="medium-text" for="vertical" id="vertical-label">Vertical</label>
-										</div>
-									</div>
-								</details>
-							</div>
-							<div class="details-item">
-								<details>
-									<summary class="item-parameters">
-										<div></div>
-										<p class="medium-text-black game-box-text">Number of bricks in a row</p>
-									</summary>
-									<div class="range">
-										<p class="medium-text" id="res-bricks-number-row"></p>
-										<div>
-											<input type="range" id="bricks-number-row" min="1" max="30" step="1" />
-										</div>
-									</div>
-								</details>
-							</div>
-							<div class="details-item">
-								<details>
-									<summary class="item-parameters">
-										<div></div>
-										<p class="medium-text-black game-box-text">Number of bricks in a column</p>
-									</summary>
-									<div class="range">
-										<p class="medium-text" id="res-bricks-number-column"></p>
-										<div>
-											<input type="range" id="bricks-number-column" min="1" max="20" step="1" />
-										</div>
-									</div>
-								</details>
-							</div>
-							<div class="details-item">
-								<details>
-									<summary class="item-parameters">
-										<div></div>
-										<p class="medium-text-black game-box-text">Size of gaps</p>
-									</summary>
-									<div class="range">
-										<p class="medium-text" id="res-gaps-size"></p>
-										<div>
-											<input type="range" id="gaps-size" min="1" max="20" step="1" />
-										</div>
-									</div>
-								</details>
-							</div>
-							<div class="details-item">
-								<details>
-									<summary class="item-parameters">
-										<div></div>
-										<p class="medium-text-black game-box-text">Paddle speed</p>
-									</summary>
-									<div class="range">
-										<p class="medium-text" id="res-paddle-speed"></p>
-										<div>
-											<input type="range" id="paddle-speed" min="1" max="30" step="1" />
-										</div>
-									</div>
-								</details>
-							</div>
-							<div class="details-item">
-								<details>
-									<summary class="item-parameters">
-										<div></div>
-										<p class="medium-text-black game-box-text">Paddle size</p>
-									</summary>
-									<div class="range">
-										<p class="medium-text" id="res-paddle-size"></p>
-										<div>
-											<input type="range" id="paddle-size" min="50" max="250" step="10" />
-										</div>
-									</div>
-								</details>
-							</div>
-							<div class="details-item">
-								<details>
-									<summary class="item-parameters">
-										<div></div>
-										<p class="medium-text-black game-box-text">Ball radius</p>
-									</summary>
-									<div class="range">
-										<p class="medium-text" id="res-ball-radius"></p>
-										<div>
-											<input type="range" id="ball-radius" min="4" max="12" step="1" />
-										</div>
-									</div>
-								</details>
-							</div>
-							<div class="details-item">
-								<details>
-									<summary class="item-parameters">
-										<div></div>
-										<p class="medium-text-black game-box-text">Ball speed</p>
-									</summary>
-									<div class="range">
-										<p class="medium-text" id="res-ball-speed"></p>
-										<div>
-											<input type="range" id="ball-speed" min="5" max="20" step="1" />
-										</div>
-									</div>
-								</details>
-							</div>
-							<div class="details-item">
-								<details>
-									<summary class="item-parameters">
-										<div></div>
-										<p class="medium-text-black game-box-text">Appearance</p>
-									</summary>
-									<div class="color-items">
-										<div class="color-item">
-											<p class="small-text">Ball color</p>
-											<input type="color" id="ball-color" />
-										</div>
-										<div class="color-item">
-											<p class="small-text">Paddle color</p>
-											<input type="color" id="paddle-color" />
-										</div>
-										<div class="color-item">
-											<p class="small-text">Bricks color</p>
-											<input type="color" id="bricks-color" />
-										</div>
-										<div class="color-item">
-											<p class="small-text">Field color</p>
-											<input type="color" id="field-color" />
-										</div>
-									</div>
-									<button class="button-type-3 small-text" id="set-default-colors">
+                <div class="game-info-box box impulse-appearance-animation" id="time-box">
+                    <p class="gray-heading" id="time">00:00</p>
+                </div>
+            </div>
+            <div class="canvas" id="canvas-container">
+                <!-- здесь будет создано поле через скрипт -->
+            </div>
+            <div class="control impulse-appearance-animation">
+                <details class="details">
+                    <summary>
+                        <p class="medium-text">Match parameters</p>
+                        <div class="underline-2"></div>
+                    </summary>
+                    <div class="details-content">
+                        <p class="small-text description-label">
+                            These parameters will be used only within the current session
+                        </p>
+                        <div class="attention-box">
+                            <div class="attention-icon"></div>
+                            <p class="small-text description-label">Remember to save your changes</p>
+                        </div>
+                        <div class="details-item">
+                            <p class="medium-text-black game-box-text">Control</p>
+                            <div class="choice-group">
+                                <div class="choice-item">
+                                    <input type="radio" id="keyboard" name="choice" />
+                                    <label class="medium-text" for="keyboard">Keyboard</label>
+                                </div>
+                                <div class="choice-item">
+                                    <input type="radio" id="mouse" name="choice" />
+                                    <label class="medium-text" for="mouse">Mouse</label>
+                                </div>
+                                <div class="choice-item">
+                                    <input type="radio" id="touchscreen" name="choice" />
+                                    <label class="medium-text" for="touchscreen">Touchscreen</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="details-item">
+                            <details>
+                                <summary class="item-parameters">
+                                    <div></div>
+                                    <p class="medium-text-black game-box-text">Orientation</p>
+                                </summary>
+                                <div class="choice-group sub-details">
+                                    <div class="choice-item">
+                                        <input type="radio" id="horizontal" name="align-choice" />
+                                        <label class="main-text medium-text" for="horizontal" id="horizontal-label">Horizontal</label>
+                                    </div>
+                                    <div class="choice-item">
+                                        <input type="radio" id="vertical" name="align-choice" />
+                                        <label class="medium-text" for="vertical" id="vertical-label">Vertical</label>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="details-item">
+                            <details>
+                                <summary class="item-parameters">
+                                    <div></div>
+                                    <p class="medium-text-black game-box-text">Number of bricks in a row</p>
+                                </summary>
+                                <div class="range">
+                                    <p class="medium-text" id="res-bricks-number-row"></p>
+                                    <div>
+                                        <input type="range" id="bricks-number-row" min="1" max="30" step="1" />
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="details-item">
+                            <details>
+                                <summary class="item-parameters">
+                                    <div></div>
+                                    <p class="medium-text-black game-box-text">Number of bricks in a column</p>
+                                </summary>
+                                <div class="range sub-details">
+                                    <p class="medium-text" id="res-bricks-number-column"></p>
+                                    <div>
+                                        <input type="range" id="bricks-number-column" min="1" max="20" step="1" />
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="details-item">
+                            <details>
+                                <summary class="item-parameters">
+                                    <div></div>
+                                    <p class="medium-text-black game-box-text">Size of gaps</p>
+                                </summary>
+                                <div class="range sub-details">
+                                    <p class="medium-text" id="res-gaps-size"></p>
+                                    <div>
+                                        <input type="range" id="gaps-size" min="1" max="20" step="1" />
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="details-item">
+                            <details>
+                                <summary class="item-parameters">
+                                    <div></div>
+                                    <p class="medium-text-black game-box-text">Paddle speed</p>
+                                </summary>
+                                <div class="range sub-details">
+                                    <p class="medium-text" id="res-paddle-speed"></p>
+                                    <div>
+                                        <input type="range" id="paddle-speed" min="1" max="30" step="1" />
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="details-item">
+                            <details>
+                                <summary class="item-parameters">
+                                    <div></div>
+                                    <p class="medium-text-black game-box-text">Paddle size</p>
+                                </summary>
+                                <div class="range sub-details">
+                                    <p class="medium-text" id="res-paddle-size"></p>
+                                    <div>
+                                        <input type="range" id="paddle-size" min="50" max="250" step="10" />
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="details-item">
+                            <details>
+                                <summary class="item-parameters">
+                                    <div></div>
+                                    <p class="medium-text-black game-box-text">Ball radius</p>
+                                </summary>
+                                <div class="range sub-details">
+                                    <p class="medium-text" id="res-ball-radius"></p>
+                                    <div>
+                                        <input type="range" id="ball-radius" min="4" max="12" step="1" />
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="details-item">
+                            <details>
+                                <summary class="item-parameters">
+                                    <div></div>
+                                    <p class="medium-text-black game-box-text">Ball speed</p>
+                                </summary>
+                                <div class="range sub-details">
+                                    <p class="medium-text" id="res-ball-speed"></p>
+                                    <div>
+                                        <input type="range" id="ball-speed" min="5" max="20" step="1" />
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="details-item">
+                            <details>
+                                <summary class="item-parameters">
+                                    <div></div>
+                                    <p class="medium-text-black game-box-text">Appearance</p>
+                                </summary>
+                                <div class="color-items sub-details">
+                                    <div class="color-item">
+                                        <p class="small-text">Ball color</p>
+                                        <input type="color" id="ball-color" />
+                                    </div>
+                                    <div class="color-item">
+                                        <p class="small-text">Paddle color</p>
+                                        <input type="color" id="paddle-color" />
+                                    </div>
+                                    <div class="color-item">
+                                        <p class="small-text">Bricks color</p>
+                                        <input type="color" id="bricks-color" />
+                                    </div>
+                                    <div class="color-item">
+                                        <p class="small-text">Field color</p>
+                                        <input type="color" id="field-color" />
+                                    </div>
+                                </div>
+                                <button class="button-type-3 small-text" id="set-default-colors">
 										Set my default colors
 									</button>
-								</details>
-							</div>
-							<button class="button-type-1 medium-text" id="save">Save</button>
-						</div>
-					</details>
-				</div>
-			</div>
-		</main>
-		<div class="footer">
-			<a class="small-text copyright" href="https://github.com/perpetuumm0bi1e"
-				>© perpetuumm0bi1e<br />2022</a
+                            </details>
+                        </div>
+                        <button class="button-type-1 medium-text" id="save">Save</button>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </main>
+    <div class="footer">
+        <a class="small-text copyright" href="https://github.com/perpetuumm0bi1e">© perpetuumm0bi1e<br />2022</a
 			>
 		</div>
 	</body>

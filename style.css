@@ -237,12 +237,12 @@
         background: transparent;
         border: .1rem solid var(--gray);
         border-radius: .7rem;
-        transition: all .4s ease-in-out;
+        transition: all .2s ease-in-out;
     }
     
     .button-type-3:hover {
         color: var(--black);
-        border: .1rem solid var(--black);
+        border: .1rem solid var(--dark-gray);
     }
     
     .button-type-3:active {
@@ -640,6 +640,23 @@
     
     #set-up-name:hover {
         background-image: url(./img/confirm-black-icon.svg);
+    }
+    
+    #user-pic {
+        flex-grow: 1;
+        width: 25rem;
+        height: 12rem;
+        background-image: url(./img/profile-pic-3.svg);
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+    
+    #changed-name-input {
+        margin-bottom: 1.5rem;
+    }
+    
+    .sub-details {
+        margin: 1rem 0rem 3rem 0rem;
     }
     
     input[type="range"] {

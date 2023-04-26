@@ -324,7 +324,7 @@ function windowSetting() {
         for (const level of levels){
             level.onclick = function(){
                 sessionStorage.setItem('level', level.value)
-                window.location.href = ('./public/game-level.html');
+                window.location.href = ('./game-level.html');
             }
         };
     } 

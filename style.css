@@ -286,7 +286,7 @@
         justify-content: flex-start;
         gap: 2rem;
         max-width: 1000px;
-        margin: 10rem auto;
+        margin: 7rem auto;
         padding: 0px 0.715rem;
     }
     
@@ -317,32 +317,14 @@
         background-color: var(--white);
         transition: all .5s ease-in-out;
     }
-    
-    .box:hover {
-        transform: translate(-0.143rem, -0.143rem);
-    }
-    
-    #play-box:hover,
-    #infinity-button:hover,
-    #story-button:hover,
-    #restart:hover {
+    .button-box-red:hover {
         box-shadow: 0.215rem 0.215rem var(--red);
     }
-    
-    #appearance-box:hover,
-    #settings-box:hover,
-    #profile-box:hover,
-    #details-box:hover {
+    .button-box-blue:hover {
         box-shadow: 0.215rem 0.215rem var(--blue);
     }
-    
-    #appearance-box:active,
-    #play-box:active,
-    #settings-box:active,
-    #profile-box:active,
-    #infinity-button:active,
-    #story-button:active,
-    #restart:active {
+    .button-box-blue:active,
+    .button-box-red:active{
         box-shadow: none;
         transform: translate(0px, 0px);
     }

@@ -154,17 +154,20 @@
         color: var(--dark-gray);
         font-weight: 300;
         letter-spacing: 0.05rem;
+        text-align: left;
         line-height: 160%;
         font-size: 1rem;
     }
     
     .medium-text {
         color: var(--dark-gray);
+        line-height: 160%;
         font-weight: 400;
         font-size: 1.2rem;
     }
     
     .medium-text-black {
+        line-height: 160%;
         color: var(--black);
         font-weight: 400;
         font-size: 1.2rem;
@@ -767,4 +770,13 @@
     .details-item button {
         margin: 4rem auto;
         justify-self: center;
+    }
+    
+    .details-description-box {
+        align-items: flex-start;
+        padding: 4rem;
+    }
+    
+    .details-description-box p {
+        margin-top: -1rem;
     }

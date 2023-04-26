@@ -321,10 +321,10 @@ function executeGame() {
         touchPosition,
         pointerPosition;
 
-    // // нажатие тачскрина
-    // field.addEventListener('touchstart', e => {
-    //     e.preventDefault();
-    // })
+    // нажатие тачскрина
+    field.addEventListener('touchstart', e => {
+        e.preventDefault();
+    })
 
     // отжатие тачскрина
     field.addEventListener('touchend', e => {

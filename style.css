@@ -317,11 +317,16 @@
         background-color: var(--white);
         transition: all .5s ease-in-out;
     }
+    .level-box{
+        padding: 3rem 4rem;
+    }
     .button-box-red:hover {
         box-shadow: 0.215rem 0.215rem var(--red);
+        transform: translate(-0.143rem, -0.143rem);
     }
     .button-box-blue:hover {
         box-shadow: 0.215rem 0.215rem var(--blue);
+        transform: translate(-0.143rem, -0.143rem);
     }
     .button-box-blue:active,
     .button-box-red:active{
@@ -787,3 +792,39 @@
     .details-description-box p {
         margin-top: -1rem;
     }
+
+    /* стиль модвльного окна */
+    .modal {
+        z-index: -1;
+        position: fixed;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .3s, background-color .5s;
+    }
+    
+    .is-open {
+        z-index: 11;
+        opacity: 1;
+        pointer-events: all;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: auto;
+        height: auto;
+        padding: 60px 100px;
+        border-radius: 2rem;
+        background-color: var(--white);
+    }
+    

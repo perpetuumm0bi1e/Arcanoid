@@ -3,6 +3,33 @@ saveAlert.className = 'attention-box save-alert-box';
 saveAlert.innerHTML = '<div class="save-alert-icon"></div><p class="small-text">Updated<p>';
 
 function executeGame() {
+    // модальное окно
+    let modal = document.getElementById('modal'),
+        closeModalButton = document.getElementById('close-modal-button'),
+        modalTriggers = document.querySelectorAll('[data-trigger]');
+    
+    let isModalOpen = false, pageYOffset = 0;
+
+     modalTriggers.forEach(function(item) {
+        item.addEventListener('click', function() {
+            pageYOffset = window.pageYOffset;
+            modal.classList.add('is-open');
+            isModalOpen = true;
+        });
+    })
+    
+    document.addEventListener('scroll', function(e) {
+        if (isModalOpen) {
+            e.preventDefault();
+            window.scrollTo(0, pageYOffset);
+        }
+    });
+
+    closeModalButton.addEventListener('click', function() {
+        modal.classList.remove('is-open');
+        isModalOpen = false;
+    });
+
     let field = document.getElementById('game'),
         context = field.getContext('2d'),
         radioKeyboard = document.querySelector('#keyboard'),
@@ -13,7 +40,6 @@ function executeGame() {
         radioVertical = document.querySelector('#vertical');
 
     const level1 = [
-        [],
         ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
         ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
         ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
@@ -28,7 +54,7 @@ function executeGame() {
         ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
     ];
 
-    let level_bricks = [];
+    let level_bricks = [], maxScore = sessionStorage.bricksNumberRow * sessionStorage.bricksNumberColumn;
     if (sessionStorage.mode == 'infinity') {
         for (let row = 0; row < sessionStorage.bricksNumberRow; row++) {
             level_bricks.push([]);
@@ -37,6 +63,7 @@ function executeGame() {
             }
         }
     }
+    console.log(maxScore);
     const colorMap = {
         'P': sessionStorage.bricksColor,
         'R': '#5955B3',
@@ -47,7 +74,7 @@ function executeGame() {
 
     // параметры 
     let score = 0,
-        wallSize = 5,
+        wallSize = 10,
         brickGap,
         brickHeight,
         brickWidth,
@@ -236,6 +263,7 @@ function executeGame() {
                 }
                 score++;
                 document.getElementById('score').innerHTML = score;
+                scoreCheck();
                 break;
             }
         }
@@ -300,6 +328,18 @@ function executeGame() {
         touchPosition,
         pointerPosition;
 
+    function scoreCheck(){
+        if (score == maxScore){
+            pageYOffset = window.pageYOffset;
+            modal.classList.add('is-open');
+            isModalOpen = true;
+            document.getElementById('match-information').innerHTML = `Total score: ${score}<br><br>Time: ${document.getElementById('time').innerHTML}`;
+            // clearTimeout(t);
+            // document.getElementById('time').innerHTML = "00:00";
+            restartButton.click();
+        }
+    }
+    
     // нажатие тачскрина
     field.addEventListener('touchstart', e => {
         e.preventDefault();
@@ -400,7 +440,6 @@ function executeGame() {
     });
 
     requestAnimationFrame(loop);
-
 }
 
 function windowSetting() {
@@ -433,11 +472,16 @@ function windowSetting() {
             window.location.href = './profile.html';
         }
     } else if (location.pathname.includes('mode')) { // страница выбора режима
-        let playButton = document.getElementById('infinity-button');
+        let infinityButton = document.getElementById('infinity-button'),
+            storyButton = document.getElementById('story-button');
 
-        playButton.onclick = function() {
+        infinityButton.onclick = function() {
             sessionStorage.setItem('mode', 'infinity');
             window.location.href = './infinity-game.html';
+        }
+        storyButton.onclick = function() {
+            sessionStorage.setItem('mode', 'story');
+            window.location.href = './levels-map.html';
         }
     } else if (location.pathname.includes('appearance')) { // страница настройки внешнего вида
         let ballColorInput = document.getElementById('ball-color'),
@@ -466,7 +510,7 @@ function windowSetting() {
             setTimeout(function() {
                 saveAppearanceButton.parentNode.lastChild.remove();
             }, 2000)
-            windowSetting();
+            location.reload();
         }
 
         document.addEventListener('keyup', function(e) {
@@ -479,7 +523,7 @@ function windowSetting() {
                 setTimeout(function() {
                     saveAppearanceButton.parentNode.lastChild.remove();
                 }, 2000)
-                windowSetting();
+                location.reload();
             }
         });
     } else if (location.pathname.includes('profile')) {

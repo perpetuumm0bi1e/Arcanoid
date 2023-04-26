@@ -519,11 +519,11 @@
     }
     
     details:not([open])>summary.item-parameters>div {
-        background-image: url(./img/plus-icon.svg);
+        background-image: url(../../img/plus-icon.svg);
     }
     
     details[open]>summary.item-parameters>div {
-        background-image: url(./img/minus-icon.svg);
+        background-image: url(../../img/minus-icon.svg);
     }
     
     details summary::-webkit-details-marker {
@@ -648,20 +648,20 @@
         flex-grow: 1;
         margin: 0px;
         height: 2.86rem;
-        background-image: url(./img/confirm-gray-icon.svg);
+        background-image: url(../../img/confirm-gray-icon.svg);
         background-position: center center;
         background-repeat: no-repeat;
     }
     
     #set-up-name:hover {
-        background-image: url(./img/confirm-black-icon.svg);
+        background-image: url(../../img/confirm-black-icon.svg);
     }
     
     #user-pic {
         flex-grow: 1;
         width: 25rem;
         height: 12rem;
-        background-image: url(./img/profile-pic-3.svg);
+        background-image: url(../../img/profile-pic-3.svg);
         background-position: center center;
         background-repeat: no-repeat;
     }
@@ -733,7 +733,7 @@
     
     .attention-box>div.attention-icon,
     .attention-box>div.save-alert-icon {
-        background-image: url(./img/attention-icon.svg);
+        background-image: url(../../img/attention-icon.svg);
         background-position: center center;
         background-repeat: no-repeat;
         height: 2rem;
@@ -741,7 +741,7 @@
     }
     
     .attention-box>div.save-alert-icon {
-        background-image: url(./img/confirm-black-icon.svg);
+        background-image: url(../../img/confirm-black-icon.svg);
     }
     
     .attention-box>p.small-text {

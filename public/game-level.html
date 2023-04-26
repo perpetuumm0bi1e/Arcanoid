@@ -8,14 +8,14 @@
 		<link rel="icon" type="image/png" sizes="32x32" href="./favicons/favicon-32x32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="./favicons/favicon-16x16.png" />
 		<link rel="manifest" href="/site.webmanifest" />
-		<link rel="stylesheet" href="./style.css" />
+		<link rel="stylesheet" href="./css/style.css" />
 		<title>&lt; arkanoid &gt;</title>
 	</head>
 
 	<body>
 		<main>
 			<div class="header 1top-appearance-animation" id="header">
-				<a id="logo" href="./index.html"> &lt; arkanoid &gt;</a>
+				<a id="logo" href="../index.html"> &lt; arkanoid &gt;</a>
 			</div>
 			<div class="modal" id="modal">
 				<div class="modal-content">
@@ -25,7 +25,6 @@
 				</div>
 			</div>
 			<div class="container" id="game-container">
-				<audio src="./audio/hit-wall.mp3" id="audio" hidden></audio>
 				<div class="sub-container">
 					<div class="game-info-box box light-top-appearance-animation" id="score-box">
 						<p class="gray-heading" id="score">0</p>
@@ -105,5 +104,5 @@
 			>
 		</div>
 	</body>
-	<script type="text/javascript" src="./script.js"></script>
+	<script type="module" src="../script.js"></script>
 </html>

@@ -146,7 +146,7 @@ function executeGame() {
 
     const paddle = {
         x: radioHorizontal.checked ? field.offsetWidth * 0.94 : field.offsetWidth / 2 - paddleWidth / 2,
-        y: radioHorizontal.checked ? field.offsetHeight / 2 - paddleWidth / 2 : field.offsetHeight * 0.94,
+        y: radioHorizontal.checked ? field.offsetHeight / 2 - paddleWidth / 2 : field.offsetHeight * 0.9,
         width: Number(paddleWidth),
         height: Number(paddleHeight),
         dx: 0, // направление по x
@@ -198,37 +198,46 @@ function executeGame() {
 
         // проверка координат шарика
         // для горизонтального
-        if (ball.x - ball.radius < wallSize ) {
+        if (ball.x - ball.radius < wallSize) {
             ball.x = wallSize + ball.radius;
-            (radioHorizontal.checked) ? ball.dx *= -1 : ball.dy *= -1;
+            ball.dx *= -1;
         }
-        if (ball.y < wallSize + ball.radius) {
+        if (ball.y - ball.radius < wallSize) {
             ball.y = wallSize + ball.radius;
-            (radioHorizontal.checked) ? ball.dy *= -1 : ball.dx *= -1;
-        } else if (ball.y + ball.radius > field.offsetHeight - wallSize) {
-            ball.y = field.offsetHeight - wallSize - ball.radius;
-            (radioHorizontal.checked) ? ball.dy *= -1 : ball.dx *= -1;
+            ball.dy *= -1;
         }
-       
-
-        // перезапуск шарика
-        // для горизонтального
-        if (radioHorizontal.checked && (ball.x + ball.radius > field.offsetWidth - wallSize)) {
-            ball.x = field.offsetWidth * 0.6;
-            ball.y = field.offsetHeight * 0.4;
-            ball.dx = 0;
-            ball.dy = 0;
-        } else if (radioVertical.checked && (ball.y + ball.radius > field.offsetHeight - wallSize)) { // для вертикального
-            ball.x = field.offsetWidth * 0.4;
-            ball.y = field.offsetHeight * 0.6;
-            ball.dx = 0;
-            ball.dy = 0;
+        if (ball.y + ball.radius > field.offsetHeight - wallSize) {
+            if (radioHorizontal.checked) {
+                ball.y = field.offsetHeight - wallSize - ball.radius;
+                ball.dy *= -1
+            } else if (radioVertical.checked) {
+                ball.x = field.offsetWidth * 0.4;
+                ball.y = field.offsetHeight * 0.6;
+                ball.dx = 0;
+                ball.dy = 0;
+            }
+        }
+        if (ball.x + ball.radius > field.offsetWidth - wallSize) {
+            if (radioVertical.checked) {
+                ball.x = field.offsetWidth - wallSize - ball.radius;
+                ball.dx *= -1
+            } else if (radioHorizontal.checked) {
+                ball.x = field.offsetWidth * 0.6;
+                ball.y = field.offsetHeight * 0.4;
+                ball.dx = 0;
+                ball.dy = 0;
+            }
         }
 
         // проверка касания платформы
         if (collides(ball, paddle)) {
-            (radioHorizontal.checked) ? (ball.dx *= -1, ball.x = paddle.x - ball.radius) : 
-            (ball.dy *= -1, ball.y = paddle.y - ball.radius);
+            if (radioHorizontal.checked) {
+                ball.dx *= -1;
+                ball.x = paddle.x - ball.radius;
+            } else if (radioVertical.checked) {
+                ball.dy *= -1;
+                ball.y = paddle.y - ball.radius;
+            }
         }
 
         // проверка касания кирпича
@@ -440,8 +449,6 @@ function windowSetting() {
         profileButton.onclick = function() {
             window.location.href = './profile.html';
         }
-
-
     } else if (location.pathname.includes('mode')) { // страница выбора режима
         let playButton = document.getElementById('infinity-button');
 
@@ -496,7 +503,7 @@ function windowSetting() {
             playerName = document.getElementById('player-name'),
             forgetMeButton = document.getElementById('forget-me');
 
-        (localStorage.userName) ? playerName.value = localStorage.userName: playerName.value = '';
+        (localStorage.userName && localStorage.userName != undefined) ? playerName.value = localStorage.userName: playerName.value = '';
 
         forgetMeButton.onclick = function() {
             let answer = prompt('Clear all user data? Write "YES" if you are sure:', '');
@@ -593,31 +600,34 @@ function windowSetting() {
         });
     } else if (location.pathname.includes('game')) { // страница игры
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-
             // для телефонов
-            (document.body.clientWidth < 740) ?
-            (radioHorizontal.disabled = true,
-                radioVertical.checked = true,
-                canvasWidth = gameContainer.offsetWidth - 20,
-                canvasHeight = canvasWidth * 2) :
-            radioHorizontal.disabled = false;
-
+            if (document.body.clientWidth < 740) {
+                radioHorizontal.disabled = true;
+                radioVertical.checked = true;
+                canvasWidth = gameContainer.offsetWidth - 20;
+                canvasHeight = canvasWidth * 1.9;
+            }
             // для планшетов
+            // выбор горизонтального по умолчанию
             if (!radioHorizontal.checked && !radioVertical.checked && !radioHorizontal.disabled) {
                 radioHorizontal.checked = true;
             }
+            // задание размеров
             if (radioVertical.checked && !radioHorizontal.disabled) {
                 canvasWidth = gameContainer.offsetWidth * .7;
-                canvasHeight = canvasWidth * 1.9;
+                canvasHeight = canvasWidth * 1.8;
             } else if (radioHorizontal.checked && !radioHorizontal.disabled) {
                 canvasWidth = gameContainer.offsetWidth - 20;
                 canvasHeight = canvasWidth / 1.3;
             }
+            // выбор тачскрина по умолчанию для всех мобильных устройств
             document.getElementById('touchscreen').checked = true;
         } else { // для пк
+            // выбор горизонтального по умолчанию
             if (!radioHorizontal.checked && !radioVertical.checked) {
                 radioHorizontal.checked = true;
             }
+            // задание рзмеров
             if (radioVertical.checked) {
                 canvasWidth = gameContainer.offsetWidth * .6;
                 canvasHeight = canvasWidth * 1.6;
@@ -666,18 +676,17 @@ function windowSetting() {
             setInputValueFromSessionOrLocal(bricksColor, '', 'bricksColor');
             setInputValueFromSessionOrLocal(fieldColor, '', 'fieldColor');
 
-            setSessionStorageItem(bricksNumberRow, 'bricksNumberRow');
-            setSessionStorageItem(bricksNumberColumn, 'bricksNumberColumn');
-            setSessionStorageItem(gapsSize, 'gapsSize');
-            setSessionStorageItem(paddleSpeed, 'paddleSpeed');
-            setSessionStorageItem(ballSpeed, 'ballSpeed');
-            setSessionStorageItem(paddleSize, 'paddleSize');
-            setSessionStorageItem(ballRadius, 'ballRadius');
-
-            setSessionStorageItem(ballColor, 'ballColor');
-            setSessionStorageItem(paddleColor, 'paddleColor');
-            setSessionStorageItem(bricksColor, 'bricksColor');
-            setSessionStorageItem(fieldColor, 'fieldColor');
+            sessionStorage.setItem('bricksNumberRow', bricksNumberRow.value);
+            sessionStorage.setItem('bricksNumberColumn', bricksNumberColumn.value);
+            sessionStorage.setItem('gapsSize', gapsSize.value);
+            sessionStorage.setItem('paddleSpeed', paddleSpeed.value);
+            sessionStorage.setItem('ballSpeed', ballSpeed.value);
+            sessionStorage.setItem('paddleSize', paddleSize.value);
+            sessionStorage.setItem('ballRadius', ballRadius.value);
+            sessionStorage.setItem('ballColor', ballColor.value);
+            sessionStorage.setItem('paddleColor', paddleColor.value);
+            sessionStorage.setItem('bricksColor', bricksColor.value);
+            sessionStorage.setItem('fieldColor', fieldColor.value);
 
             setRangeSessionValue(bricksNumberRow, resBricksNumberRow, 'bricksNumberRow');
             setRangeSessionValue(bricksNumberColumn, resBricksNumberColumn, 'bricksNumberColumn');
@@ -707,10 +716,6 @@ function windowSetting() {
                 }
             }
 
-            function setSessionStorageItem(input, key) {
-                sessionStorage.setItem(key, input.value);
-            }
-
             function setRangeSessionValue(range, label, key) {
                 range.style.backgroundSize = (range.value - range.min) * 100 / (range.max - range.min) + '% 100%';
                 range.addEventListener('input', function() {
@@ -719,10 +724,6 @@ function windowSetting() {
                     range.style.backgroundSize = (range.value - range.min) * 100 / (range.max - range.min) + '% 100%';
                 })
             }
-
-            console.log('после');
-            console.log(sessionStorage);
-            console.log(localStorage);
             executeGame();
         }
     }
@@ -732,7 +733,6 @@ window.addEventListener('resize', function(event) {
     windowSetting();
 });
 window.onload = function() {
-
     setValueToLocalIfNotExists('paddleSize', '120');
     setValueToLocalIfNotExists('paddleSpeed', '10');
     setValueToLocalIfNotExists('ballSpeed', '7');
@@ -770,7 +770,6 @@ window.onload = function() {
 
     if (location.pathname.includes('index') || location.pathname.split('').pop() == '/') { // главная страница 
         let greetingBox = document.getElementById('greeting-box');
-
         if (!localStorage.userName || localStorage.userName == undefined) {
             greetingBox.innerHTML = `
             <p class="medium-text-black" id="greetings">

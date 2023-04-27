@@ -313,6 +313,13 @@ export function windowSetting() {
             }
             executeGame();
         } else if (location.pathname.includes('game-level')) {
+            let levelName = document.createElement('div');
+            levelName.innerHTML = `
+            <p class="medium-text" style="margin-bottom: 2rem; text-align: center;">
+                Level ${sessionStorage.level}<br>
+                <em>&laquo;${levels[`level${sessionStorage.level}`].name}&raquo;</em>
+            </p>`;
+            document.getElementById('game-container').prepend(levelName);
             executeGame();
         }
     } else if (location.pathname.includes('levels-map')) {

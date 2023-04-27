@@ -1,4 +1,5 @@
 import { levels } from './levels.js';
+import { windowSetting } from './window-settings.js';
 
 export function executeGame() {
     // модальное окно
@@ -78,8 +79,8 @@ export function executeGame() {
     let score = 0,
         wallSize = 10,
         brickGap = parameters['gap'],
-        brickHeight,
-        brickWidth,
+        brickHeight = parameters['brick'],
+        brickWidth = parameters['brick'],
         paddleWidth,
         paddleHeight,
         bricks = [],
@@ -88,14 +89,8 @@ export function executeGame() {
         t;
     
     (radioHorizontal.checked) ?
-    (brickHeight = (field.offsetHeight - 2 * wallSize - brickGap * (level_bricks[1].length - 1)) / level_bricks[1].length,
-        brickWidth = parameters['brick'],
-        paddleHeight = parameters['paddle'],
-        paddleWidth = 10) :
-    (brickWidth = (field.offsetWidth - 2 * wallSize - brickGap * (level_bricks[1].length)) / level_bricks[1].length,
-        brickHeight = parameters['brick'],
-        paddleWidth = parameters['paddle'],
-        paddleHeight = 10);
+    (paddleHeight = parameters['paddle'], paddleWidth = 10) :
+    (paddleWidth = parameters['paddle'], paddleHeight = 10);
 
     function tick() {
         sec++;

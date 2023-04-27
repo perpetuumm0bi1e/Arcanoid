@@ -1,106 +1,103 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="apple-touch-icon" sizes="180x180" href="./favicons/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="./favicons/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="./favicons/favicon-16x16.png" />
-		<link rel="manifest" href="/site.webmanifest" />
-		<link rel="stylesheet" href="./css/style.css" />
-		<title>&lt; arkanoid &gt;</title>
-	</head>
 
-	<body>
-		<main>
-			<div class="header 1top-appearance-animation" id="header">
-				<a id="logo" href="../index.html"> &lt; arkanoid &gt;</a>
-			</div>
-			<div class="modal" id="modal">
-				<div class="modal-content">
-					<p class="medium-text-black" id="modal-heading"></p>
-					<p class="small-text" id="match-information"></p>
-					<button class="button-type-1" id="close-modal-button">Close</button>
-				</div>
-			</div>
-			<div class="container" id="game-container">
-				<div class="sub-container">
-					<div class="game-info-box box light-top-appearance-animation" id="score-box">
-						<p class="gray-heading" id="score">0</p>
-					</div>
-					<button
-						class="game-info-box box button-box-red light-top-appearance-animation"
-						id="restart">
-						<img id="restart-img" src="./img/restart.svg" />
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicons/favicon-16x16.png" />
+    <link rel="manifest" href="../site.webmanifest" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>&lt; arkanoid &gt;</title>
+</head>
+
+<body>
+    <main>
+        <div class="header 1top-appearance-animation" id="header">
+            <a id="logo" href="../index.html"> &lt; arkanoid &gt;</a>
+        </div>
+        <div class="modal" id="modal">
+            <div class="modal-content">
+                <p class="medium-text-black" id="modal-heading"></p>
+                <p class="small-text" id="match-information"></p>
+                <button class="button-type-1" id="close-modal-button">Close</button>
+            </div>
+        </div>
+        <div class="container" id="game-container">
+            <div class="sub-container">
+                <div class="game-info-box box light-top-appearance-animation" id="score-box">
+                    <p class="gray-heading" id="score">0</p>
+                </div>
+                <button class="game-info-box box button-box-red light-top-appearance-animation" id="restart">
+						<img id="restart-img" src="../img/restart.svg" />
 					</button>
-					<div class="game-info-box box light-top-appearance-animation" id="time-box">
-						<p class="gray-heading" id="time">00:00</p>
-					</div>
-				</div>
-				<div class="canvas" id="canvas-container">
-					<!-- здесь будет создано поле через скрипт -->
-				</div>
-				<div class="control light-bottom-appearance-animation">
-					<details class="details">
-						<summary>
-							<p class="medium-text">Match parameters</p>
-							<div class="underline-2"></div>
-						</summary>
-						<div class="details-content">
-							<p class="small-text description-label">
-								These parameters will be used only within the current session
-							</p>
-							<div class="attention-box">
-								<div class="attention-icon"></div>
-								<p class="small-text description-label">Remember to save your changes</p>
-							</div>
-							<div class="details-item">
-								<p class="medium-text-black game-box-text">Control</p>
-								<div class="choice-group">
-									<div class="choice-item">
-										<input type="radio" id="keyboard" name="choice" />
-										<label class="medium-text" for="keyboard">Keyboard</label>
-									</div>
-									<div class="choice-item">
-										<input type="radio" id="mouse" name="choice" />
-										<label class="medium-text" for="mouse">Mouse</label>
-									</div>
-									<div class="choice-item">
-										<input type="radio" id="touchscreen" name="choice" />
-										<label class="medium-text" for="touchscreen">Touchscreen</label>
-									</div>
-								</div>
-							</div>
-							<div class="details-item">
-								<details>
-									<summary class="item-parameters">
-										<div></div>
-										<p class="medium-text-black game-box-text">Orientation</p>
-									</summary>
-									<div class="choice-group sub-details">
-										<div class="choice-item">
-											<input type="radio" id="horizontal" name="align-choice" />
-											<label class="main-text medium-text" for="horizontal" id="horizontal-label"
-												>Horizontal</label
+                <div class="game-info-box box light-top-appearance-animation" id="time-box">
+                    <p class="gray-heading" id="time">00:00</p>
+                </div>
+            </div>
+            <div class="canvas" id="canvas-container">
+                <!-- здесь будет создано поле через скрипт -->
+            </div>
+            <div class="control light-bottom-appearance-animation">
+                <details class="details">
+                    <summary>
+                        <p class="medium-text">Match parameters</p>
+                        <div class="underline-2"></div>
+                    </summary>
+                    <div class="details-content">
+                        <p class="small-text description-label">
+                            These parameters will be used only within the current session
+                        </p>
+                        <div class="attention-box">
+                            <div class="attention-icon"></div>
+                            <p class="small-text description-label">Remember to save your changes</p>
+                        </div>
+                        <div class="details-item">
+                            <p class="medium-text-black game-box-text">Control</p>
+                            <div class="choice-group">
+                                <div class="choice-item">
+                                    <input type="radio" id="keyboard" name="choice" />
+                                    <label class="medium-text" for="keyboard">Keyboard</label>
+                                </div>
+                                <div class="choice-item">
+                                    <input type="radio" id="mouse" name="choice" />
+                                    <label class="medium-text" for="mouse">Mouse</label>
+                                </div>
+                                <div class="choice-item">
+                                    <input type="radio" id="touchscreen" name="choice" />
+                                    <label class="medium-text" for="touchscreen">Touchscreen</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="details-item">
+                            <details>
+                                <summary class="item-parameters">
+                                    <div></div>
+                                    <p class="medium-text-black game-box-text">Orientation</p>
+                                </summary>
+                                <div class="choice-group sub-details">
+                                    <div class="choice-item">
+                                        <input type="radio" id="horizontal" name="align-choice" />
+                                        <label class="main-text medium-text" for="horizontal" id="horizontal-label">Horizontal</label
 											>
 										</div>
 										<div class="choice-item">
 											<input type="radio" id="vertical" name="align-choice" />
 											<label class="medium-text" for="vertical" id="vertical-label">Vertical</label>
-										</div>
-									</div>
-								</details>
-							</div>
-							<button class="button-type-1 medium-text" id="save">Save</button>
-						</div>
-					</details>
-				</div>
-			</div>
-		</main>
-		<div class="footer">
-			<a class="small-text copyright" href="https://github.com/perpetuumm0bi1e"
-				>© perpetuumm0bi1e<br />2022</a
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                        <button class="button-type-1 medium-text" id="save">Save</button>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </main>
+    <div class="footer">
+        <a class="small-text copyright" href="https://github.com/perpetuumm0bi1e">© perpetuumm0bi1e<br />2022</a
 			>
 		</div>
 	</body>

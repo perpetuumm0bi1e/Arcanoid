@@ -1,66 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="apple-touch-icon" sizes="180x180" href="./favicons/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="./favicons/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="./favicons/favicon-16x16.png" />
-		<link rel="manifest" href="/site.webmanifest" />
-		<link rel="stylesheet" href="./css/style.css" />
-		<title>arkanoid</title>
-	</head>
 
-	<body>
-		<main>
-			<div class="header" id="header">
-				<a id="logo" href="../index.html">&lt; arkanoid &gt;</a>
-			</div>
-			<div class="container">
-				<div>
-					<p class="medium-text description-label">Select level to start</p>
-				</div>
-				<div class="sub-container">
-					<button class="box level-box button-box-red" id="level-1" value="1">
-						<p class="gray-heading">Level<br />1</p>
-						<p class="small-text"><em>&laquo;Strawberry&raquo;</em></p>
-					</button>
-					<button class="box level-box button-box-red" value="2">
-						<p class="gray-heading">Level<br />2</p>
-						<p class="small-text"><em>&laquo;Ice&raquo;</em></p>
-					</button>
-					<button class="box level-box button-box-red" value="3">
-						<p class="gray-heading">Level<br />3</p>
-						<p class="small-text"><em>&laquo;Chocolate Donut&raquo;</em></p>
-					</button>
-					<button class="box level-box button-box-red" value="4">
-						<p class="gray-heading">4</p>
-					</button>
-					<button class="box level-box button-box-red" value="5">
-						<p class="gray-heading">5</p>
-					</button>
-					<button class="box level-box button-box-red" value="6">
-						<p class="gray-heading">6</p>
-					</button>
-					<button class="box level-box button-box-red" value="7">
-						<p class="gray-heading">7</p>
-					</button>
-					<button class="box level-box button-box-red" value="8">
-						<p class="gray-heading">8</p>
-					</button>
-					<button class="box level-box button-box-red" value="9">
-						<p class="gray-heading">9</p>
-					</button>
-					<button class="box level-box button-box-red" value="10">
-						<p class="gray-heading">10</p>
-					</button>
-				</div>
-			</div>
-		</main>
-		<div class="footer">
-			<a class="small-text copyright" href="https://github.com/perpetuumm0bi1e"
-				>© perpetuumm0bi1e<br />2022</a
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicons/favicon-16x16.png" />
+    <link rel="manifest" href="../site.webmanifest" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>arkanoid</title>
+</head>
+
+<body>
+    <main>
+        <div class="header" id="header">
+            <a id="logo" href="../index.html">&lt; arkanoid &gt;</a>
+        </div>
+        <div class="container">
+            <div>
+                <p class="medium-text description-label">Select level to start</p>
+            </div>
+            <div class="sub-container" id="level-boxes-container">
+                <!-- тут будут созданы карточки уровней через скрипт -->
+            </div>
+        </div>
+    </main>
+    <div class="footer">
+        <a class="small-text copyright" href="https://github.com/perpetuumm0bi1e">© perpetuumm0bi1e<br />2022</a
 			>
 		</div>
 	</body>

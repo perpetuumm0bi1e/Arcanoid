@@ -18,12 +18,22 @@
         <div class="header" id="header">
             <a id="logo" href="../index.html">&lt; arkanoid &gt;</a>
         </div>
+        <div class="modal" id="modal">
+            <div class="modal-content">
+                <p class="medium-text-black" id="modal-heading"></p>
+                <p class="small-text" id="match-information"></p>
+                <div class="modal-buttons">
+                    <button class="button-type-1 medium-text" id="yes-modal-button">Yes</button>
+                    <button class="button-type-1 medium-text" id="no-modal-button">No</button>
+                </div>
+            </div>
+        </div>
         <div class="container">
             <!-- <div id="user-pic"></div> -->
             <div>
                 <p class="medium-text description-label">User data</p>
             </div>
-            <div class="sub-container settings-sub-container">
+            <div class="sub-container settings-sub-container" id="settings-sub-container">
                 <div class="non-transform box">
                     <h3 class="medium-text-black">Name</h3>
                     <div class="input-data" id="changed-name-input">
@@ -33,16 +43,16 @@
                 </div>
             </div>
             <div class="sub-container buttons-sub-container">
-                <button class="button-type-2 medium-text impulse-appearance-animation" id="forget-me">
+                <button class="button-type-3 medium-text impulse-appearance-animation" id="forget-me" data-trigger>
             Forget me completely
           </button>
-                <button class="button-type-2 medium-text impulse-appearance-animation" id="clear-progress"> 
+          <button class="button-type-2 medium-text impulse-appearance-animation" id="save-settings">
+          Save
+        </button>
+                <button class="button-type-3 medium-text impulse-appearance-animation" id="clear-progress" data-trigger> 
             Clear my progress
           </button>
             </div>
-            <button class="button-type-2 medium-text impulse-appearance-animation" id="save-settings">
-            Save
-          </button>
         </div>
         </div>
     </main>
